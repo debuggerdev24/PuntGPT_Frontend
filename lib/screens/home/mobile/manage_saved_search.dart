@@ -51,7 +51,12 @@ class SearchDetailScreen extends StatelessWidget {
                   color: AppColors.black,
                 ),
                 text: "Delete",
-                onTap: () {},
+                onTap: () {
+                  provider.deleteSaveSearch(id: provider.selectedSaveSearch?.id.toString() ?? "", onSuccess: () {
+                    AppToast.success(context: context, message: "Search deleted successfully");
+                    context.pop();
+                  });
+                },
                 margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 16.h),
               ),
             ] else
@@ -65,7 +70,10 @@ class SearchDetailScreen extends StatelessWidget {
                 onTap: () {
                   provider.editSaveSearch(
                     onSuccess: () {
-                      AppToast.success(context: context, message: "Search edited successfully");
+                      provider.editSaveSearch(onSuccess: () {
+                        AppToast.success(context: context, message: "Search edited successfully");
+                      },);
+                      
 
                     },
                   );
