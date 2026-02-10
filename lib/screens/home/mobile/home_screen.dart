@@ -15,7 +15,7 @@ import 'package:puntgpt_nick/screens/home/mobile/widgets/home_section_shimmers.d
 import 'package:puntgpt_nick/screens/home/mobile/widgets/search_section.dart';
 import 'package:puntgpt_nick/screens/home/mobile/widgets/home_screen_tab.dart';
 import 'package:puntgpt_nick/screens/home/mobile/widgets/race_start_timing_options.dart';
-import 'package:puntgpt_nick/screens/home/mobile/widgets/runners_list.dart';
+import 'package:puntgpt_nick/screens/home/mobile/widgets/runners_list_screen.dart';
 import '../../../core/router/app/app_routes.dart';
 import '../../../core/widgets/app_filed_button.dart';
 import '../../../provider/search_engine_provider.dart';
@@ -307,13 +307,20 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           onError: (error) {
                             AppToast.error(context: context, message: error);
                           },
-                          onSuccess: () {},
+                          onSuccess: () {
+                            // Navigate to runners screen after data is loaded
+                            if (provider.runnerData != null) {
+                              context.pushNamed(
+                                AppRoutes.runnersScreen.name,
+                                extra: provider.runnerData,
+                              );
+                            }
+                          },
                         );
                         provider.createSaveSearch(
                           onError: (error) {
                             AppToast.error(context: context, message: error);
                           },
-
                           onSuccess: () {
                             AppToast.success(
                               context: context,
@@ -321,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             );
                           },
                         );
-                        provider.setIsSearched(value: true);
+                        // provider.setIsSearched(value: true);
                       },
                     ),
                   ),

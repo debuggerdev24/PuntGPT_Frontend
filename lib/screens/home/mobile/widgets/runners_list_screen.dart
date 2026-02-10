@@ -13,7 +13,7 @@ import '../home_screen.dart';
 
 class RunnersList extends StatelessWidget {
   const RunnersList({super.key,required this.runnerData});
-  
+
   final RunnerDataModel? runnerData;
   @override
   Widget build(BuildContext context) {
@@ -24,13 +24,10 @@ class RunnersList extends StatelessWidget {
       }
       if(runners!.isEmpty){
         // Use a SizedBox with height to ensure proper centering in scrollable context
-        return SizedBox(
-          height: MediaQuery.of(context).size.height * 0.6,
-          child: Center(
-            child: Text(
-              "No runners found!",
-              style: medium(fontSize: 16.sp),
-            ),
+        return Center(
+          child: Text(
+            "No runners found!",
+            style: medium(fontSize: 16.sp),
           ),
         );
       }

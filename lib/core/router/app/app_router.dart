@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:puntgpt_nick/core/router/app/app_routes.dart';
 import 'package:puntgpt_nick/models/account/subscription_plan_model.dart';
+import 'package:puntgpt_nick/models/search_engine/runner_model.dart';
 import 'package:puntgpt_nick/screens/account/mobile/account_screen.dart';
 import 'package:puntgpt_nick/screens/account/mobile/current_plan_screen.dart';
 import 'package:puntgpt_nick/screens/account/mobile/selected_plan_screen.dart';
@@ -13,13 +14,13 @@ import 'package:puntgpt_nick/screens/auth/screens/mobile/verify_otp_screen.dart'
 import 'package:puntgpt_nick/screens/bookies/mobile/bookies_screen.dart';
 import 'package:puntgpt_nick/screens/home/mobile/ask_punt_gpt.dart';
 import 'package:puntgpt_nick/screens/home/mobile/home_screen.dart';
+import 'package:puntgpt_nick/screens/home/mobile/widgets/runners_list_screen.dart';
 import 'package:puntgpt_nick/screens/offline/offline_screen.dart';
 import 'package:puntgpt_nick/screens/onboarding/mobile/age_confirmation_screen.dart';
 import 'package:puntgpt_nick/screens/onboarding/mobile/on_boarding_screen.dart';
 import 'package:puntgpt_nick/screens/onboarding/web/web_onboarding_screen.dart';
 import 'package:puntgpt_nick/screens/punt_gpt_club/mobile/club_chat_screen.dart';
 import 'package:puntgpt_nick/screens/splash/splash_screen.dart';
-
 import '../../../screens/account/mobile/change_password_screen.dart';
 import '../../../screens/account/mobile/manage_subscription_screen.dart';
 import '../../../screens/account/mobile/personal_details_screen.dart';
@@ -157,6 +158,16 @@ class AppRouter {
                 path: AppRoutes.selectedRace,
                 builder: (BuildContext context, GoRouterState state) {
                   return SelectedRaceScreen();
+                },
+              ),
+              GoRoute(
+                name: AppRoutes.runnersScreen.name,
+                path: AppRoutes.runnersScreen,
+                builder: (BuildContext context, GoRouterState state) {
+                  final runnerData = state.extra != null 
+                      ? state.extra as RunnerDataModel 
+                      : null;
+                  return RunnersList(runnerData: runnerData);
                 },
               ),
             ],

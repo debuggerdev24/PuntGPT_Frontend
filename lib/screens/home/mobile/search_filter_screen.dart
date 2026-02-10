@@ -85,11 +85,11 @@ class SearchFilterScreen extends StatelessWidget {
             tilePadding: EdgeInsets.symmetric(horizontal: 25.w),
             iconColor: AppColors.greyColor,
             title: Text("Track", style: semiBold(fontSize: 16.sp)),
-            children: provider.trackBoolItems.map((item) {
-              bool isChecked = item.checked;
-              return InkWell(
+            children: [
+              // Placed last start
+              InkWell(
                 onTap: () {
-                  provider.toggleTrackItem(item.trackType.value, !isChecked);
+                  provider.togglePlacedLastStart(!provider.placedLastStart);
                 },
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
@@ -101,7 +101,7 @@ class SearchFilterScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(item.trackType.value, style: semiBold(fontSize: 16.sp)),
+                          Text("Placed last start", style: semiBold(fontSize: 16.sp)),
                           AnimatedContainer(
                             duration: const Duration(milliseconds: 250),
                             curve: Curves.easeInOut,
@@ -109,16 +109,16 @@ class SearchFilterScreen extends StatelessWidget {
                             height: 22,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: isChecked
+                                color: provider.placedLastStart
                                     ? Colors.green
                                     : AppColors.primary.withValues(alpha: 0.15),
                               ),
                               borderRadius: BorderRadius.circular(4),
-                              color: isChecked
+                              color: provider.placedLastStart
                                   ? Colors.green
                                   : Colors.transparent,
                             ),
-                            child: isChecked
+                            child: provider.placedLastStart
                                 ? const Icon(
                                     Icons.check,
                                     color: Colors.white,
@@ -131,8 +131,100 @@ class SearchFilterScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              );
-            }).toList(),
+              ),
+              // Won last start
+              InkWell(
+                onTap: () {
+                  provider.toggleWonLastStart(!provider.wonLastStart);
+                },
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Column(
+                  children: [
+                    Divider(color: AppColors.greyColor.withValues(alpha: 0.2)),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Won last start", style: semiBold(fontSize: 16.sp)),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            curve: Curves.easeInOut,
+                            width: 22,
+                            height: 22,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: provider.wonLastStart
+                                    ? Colors.green
+                                    : AppColors.primary.withValues(alpha: 0.15),
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                              color: provider.wonLastStart
+                                  ? Colors.green
+                                  : Colors.transparent,
+                            ),
+                            child: provider.wonLastStart
+                                ? const Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                    size: 16,
+                                  )
+                                : null,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Won last 12 months
+              InkWell(
+                onTap: () {
+                  provider.toggleWonLast12Months(!provider.wonLast12Months);
+                },
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Column(
+                  children: [
+                    Divider(color: AppColors.greyColor.withValues(alpha: 0.2)),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Won last 12 months", style: semiBold(fontSize: 16.sp)),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            curve: Curves.easeInOut,
+                            width: 22,
+                            height: 22,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: provider.wonLast12Months
+                                    ? Colors.green
+                                    : AppColors.primary.withValues(alpha: 0.15),
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                              color: provider.wonLast12Months
+                                  ? Colors.green
+                                  : Colors.transparent,
+                            ),
+                            child: provider.wonLast12Months
+                                ? const Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                    size: 16,
+                                  )
+                                : null,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ],

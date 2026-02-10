@@ -100,13 +100,10 @@ class SearchEngineProvider extends ChangeNotifier {
 
   String get selectedRaceTimingApiString => selectedRaceTimingEnum.name;
 
-  //* Home Screen Track Section (Checkboxes)
-  final List<TrackItemModel> trackBoolItems = [
-    TrackItemModel.fromTrackType(TrackType.placed_last_start),
-    TrackItemModel.fromTrackType(TrackType.won_last_start),
-    TrackItemModel.fromTrackType(TrackType.won_last_12_months),
-    // TrackItemModel.fromTrackType(TrackType.odds_range),
-  ];
+  //* Home Screen Track Section (Checkboxes) - Simple boolean variables
+  bool placedLastStart = false;
+  bool wonLastStart = false;
+  bool wonLast12Months = false;
 
   //* Saved Search Screen Track Section (Checkboxes)
   final List<TrackItemModel> savedSearchTrackItems = [
@@ -117,14 +114,19 @@ class SearchEngineProvider extends ChangeNotifier {
   ];
 
   //* Toggle method for track checkboxes
-  void toggleTrackItem(String label, bool value) {
-    final index = trackBoolItems.indexWhere(
-      (item) => item.trackType.value == label,
-    );
-    if (index != -1) {
-      trackBoolItems[index] = trackBoolItems[index].copyWith(checked: value);
-      notifyListeners();
-    }
+  void togglePlacedLastStart(bool value) {
+    placedLastStart = value;
+    notifyListeners();
+  }
+
+  void toggleWonLastStart(bool value) {
+    wonLastStart = value;
+    notifyListeners();
+  }
+
+  void toggleWonLast12Months(bool value) {
+    wonLast12Months = value;
+    notifyListeners();
   }
 
   //* Toggle method for saved search track checkboxes
@@ -217,10 +219,14 @@ class SearchEngineProvider extends ChangeNotifier {
     runnerData = null;
     notifyListeners();
     // Get the first checked track item, if any
-    final checkedTrackItem = trackBoolItems
-        .where((item) => item.checked == true)
-        .firstOrNull;
-    final trackValue = checkedTrackItem?.trackType.name;
+    String? trackValue;
+    if (placedLastStart) {
+      trackValue = "placed_last_start";
+    } else if (wonLastStart) {
+      trackValue = "won_last_start";
+    } else if (wonLast12Months) {
+      trackValue = "won_last_12_months";
+    }
 
     final result = await SearchEngineAPISearvice.instance.getSearchEngine(
       jumpFilter: selectedRaceTimingApiString,
@@ -249,17 +255,17 @@ class SearchEngineProvider extends ChangeNotifier {
   }) async {
     final result = await SearchEngineAPISearvice.instance.createSaveSearch(
       data: {
-        "name": "Custom Name",
+        "name": "Custom Name 3",
         "filters": {
           "track": "Flemington",
-          "placed_last_start": trackBoolItems[0].checked,
+          "placed_last_start": placedLastStart,
           "placed_at_distance": selectedPlaceAtDistance,
           "placed_at_track": selectedPlaceAtTrack,
           "odds_range": oddsRangeCtr.text,
           "wins_at_track": selectedWinsAtTrack,
           "win_at_distance": selectedWinsAtDistance,
-          "won_last_start": trackBoolItems[1].checked,
-          "won_last_12_months": trackBoolItems[2].checked,
+          "won_last_start": wonLastStart,
+          "won_last_12_months": wonLast12Months,
           "jockey_horse_wins": jockeyHorseWinsCtr.text,
           "barrier": selectedBarrier,
           "jockey_strike_rate_last_12_months": "",
@@ -277,6 +283,42 @@ class SearchEngineProvider extends ChangeNotifier {
         onSuccess.call();
       },
     );
+  }
+
+  /// Clear all search fields (used for new searches)
+  clearSearchFields() {
+    oddsRangeCtr.clear();
+    jockeyHorseWinsCtr.clear();
+    
+    selectedTrack = null;
+    selectedPlaceAtDistance = null;
+    selectedPlaceAtTrack = null;
+    selectedWinsAtTrack = null;
+    selectedWinsAtDistance = null;
+    selectedBarrier = null;
+    placedLastStart = false;
+    wonLastStart = false;
+    wonLast12Months = false;
+    notifyListeners();
+  }
+
+  /// Clear saved search fields (used when navigating away from saved search details)
+  clearSavedSearchFields() {
+    oddsRangeCtr.clear();
+    jockeyHorseWinsCtr.clear();
+    
+    selectedTrack = null;
+    selectedPlaceAtDistance = null;
+    selectedPlaceAtTrack = null;
+    selectedWinsAtTrack = null;
+    selectedWinsAtDistance = null;
+    selectedBarrier = null;
+    placedLastStart = false;
+    wonLastStart = false;
+    wonLast12Months = false;
+    selectedSaveSearch = null;
+    setIsEditSavedSearch = false;
+    notifyListeners();
   }
 
   Future<void> getAllSaveSearch() async {
@@ -302,6 +344,8 @@ class SearchEngineProvider extends ChangeNotifier {
 
   Future<void> getSaveSearchDetails({required String id}) async {
     selectedSaveSearch = null;
+    // Clear fields before loading new data
+    clearSavedSearchFields();
     notifyListeners();
     final result = await SearchEngineAPISearvice.instance.getSaveSearchDetails(
       id: id,
@@ -312,20 +356,94 @@ class SearchEngineProvider extends ChangeNotifier {
       },
       (r) {
         selectedSaveSearch = SaveSearchModel.fromJson(r["data"]);
-        savedSearchTrackItems[0] =
-            TrackItemModel.fromTrackType(TrackType.placed_last_start).copyWith(
-              checked: selectedSaveSearch?.filters.placedLastStart ?? false,
-            );
-        savedSearchTrackItems[1] =
-            TrackItemModel.fromTrackType(TrackType.placed_at_distance).copyWith(
-              checked: selectedSaveSearch?.filters.placedAtDistance ?? false,
-            );
-        savedSearchTrackItems[2] = TrackItemModel.fromTrackType(
-          TrackType.placed_at_track,
-        ).copyWith(checked: selectedSaveSearch?.filters.placedAtTrack ?? false);
+        final filters = selectedSaveSearch?.filters;
+        if (filters != null) {
+          // Populate all fields from saved search data
+          // Handle null/empty values gracefully - use empty string instead of null to avoid errors
+          selectedTrack = (filters.track != null && filters.track!.isNotEmpty) 
+              ? filters.track 
+              : null;
+          selectedPlaceAtDistance = (filters.placedAtDistance != null && 
+                  filters.placedAtDistance!.isNotEmpty) 
+              ? filters.placedAtDistance 
+              : null;
+          selectedPlaceAtTrack = (filters.placedAtTrack != null && 
+                  filters.placedAtTrack!.isNotEmpty) 
+              ? filters.placedAtTrack 
+              : null;
+          selectedWinsAtTrack = (filters.winsAtTrack != null && 
+                  filters.winsAtTrack!.isNotEmpty) 
+              ? filters.winsAtTrack 
+              : null;
+          selectedWinsAtDistance = (filters.winAtDistance != null && 
+                  filters.winAtDistance!.isNotEmpty) 
+              ? filters.winAtDistance 
+              : null;
+          selectedBarrier = (filters.barrier != null && 
+                  filters.barrier!.isNotEmpty) 
+              ? filters.barrier 
+              : null;
+          
+          // Boolean fields - default to false if null
+          placedLastStart = filters.placedLastStart ?? false;
+          wonLastStart = filters.wonLastStart ?? false;
+          wonLast12Months = filters.wonLast12Months ?? false;
+          
+          // Text controllers - handle null/empty safely, use empty string to avoid null errors
+          oddsRangeCtr.text = (filters.oddsRange != null && 
+                  filters.oddsRange!.isNotEmpty) 
+              ? filters.oddsRange! 
+              : "";
+          jockeyHorseWinsCtr.text = (filters.jockeyHorseWins != null && 
+                  filters.jockeyHorseWins!.isNotEmpty) 
+              ? filters.jockeyHorseWins! 
+              : "";
+        }
       },
     );
     notifyListeners();
+  }
+
+  //* Check if there are any changes in the saved search fields
+  bool hasChangesInSavedSearch() {
+    if (selectedSaveSearch == null) return false;
+    
+    final filters = selectedSaveSearch!.filters;
+    
+    // Helper function to compare nullable strings
+    bool stringsEqual(String? a, String? b) {
+      final aValue = (a != null && a.isNotEmpty) ? a : null;
+      final bValue = (b != null && b.isNotEmpty) ? b : null;
+      return aValue == bValue;
+    }
+    
+    // Compare all fields
+    if (!stringsEqual(selectedTrack, filters.track)) return true;
+    if (!stringsEqual(selectedPlaceAtDistance, filters.placedAtDistance)) return true;
+    if (!stringsEqual(selectedPlaceAtTrack, filters.placedAtTrack)) return true;
+    if (!stringsEqual(selectedWinsAtTrack, filters.winsAtTrack)) return true;
+    if (!stringsEqual(selectedWinsAtDistance, filters.winAtDistance)) return true;
+    if (!stringsEqual(selectedBarrier, filters.barrier)) return true;
+    
+    // Compare boolean fields
+    if (placedLastStart != (filters.placedLastStart ?? false)) return true;
+    if (wonLastStart != (filters.wonLastStart ?? false)) return true;
+    if (wonLast12Months != (filters.wonLast12Months ?? false)) return true;
+    
+    // Compare text controller values
+    final currentOddsRange = oddsRangeCtr.text.trim();
+    final savedOddsRange = (filters.oddsRange != null && filters.oddsRange!.isNotEmpty) 
+        ? filters.oddsRange!.trim() 
+        : "";
+    if (currentOddsRange != savedOddsRange) return true;
+    
+    final currentJockeyWins = jockeyHorseWinsCtr.text.trim();
+    final savedJockeyWins = (filters.jockeyHorseWins != null && filters.jockeyHorseWins!.isNotEmpty) 
+        ? filters.jockeyHorseWins!.trim() 
+        : "";
+    if (currentJockeyWins != savedJockeyWins) return true;
+    
+    return false; // No changes detected
   }
 
   Future<void> editSaveSearch({required VoidCallback onSuccess}) async {
@@ -333,21 +451,24 @@ class SearchEngineProvider extends ChangeNotifier {
     final result = await SearchEngineAPISearvice.instance.editSaveSearch(
       id: id,
       data: {
-        "name":
-            selectedSaveSearch?.name ??
-            "Custom edited Name", //"Custom edited Name",
+        "name": selectedSaveSearch?.name ?? "Custom edited Name",
         "filters": {
-          "track": selectedSaveSearch?.filters.track ?? "Flemington",
-          savedSearchTrackItems[0].trackType.name:
-              savedSearchTrackItems[0].checked,
-          savedSearchTrackItems[1].trackType.name:
-              savedSearchTrackItems[1].checked,
-          savedSearchTrackItems[2].trackType.name:
-              savedSearchTrackItems[2].checked,
+          "track": selectedTrack ?? "",
+          "placed_last_start": placedLastStart,
+          "placed_at_distance": selectedPlaceAtDistance ?? "",
+          "placed_at_track": selectedPlaceAtTrack ?? "",
+          "odds_range": oddsRangeCtr.text.isNotEmpty ? oddsRangeCtr.text : "",
+          "wins_at_track": selectedWinsAtTrack ?? "",
+          "win_at_distance": selectedWinsAtDistance ?? "",
+          "won_last_start": wonLastStart,
+          "won_last_12_months": wonLast12Months,
+          "jockey_horse_wins": jockeyHorseWinsCtr.text.isNotEmpty 
+              ? jockeyHorseWinsCtr.text 
+              : "",
+          "barrier": selectedBarrier ?? "",
+          "jockey_strike_rate_last_12_months": "",
         },
-        "comment":
-            selectedSaveSearch?.comment ??
-            "Custom edited comment", //"Custom edited comment",
+        "comment": selectedSaveSearch?.comment ?? "Custom edited comment",
       },
     );
     result.fold(
@@ -376,6 +497,7 @@ class SearchEngineProvider extends ChangeNotifier {
       },
       (r) {
         onSuccess.call();
+        getAllSaveSearch();
       },
     );
   }

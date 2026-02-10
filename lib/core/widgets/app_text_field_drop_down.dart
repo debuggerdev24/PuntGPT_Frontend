@@ -19,6 +19,7 @@ class AppTextFieldDropdown extends StatelessWidget {
     this.validator,
     this.autoValidateMode,
     this.margin,
+    this.enabled,
   });
 
   final List<String> items;
@@ -28,6 +29,7 @@ class AppTextFieldDropdown extends StatelessWidget {
   final TextStyle? hintStyle, textStyle, errorStyle;
   final double? borderRadius;
   final EdgeInsetsGeometry? margin;
+  final bool? enabled;
   final FormFieldValidator<String>? validator;
   final AutovalidateMode? autoValidateMode;
 
@@ -36,7 +38,7 @@ class AppTextFieldDropdown extends StatelessWidget {
     final controller = TextEditingController(text: selectedValue);
 
     return GestureDetector(
-      onTap: () => _showDropdownMenu(context),
+      onTap: enabled ?? true ? () => _showDropdownMenu(context) : null,
       child: AbsorbPointer(
         child: AppTextField(
           controller: controller,
@@ -45,6 +47,7 @@ class AppTextFieldDropdown extends StatelessWidget {
           textStyle: textStyle,
           hintStyle: hintStyle,
           errorStyle: errorStyle,
+          enabled: enabled ?? true,
           margin: margin,
           borderRadius: borderRadius,
           autovalidateMode: autoValidateMode,

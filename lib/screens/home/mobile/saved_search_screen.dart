@@ -24,12 +24,15 @@ class SavedSearchScreen extends StatelessWidget {
     if (!context.isMobileView) {
       context.pop();
     }
-    return Column(
-      children: [
-        topBar(context: context),
-        horizontalDivider(),
-        Consumer<SearchEngineProvider>(
-          builder: (context, provider, child) => Expanded(
+    return Consumer<SearchEngineProvider>(
+      builder: (context, provider, child) => Column(
+        children: [
+          topBar(context: context),
+          horizontalDivider(),
+          // Consumer<SearchEngineProvider>(
+          //   builder: (context, provider, child) =>
+          // ),
+          Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
@@ -81,28 +84,35 @@ class SavedSearchScreen extends StatelessWidget {
                     (index) => searchedItemShimmer(context: context),
                   ),
                 if (provider.saveSearches != null) ...[
-                  ...List.generate(provider.saveSearches!.length, (index) => SearchedItem(search: provider.saveSearches![index], onTap: () => provider.getSaveSearchDetails(id: provider.saveSearches![index].id.toString()))),
-                  //provider.saveSearches!.map((e) => ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 14.h),
-                    child: horizontalDivider(),
-                  ),
-                  
-                  AppFilledButton(
-                    margin: EdgeInsets.fromLTRB(25.w, 20.h, 25.w, 25.h),
-                    text: "Save Current Search",
-                    textStyle: semiBold(
-                      fontSize: 16.sixteenSp(context),
-                      color: AppColors.white,
+                  ...List.generate(
+                    provider.saveSearches!.length,
+                    (index) => SearchedItem(
+                      search: provider.saveSearches![index],
+                      onTap: () => provider.getSaveSearchDetails(
+                        id: provider.saveSearches![index].id.toString(),
+                      ),
                     ),
-                    onTap: () {},
                   ),
+
+                  //provider.saveSearches!.map((e) => ),
                 ],
               ],
             ),
           ),
-        ),
-      ],
+          // horizontalDivider(),
+
+          // AppFilledButton(
+          //   margin: EdgeInsets.symmetric(horizontal: 25.w, vertical: 15.w),
+          //   text: "Save Current Search",
+          //   textStyle: semiBold(
+          //     fontSize: 16.sixteenSp(context),
+          //     color: AppColors.white,
+          //   ),
+          //   onTap: () {},
+          // ),
+        
+        ],
+      ),
     );
   }
 
@@ -168,7 +178,6 @@ class SearchedItem extends StatelessWidget {
         vertical: (context.isBrowserMobile) ? 24.w : 14.h,
       ),
       child: GestureDetector(
-        
         onTap: () {
           context.pushNamed(AppRoutes.searchDetails.name);
           onTap.call();

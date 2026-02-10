@@ -39,6 +39,9 @@ class AppRoutes {
   static const String offlineViewScreen = '/offline-view';
   static const String selectedPlanScreen = '/selected-plan';
   static const String currentPlanScreen = '/current-plan';
+  static const String runnersScreen = '/runners-screen';
+
+  
 }
 
 extension AppRoutesExtension on String {

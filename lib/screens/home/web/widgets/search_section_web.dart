@@ -161,11 +161,11 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                               : 14.sp,
                         ),
                       ),
-                      children: provider.trackBoolItems.map((item) {
-                        bool isChecked = item.checked;
-                        return InkWell(
+                      children: [
+                        // Placed last start
+                        InkWell(
                           onTap: () {
-                            provider.toggleTrackItem(item.trackType.value, !isChecked);
+                            provider.togglePlacedLastStart(!provider.placedLastStart);
                           },
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
@@ -183,7 +183,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      item.trackType.value,
+                                      "Placed last start",
                                       style: semiBold(
                                         fontSize: context.isDesktop
                                             ? 14.sp
@@ -203,18 +203,18 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                       height: 22.sp,
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                          color: isChecked
+                                          color: provider.placedLastStart
                                               ? Colors.green
                                               : AppColors.primary.setOpacity(
                                                   0.15,
                                                 ),
                                         ),
                                         borderRadius: BorderRadius.circular(1),
-                                        color: isChecked
+                                        color: provider.placedLastStart
                                             ? Colors.green
                                             : Colors.transparent,
                                       ),
-                                      child: isChecked
+                                      child: provider.placedLastStart
                                           ? Icon(
                                               Icons.check,
                                               color: Colors.white,
@@ -227,8 +227,140 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                               ),
                             ],
                           ),
-                        );
-                      }).toList(),
+                        ),
+                        // Won last start
+                        InkWell(
+                          onTap: () {
+                            provider.toggleWonLastStart(!provider.wonLastStart);
+                          },
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Column(
+                            children: [
+                              Divider(
+                                color: AppColors.greyColor.withValues(
+                                  alpha: 0.2,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.h),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Won last start",
+                                      style: semiBold(
+                                        fontSize: context.isDesktop
+                                            ? 14.sp
+                                            : context.isTablet
+                                            ? 22.sp
+                                            : (kIsWeb)
+                                            ? 26.sp
+                                            : 14.sp,
+                                      ),
+                                    ),
+                                    AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 250,
+                                      ),
+                                      curve: Curves.easeInOut,
+                                      width: 22.sp,
+                                      height: 22.sp,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: provider.wonLastStart
+                                              ? Colors.green
+                                              : AppColors.primary.setOpacity(
+                                                  0.15,
+                                                ),
+                                        ),
+                                        borderRadius: BorderRadius.circular(1),
+                                        color: provider.wonLastStart
+                                            ? Colors.green
+                                            : Colors.transparent,
+                                      ),
+                                      child: provider.wonLastStart
+                                          ? Icon(
+                                              Icons.check,
+                                              color: Colors.white,
+                                              size: 16.sp,
+                                            )
+                                          : null,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Won last 12 months
+                        InkWell(
+                          onTap: () {
+                            provider.toggleWonLast12Months(!provider.wonLast12Months);
+                          },
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Column(
+                            children: [
+                              Divider(
+                                color: AppColors.greyColor.withValues(
+                                  alpha: 0.2,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.h),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Won last 12 months",
+                                      style: semiBold(
+                                        fontSize: context.isDesktop
+                                            ? 14.sp
+                                            : context.isTablet
+                                            ? 22.sp
+                                            : (kIsWeb)
+                                            ? 26.sp
+                                            : 14.sp,
+                                      ),
+                                    ),
+                                    AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 250,
+                                      ),
+                                      curve: Curves.easeInOut,
+                                      width: 22.sp,
+                                      height: 22.sp,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: provider.wonLast12Months
+                                              ? Colors.green
+                                              : AppColors.primary.setOpacity(
+                                                  0.15,
+                                                ),
+                                        ),
+                                        borderRadius: BorderRadius.circular(1),
+                                        color: provider.wonLast12Months
+                                            ? Colors.green
+                                            : Colors.transparent,
+                                      ),
+                                      child: provider.wonLast12Months
+                                          ? Icon(
+                                              Icons.check,
+                                              color: Colors.white,
+                                              size: 16.sp,
+                                            )
+                                          : null,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   horizontalDivider(endIndent: 22),

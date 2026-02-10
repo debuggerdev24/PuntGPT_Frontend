@@ -181,16 +181,13 @@ class SearchView extends StatelessWidget {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        provider.toggleTrackItem(
-                          provider.trackBoolItems[0].trackType.value,
-                          !provider.trackBoolItems[0].checked,
-                        );
+                        provider.togglePlacedLastStart(!provider.placedLastStart);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            provider.trackBoolItems[0].trackType.value,
+                            "Placed last start",
                             style: semiBold(
                               fontSize: (context.isBrowserMobile)
                                   ? 36.sp
@@ -204,16 +201,16 @@ class SearchView extends StatelessWidget {
                             height: (context.isBrowserMobile) ? 40.sp : 22.sp,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: provider.trackBoolItems[0].checked
+                                color: provider.placedLastStart
                                     ? Colors.green
                                     : AppColors.primary.setOpacity(0.15),
                               ),
                               borderRadius: BorderRadius.circular(1),
-                              color: provider.trackBoolItems[0].checked
+                              color: provider.placedLastStart
                                   ? Colors.green
                                   : Colors.transparent,
                             ),
-                            child: provider.trackBoolItems[0].checked
+                            child: provider.placedLastStart
                                 ? Icon(
                                     Icons.check,
                                     color: Colors.white,
@@ -291,16 +288,13 @@ class SearchView extends StatelessWidget {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        provider.toggleTrackItem(
-                          provider.trackBoolItems[1].trackType.value,
-                          !provider.trackBoolItems[1].checked,
-                        );
+                        provider.toggleWonLastStart(!provider.wonLastStart);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            provider.trackBoolItems[1].trackType.value,
+                            "Won last start",
                             style: semiBold(
                               fontSize: (context.isBrowserMobile)
                                   ? 36.sp
@@ -314,16 +308,16 @@ class SearchView extends StatelessWidget {
                             height: (context.isBrowserMobile) ? 40.sp : 22.sp,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: provider.trackBoolItems[1].checked
+                                color: provider.wonLastStart
                                     ? Colors.green
                                     : AppColors.primary.setOpacity(0.15),
                               ),
                               borderRadius: BorderRadius.circular(1),
-                              color: provider.trackBoolItems[1].checked
+                              color: provider.wonLastStart
                                   ? Colors.green
                                   : Colors.transparent,
                             ),
-                            child: provider.trackBoolItems[1].checked
+                            child: provider.wonLastStart
                                 ? Icon(
                                     Icons.check,
                                     color: Colors.white,
@@ -338,22 +332,19 @@ class SearchView extends StatelessWidget {
                     ),
                   ),
                   horizontalDivider(),
-                  //* Placed at last start Section
+                  //* Won last 12 months Section
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 19.w),
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        provider.toggleTrackItem(
-                          provider.trackBoolItems[2].trackType.value,
-                          !provider.trackBoolItems[2].checked,
-                        );
+                        provider.toggleWonLast12Months(!provider.wonLast12Months);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            provider.trackBoolItems[2].trackType.value,
+                            "Won last 12 months",
                             style: semiBold(
                               fontSize: (context.isBrowserMobile)
                                   ? 36.sp
@@ -367,16 +358,16 @@ class SearchView extends StatelessWidget {
                             height: (context.isBrowserMobile) ? 40.sp : 22.sp,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: provider.trackBoolItems[2].checked
+                                color: provider.wonLast12Months
                                     ? Colors.green
                                     : AppColors.primary.setOpacity(0.15),
                               ),
                               borderRadius: BorderRadius.circular(1),
-                              color: provider.trackBoolItems[2].checked
+                              color: provider.wonLast12Months
                                   ? Colors.green
                                   : Colors.transparent,
                             ),
-                            child: provider.trackBoolItems[2].checked
+                            child: provider.wonLast12Months
                                 ? Icon(
                                     Icons.check,
                                     color: Colors.white,
