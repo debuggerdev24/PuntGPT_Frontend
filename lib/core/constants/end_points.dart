@@ -22,7 +22,10 @@ class EndPoints {
   static String searchFilterDetails = "/horse-race/search-filter-display/";
   static String barrierDetails = "/horse-race/barrier-display/";
 
-  static String getUpcomingMeetings({required String jumpFilter, String? track}) =>
+  static String getUpcomingMeetings({
+    required String jumpFilter,
+    String? track,
+  }) =>
       "/horse-race/upcoming-runners/?jump=$jumpFilter${(track != null) ? "&track=$track" : ""}";
 
   static String createSaveSearch = "/horse-race/saved-search/";
@@ -52,8 +55,8 @@ class EndPoints {
       "/horse-race/classic-form-guide/?jump=$jumpFilter";
 
   static const String nextToGo = "/horse-race/next-to-go/";
-  static String getMeetingWithRaceDetail({required String meetingId}) =>
-      "/horse-race/race-detail/?meeting_id=$meetingId";
+  // static String getMeetingWithRaceDetail({required String meetingId}) =>
+  //     "/horse-race/race-detail/?meeting_id=$meetingId";
 
   static String getMeetingraceList({required String meetingId}) =>
       "/horse-race/meetings/$meetingId/races/";
@@ -73,26 +76,28 @@ class EndPoints {
   //* notification
   static const String notification = "/chat-group/notification/";
   static const String deleteSingleNotification = "/chat-group/notification/";
-  static const String deleteAllNotification = "/chat-group/notification/clear-all/";
+  static const String deleteAllNotification =
+      "/chat-group/notification/clear-all/";
 
   //* chat group
   static const String createChatGroup = "/chat-group/create-group/";
-  static String chatGroupInvitation({required String id}) => "/chat-group/invite-user-to-group/$id/";
-  static String getUserInviteList({required String groupId}) => "/chat-group/invitation-user-list/?group_id=$groupId";
-  static String acceptInvitation({required String id}) => "/chat-group/invite/5/$id/accept/";
-  static String rejectInvitation({required String id}) => "/chat-group/invite/5/$id/reject/";
-  static String userNameSetup({required String id}) => "/chat-group/username-setup/$id/";
-  static String getGroupMemberInfo({required String id}) => "/chat-group/group-member-info/$id/";
-  static String leaveGroup({required String id}) => "/chat-group/leave-group/$id/";
-  static String getChatHistory({required String id}) => "/chat-group/history/$id/";
-
-
-  
-
+  static String chatGroupInvitation({required String id}) =>
+      "/chat-group/invite-user-to-group/$id/";
+  static String getUserInviteList({required String groupId}) =>
+      "/chat-group/invitation-user-list/?group_id=$groupId";
+  static String acceptInvitation({required String id}) =>
+      "/chat-group/invite/5/$id/accept/";
+  static String rejectInvitation({required String id}) =>
+      "/chat-group/invite/5/$id/reject/";
+  static String userNameSetup({required String id}) =>
+      "/chat-group/username-setup/$id/";
+  static String getGroupMemberInfo({required String id}) =>
+      "/chat-group/group-member-info/$id/";
+  static String leaveGroup({required String id}) =>
+      "/chat-group/leave-group/$id/";
+  static String getChatHistory({required String id}) =>
+      "/chat-group/history/$id/";
 
   //* bot
   static const String bot = "/bot/chat/";
-
-
 }
-

@@ -1,6 +1,10 @@
 import 'package:puntgpt_nick/core/enum/app_enums.dart';
 
 class TrackItemModel {
+  
+  factory TrackItemModel.fromTrackType(TrackType trackType) {
+    return TrackItemModel(trackType: trackType);
+  }
 
 final TrackType trackType;
   final bool checked;
@@ -10,10 +14,6 @@ final TrackType trackType;
     required this.trackType,
     this.checked = false,
   });
-  
-  factory TrackItemModel.fromTrackType(TrackType trackType) {
-    return TrackItemModel(trackType: trackType);
-  }
 
   TrackItemModel copyWith({
     TrackType? trackType,

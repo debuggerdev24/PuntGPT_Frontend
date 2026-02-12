@@ -1,10 +1,4 @@
 class SaveSearchModel {
-  int id;
-  String name;
-  Filters filters;
-  String comment;
-  DateTime createdAt;
-  DateTime updatedAt;
 
   SaveSearchModel({
     required this.id,
@@ -24,21 +18,15 @@ class SaveSearchModel {
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );
+  int id;
+  String name;
+  Filters filters;
+  String comment;
+  DateTime createdAt;
+  DateTime updatedAt;
 }
 
 class Filters {
-  bool? placedLastStart,
-      wonLastStart,
-      wonLast12Months;
-  String? track,
-      placedAtTrack,
-      placedAtDistance,
-      barrier,
-      oddsRange,
-      winsAtTrack,
-      winAtDistance,
-      jockeyHorseWins,
-      jockeyStrikeRateLast12Months;
 
   Filters({
     this.track,
@@ -69,6 +57,18 @@ class Filters {
     wonLast12Months: _parseBool(json["won_last_12_months"]),
     jockeyStrikeRateLast12Months: json["jockey_strike_rate_last_12_months"],
   );
+  bool? placedLastStart,
+      wonLastStart,
+      wonLast12Months;
+  String? track,
+      placedAtTrack,
+      placedAtDistance,
+      barrier,
+      oddsRange,
+      winsAtTrack,
+      winAtDistance,
+      jockeyHorseWins,
+      jockeyStrikeRateLast12Months;
 
   /// Helper method to parse boolean values from JSON
   /// Handles both string ("true"/"false") and boolean (true/false) values

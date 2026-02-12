@@ -7,9 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:puntgpt_nick/core/constants/constants.dart';
 import 'package:puntgpt_nick/core/constants/text_style.dart';
+import 'package:puntgpt_nick/core/enum/app_enums.dart';
 import 'package:puntgpt_nick/core/router/web/web_routes.dart';
 import 'package:puntgpt_nick/core/utils/app_toast.dart';
 import 'package:puntgpt_nick/core/widgets/image_widget.dart';
+import 'package:puntgpt_nick/models/classic_form_guide/next_race_model.dart';
 import 'package:puntgpt_nick/responsive/responsive_builder.dart';
 import 'package:puntgpt_nick/screens/home/mobile/widgets/home_section_shimmers.dart';
 import 'package:puntgpt_nick/screens/home/mobile/widgets/search_section.dart';
@@ -18,6 +20,7 @@ import 'package:puntgpt_nick/screens/home/mobile/widgets/race_start_timing_optio
 import 'package:puntgpt_nick/screens/home/mobile/widgets/runners_list_screen.dart';
 import '../../../core/router/app/app_routes.dart';
 import '../../../core/widgets/app_filed_button.dart';
+import '../../../provider/classic_form/classic_form_guide_provider.dart';
 import '../../../provider/search_engine/search_engine_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,7 +32,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _keyboardVisible = false;
-  List days = ["Yesterday", "Today", "Tomorrow"];
 
   @override
   void initState() {
@@ -87,9 +89,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             formKey: formKey,
                             context: context,
                           )
-                        : classicFormGuide(
-                            context: context,
-                            provider: provider,
+                        : Consumer<ClassicFormGuideProvider>(
+                            builder: (context, provider, child) =>
+                                classicFormGuide(
+                                  context: context,
+                                  provider: provider,
+                                ),
                           ),
                   ),
                 ),
@@ -103,53 +108,71 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   Widget classicFormGuide({
     required BuildContext context,
-    required SearchEngineProvider provider,
+    required ClassicFormGuideProvider provider,
   }) {
+    final nextRaces = provider.nextRaceList;
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 25.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Next to go", style: bold(fontSize: 16.sp)),
-          10.h.verticalSpace,
+          10.verticalSpace,
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(spacing: 8.w, children: [raceItem(), raceItem()]),
-          ),
-          Row(
-            children: List.generate(days.length, (index) {
-              return GestureDetector(
-                onTap: () {
-                  provider.changeSelectedDay = index;
-                },
-                child: AnimatedContainer(
-                  duration: 400.milliseconds,
-                  margin: EdgeInsets.only(top: 24.h, bottom: 16.h, right: 8.w),
-                  padding: EdgeInsets.symmetric(
-                    vertical: 12.h,
-                    horizontal: 18.w,
-                  ),
-                  decoration: BoxDecoration(
-                    color: (provider.selectedDay == index)
-                        ? AppColors.primary
-                        : null,
-                    border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.15),
-                    ),
-                  ),
-                  child: Text(
-                    days[index],
-                    style: semiBold(
-                      fontSize: 16.sp,
-                      color: (provider.selectedDay == index)
-                          ? AppColors.white
-                          : null,
-                    ),
-                  ),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: 8.w,
+                children: List.generate(
+                  nextRaces.length,
+                  (index) => nextToGoItem(nextRace: nextRaces[index]),
                 ),
-              );
-            }),
+              ),
+            ),
           ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(provider.days.length, (index) {
+                return GestureDetector(
+                  onTap: () {
+                    provider.changeSelectedDay = index;
+                  },
+                  child: AnimatedContainer(
+                    duration: 400.milliseconds,
+                    margin: EdgeInsets.only(
+                      top: 24.h,
+                      bottom: 16.h,
+                      right: 8.w,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 12.h,
+                      horizontal: 18.w,
+                    ),
+                    decoration: BoxDecoration(
+                      color: (provider.selectedDay == index)
+                          ? AppColors.primary
+                          : null,
+                      border: Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.15),
+                      ),
+                    ),
+                    child: Text(
+                      provider.days[index].value,
+                      style: semiBold(
+                        fontSize: 16.sp,
+                        color: (provider.selectedDay == index)
+                            ? AppColors.white
+                            : null,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
 
@@ -174,81 +197,86 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   3: FlexColumnWidth(3.w),
                 },
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children: [
-                  _buildRow(
-                    col1: "Randwick",
-                    col2: "R1. PuntGPT Legends Stakes 3200m",
-                    col3: "2025-09-28",
+                children: List.generate(provider.classicFormGuide.length, (
+                  index,
+                ) {
+                  final classicForm = provider.classicFormGuide[index];
+                  return _buildRow(
+                    col1: classicForm.meetingName,
+                    col2: "",
+                    col3: classicForm.meetingDate,
                     col4: "14:35",
                     onTap: () {
                       context.pushNamed(AppRoutes.selectedRace.name);
                     },
-                  ),
-                  _buildRow(
-                    col1: "Flemington",
-                    col2: "R2. Race Sponsor",
-                    col3: "2025-09-28",
-                    col4: "14:35",
-                    onTap: () {
-                      context.pushNamed(AppRoutes.selectedRace.name);
-                    },
-                  ),
-                  _buildRow(
-                    col1: "Morphettville",
-                    col2: "R3. Race Sponsor",
-                    col3: "2025-09-28",
-                    col4: "14:35",
-                    onTap: () {
-                      context.pushNamed(AppRoutes.selectedRace.name);
-                    },
-                  ),
-                  _buildRow(
-                    col1: "Doomben",
-                    col2: "R4. Race Sponsor",
-                    col3: "2025-09-28",
-                    col4: "14:35",
-                    onTap: () {
-                      context.pushNamed(AppRoutes.selectedRace.name);
-                      context.pushNamed(AppRoutes.selectedRace.name);
-                    },
-                  ),
-                  _buildRow(
-                    col1: "Gold Coast",
-                    col2: "R5. Race Sponsor",
-                    col3: "2025-09-28",
-                    col4: "14:35",
-                    onTap: () {
-                      context.pushNamed(AppRoutes.selectedRace.name);
-                    },
-                  ),
-                  _buildRow(
-                    col1: "Ascot",
-                    col2: "R6. Race Sponsor",
-                    col3: "2025-09-28",
-                    col4: "14:35",
-                    onTap: () {
-                      context.pushNamed(AppRoutes.selectedRace.name);
-                    },
-                  ),
-                  _buildRow(
-                    col1: "Newcastle",
-                    col2: "R7. Race Sponsor",
-                    col3: "2025-09-28",
-                    col4: "14:35",
-                    onTap: () {
-                      context.pushNamed(AppRoutes.selectedRace.name);
-                    },
-                  ),
-                  _buildRow(
-                    col1: "etc...",
-                    col2: "etc...",
-                    col3: "etc...",
-                    col4: "etc...",
-                    onTap: () {
-                      context.pushNamed(AppRoutes.selectedRace.name);
-                    },
-                  ),
-                ],
+                  );
+                }),
+
+                //   _buildRow(
+                //     col1: "Flemington",
+                //     col2: "R2. Race Sponsor",
+                //     col3: "2025-09-28",
+                //     col4: "14:35",
+                //     onTap: () {
+                //       context.pushNamed(AppRoutes.selectedRace.name);
+                //     },
+                //   ),
+                //   _buildRow(
+                //     col1: "Morphettville",
+                //     col2: "R3. Race Sponsor",
+                //     col3: "2025-09-28",
+                //     col4: "14:35",
+                //     onTap: () {
+                //       context.pushNamed(AppRoutes.selectedRace.name);
+                //     },
+                //   ),
+                //   _buildRow(
+                //     col1: "Doomben",
+                //     col2: "R4. Race Sponsor",
+                //     col3: "2025-09-28",
+                //     col4: "14:35",
+                //     onTap: () {
+                //       context.pushNamed(AppRoutes.selectedRace.name);
+                //       context.pushNamed(AppRoutes.selectedRace.name);
+                //     },
+                //   ),
+                //   _buildRow(
+                //     col1: "Gold Coast",
+                //     col2: "R5. Race Sponsor",
+                //     col3: "2025-09-28",
+                //     col4: "14:35",
+                //     onTap: () {
+                //       context.pushNamed(AppRoutes.selectedRace.name);
+                //     },
+                //   ),
+                //   _buildRow(
+                //     col1: "Ascot",
+                //     col2: "R6. Race Sponsor",
+                //     col3: "2025-09-28",
+                //     col4: "14:35",
+                //     onTap: () {
+                //       context.pushNamed(AppRoutes.selectedRace.name);
+                //     },
+                //   ),
+                //   _buildRow(
+                //     col1: "Newcastle",
+                //     col2: "R7. Race Sponsor",
+                //     col3: "2025-09-28",
+                //     col4: "14:35",
+                //     onTap: () {
+                //       context.pushNamed(AppRoutes.selectedRace.name);
+                //     },
+                //   ),
+                //   _buildRow(
+                //     col1: "etc...",
+                //     col2: "etc...",
+                //     col3: "etc...",
+                //     col4: "etc...",
+                //     onTap: () {
+                //       context.pushNamed(AppRoutes.selectedRace.name);
+                //     },
+                //   ),
+                // ],
               ),
             ),
           ),
@@ -384,6 +412,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             child: Text(col3, style: semiBold(fontSize: 16.sp)),
           ),
         ),
+
         GestureDetector(
           onTap: onTap,
           child: Padding(
@@ -395,8 +424,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
   }
 
-  Widget raceItem() {
+  Widget nextToGoItem({required NextRaceModel nextRace}) {
     return Container(
+      width: 240.w,
       padding: EdgeInsets.fromLTRB(16.w, 12.h, 14.w, 14.h),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.6)),
@@ -404,17 +434,20 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Morphettville", style: semiBold(fontSize: 16.sp)),
-          6.h.verticalSpace,
+          Text(nextRace.trackName, style: semiBold(fontSize: 16.sp)),
+          6.w.verticalSpace,
           Row(
-            spacing: 85.w,
+            // spacing: 85.w,
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                "Race 1",
-                style: semiBold(
-                  fontSize: 14.sp,
-                  color: AppColors.primary.withValues(alpha: 0.6),
+              Expanded(
+                child: Text(
+                  nextRace.raceName,
+                  style: semiBold(
+                    fontSize: 14.sp,
+                    color: AppColors.primary.withValues(alpha: 0.6),
+                  ),
                 ),
               ),
               Text(

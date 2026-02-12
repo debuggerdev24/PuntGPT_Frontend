@@ -8,7 +8,7 @@ import 'package:puntgpt_nick/service/search_engine/search_engine_api_service.dar
 
 class SearchEngineProvider extends ChangeNotifier {
   bool isSearched = false, _isMenuOpen = false, _isEditSavedSearch = false;
-  int _selectedTab = 0, _selectedRace = 0, _selectedDay = 0;
+  int _selectedTab = 0, _selectedRace = 0;
   JumpType _selectedRaceTimingEnum = JumpType.jumps_within_10mins;
   JumpType get selectedRaceTimingEnum => _selectedRaceTimingEnum;
   TextEditingController oddsRangeCtr = TextEditingController(),
@@ -61,7 +61,6 @@ class SearchEngineProvider extends ChangeNotifier {
 
   int get selectedTab => _selectedTab;
   int get selectedRace => _selectedRace;
-  int get selectedDay => _selectedDay;
   bool get isMenuOpen => _isMenuOpen;
   bool get isEditSavedSearch => _isEditSavedSearch;
 
@@ -72,11 +71,6 @@ class SearchEngineProvider extends ChangeNotifier {
 
   set setIsMenuOpen(bool value) {
     _isMenuOpen = value;
-    notifyListeners();
-  }
-
-  set changeSelectedDay(int value) {
-    _selectedDay = value;
     notifyListeners();
   }
 
@@ -424,12 +418,14 @@ class SearchEngineProvider extends ChangeNotifier {
 
     // Compare all fields
     if (!stringsEqual(selectedTrack, filters.track)) return true;
-    if (!stringsEqual(selectedPlaceAtDistance, filters.placedAtDistance))
+    if (!stringsEqual(selectedPlaceAtDistance, filters.placedAtDistance)) {
       return true;
+    }
     if (!stringsEqual(selectedPlaceAtTrack, filters.placedAtTrack)) return true;
     if (!stringsEqual(selectedWinsAtTrack, filters.winsAtTrack)) return true;
-    if (!stringsEqual(selectedWinsAtDistance, filters.winAtDistance))
+    if (!stringsEqual(selectedWinsAtDistance, filters.winAtDistance)) {
       return true;
+    }
     if (!stringsEqual(selectedBarrier, filters.barrier)) return true;
 
     // Compare boolean fields

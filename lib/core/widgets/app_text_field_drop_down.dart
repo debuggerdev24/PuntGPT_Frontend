@@ -139,7 +139,7 @@ class AppTextFieldDropdown extends StatelessWidget {
                         color: AppColors.primary.setOpacity(0.1),
                       ),
                     ),
-                    child: items.length > 0 && (actualDropdownHeight < maxDropdownHeight || items.length > 5)
+                    child: items.isNotEmpty && (actualDropdownHeight < maxDropdownHeight || items.length > 5)
                         ? ListView.builder(
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,

@@ -54,7 +54,7 @@ class _SelectedRaceScreenState extends State<SelectedRaceScreen> {
                           },
                           child: AnimatedContainer(
                             padding: EdgeInsetsGeometry.symmetric(
-                              vertical: 12.h,
+                              vertical: 12,
                             ),
                             alignment: AlignmentGeometry.center,
                             duration: 400.milliseconds,

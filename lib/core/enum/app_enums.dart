@@ -1,11 +1,7 @@
-enum AppEnum {
-  monthlyPlan,
-  yearlyPlan,
-  lifeTimePlan,
-}
+enum AppEnum { monthlyPlan, yearlyPlan, lifeTimePlan }
 
 enum JumpType {
-    jumps_within_10mins("Jumps within 10mins"),
+  jumps_within_10mins("Jumps within 10mins"),
   jumps_within_an_hour("Jumps within an hour"),
   jumps_today("Jumps today"),
   jumps_tomorrow("Jumps tomorrow");
@@ -13,9 +9,18 @@ enum JumpType {
   final String value;
   // ignore: sort_constructors_first
   const JumpType(this.value);
-
 }
 
+enum ClassicFormDay {
+  yesterday("Yesterday"),
+  today("Today"),
+  tomorrow("Tomorrow"),
+  day_after_tomorrow("After Tomorrow");
+
+  final String value;
+  // ignore: sort_constructors_first
+  const ClassicFormDay(this.value);
+}
 
 enum TrackType {
   placed_last_start("Placed last start"),

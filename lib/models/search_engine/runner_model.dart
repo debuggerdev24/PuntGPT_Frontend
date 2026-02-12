@@ -16,17 +16,6 @@ class RunnerDataModel {
 }
 
 class Runner {
-    int selectionId;
-    int selectionNumber;
-    String horseName;
-    String jockeyName;
-    String trainerName;
-    String track;
-    int raceId;
-    int raceNumber;
-    String jumpTimeAu;
-    String silksImage;
-    double odds;
 
     Runner({
         required this.selectionId,
@@ -55,5 +44,16 @@ class Runner {
         silksImage: json["silks_image"],
         odds: json["odds"]?.toDouble(),
     );
+    int selectionId;
+    int selectionNumber;
+    String horseName;
+    String jockeyName;
+    String trainerName;
+    String track;
+    int raceId;
+    int raceNumber;
+    String jumpTimeAu;
+    String silksImage;
+    double odds;
 
 }
