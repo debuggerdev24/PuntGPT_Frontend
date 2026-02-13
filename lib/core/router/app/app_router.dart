@@ -29,7 +29,7 @@ import '../../../screens/dashboard/mobile/dashboard.dart';
 import '../../../screens/home/mobile/manage_saved_search.dart';
 import '../../../screens/home/mobile/saved_search_screen.dart';
 import '../../../screens/home/mobile/search_filter_screen.dart';
-import '../../../screens/home/mobile/selected_race_screen.dart';
+import '../../../screens/home/mobile/selected_meeting_screen.dart';
 import '../../../screens/home/mobile/tip_slip_screen.dart';
 import '../../../screens/punt_gpt_club/mobile/punt_club_screen.dart';
 
@@ -157,15 +157,15 @@ class AppRouter {
                 name: AppRoutes.selectedRace.name,
                 path: AppRoutes.selectedRace,
                 builder: (BuildContext context, GoRouterState state) {
-                  return SelectedRaceScreen();
+                  return SelectedMeetingScreen();
                 },
               ),
               GoRoute(
                 name: AppRoutes.runnersScreen.name,
                 path: AppRoutes.runnersScreen,
                 builder: (BuildContext context, GoRouterState state) {
-                  final runnerData = state.extra != null 
-                      ? state.extra as RunnerDataModel 
+                  final runnerData = state.extra != null
+                      ? state.extra as RunnerDataModel
                       : null;
                   return RunnersList(runnerData: runnerData);
                 },

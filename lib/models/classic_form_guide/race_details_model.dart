@@ -1,9 +1,11 @@
 class RaceDetailsModel {
   factory RaceDetailsModel.fromJson(Map<String, dynamic> json) =>
       RaceDetailsModel(
-        race: Race.fromJson(json["race"]),
+        race: Race.fromJson(json["race"] as Map<String, dynamic>? ?? {}),
         selections: List<Selection>.from(
-          json["selections"].map((x) => Selection.fromJson(x)),
+          (json["selections"] as List?)
+              ?.map((x) => Selection.fromJson(x as Map<String, dynamic>)) ??
+              [],
         ),
       );
 
@@ -40,18 +42,23 @@ class Race {
   });
 
   factory Race.fromJson(Map<String, dynamic> json) => Race(
-    raceId: json["raceId"],
-    number: json["number"],
-    name: json["name"],
-    distance: json["distance"],
-    startTimeUtc: DateTime.parse(json["startTimeUtc"]),
-    trackCondition: trackConditionValues.map[json["track_condition"]]!,
-    tipAnalysisText: json["tip_analysis_text"],
-    tipsSourceBrand: json["tips_source_brand"],
-    tipsSourceName: json["tips_source_name"],
-    tipsSourceImage: json["tips_source_image"],
+    raceId: json["raceId"] as int? ?? 0,
+    number: json["number"] as int? ?? 0,
+    name: json["name"] as String? ?? '',
+    distance: json["distance"] as int? ?? 0,
+    startTimeUtc: json["startTimeUtc"] != null
+        ? DateTime.parse(json["startTimeUtc"].toString())
+        : DateTime.now(),
+    trackCondition: trackConditionValues.map[json["track_condition"]] ??
+        TrackCondition.GOOD,
+    tipAnalysisText: json["tip_analysis_text"] as String? ?? '',
+    tipsSourceBrand: json["tips_source_brand"] as String? ?? '',
+    tipsSourceName: json["tips_source_name"] as String? ?? '',
+    tipsSourceImage: json["tips_source_image"] as String? ?? '',
     selections: List<Selection>.from(
-      json["selections"].map((x) => Selection.fromJson(x)),
+      (json["selections"] as List?)
+          ?.map((x) => Selection.fromJson(x as Map<String, dynamic>)) ??
+          [],
     ),
   );
 
@@ -71,14 +78,11 @@ class Race {
 }
 
 class Selection {
-  int selectionId;
+  int selectionId, number, barrier;
   TrackName trackName;
-  int number;
-  int barrier;
-  String horseName;
-  String jockeyName;
+  String jockeyName,silksImage,horseName;
   TrainerName trainerName;
-  String silksImage;
+  
   double weight;
   dynamic oddsWin;
   bool isScratched;
@@ -104,21 +108,26 @@ class Selection {
   });
 
   factory Selection.fromJson(Map<String, dynamic> json) => Selection(
-    selectionId: json["selectionId"],
-    trackName: trackNameValues.map[json["track_name"]]!,
-    number: json["number"],
-    barrier: json["barrier"],
-    horseName: json["horse_name"],
-    jockeyName: json["jockey_name"],
-    trainerName: trainerNameValues.map[json["trainer_name"]]!,
-    silksImage: json["silks_image"],
-    weight: json["weight"]?.toDouble(),
+    selectionId: json["selectionId"] as int? ?? 0,
+    trackName: trackNameValues.map[json["track_name"]] ?? TrackName.GOULBURN,
+    number: json["number"] as int? ?? 0,
+    barrier: json["barrier"] as int? ?? 0,
+    horseName: json["horse_name"] as String? ?? '',
+    jockeyName: json["jockey_name"] as String? ?? '',
+    trainerName: trainerNameValues.map[json["trainer_name"]] ??
+        TrainerName.DANNY_WILLIAMS,
+    silksImage: json["silks_image"] as String? ?? '',
+    weight: (json["weight"] as num?)?.toDouble() ?? 0.0,
     oddsWin: json["odds_win"],
-    isScratched: json["isScratched"],
-    tipPosition: json["tip_position"],
-    horseStats: HorseStats.fromJson(json["horse_stats"]),
+    isScratched: json["isScratched"] as bool? ?? false,
+    tipPosition: json["tip_position"] as int?,
+    horseStats: HorseStats.fromJson(
+      json["horse_stats"] as Map<String, dynamic>? ?? {},
+    ),
     formHistory: List<FormHistory>.from(
-      json["form_history"].map((x) => FormHistory.fromJson(x)),
+      (json["form_history"] as List?)
+          ?.map((x) => FormHistory.fromJson(x as Map<String, dynamic>)) ??
+          [],
     ),
   );
 
@@ -190,28 +199,32 @@ class FormHistory {
   });
 
   factory FormHistory.fromJson(Map<String, dynamic> json) => FormHistory(
-    date: DateTime.parse(json["date"]),
-    meetingName: json["meeting_name"],
-    trackName: json["track_name"],
-    trackState: trackStateValues.map[json["track_state"]]!,
-    raceNumber: json["race_number"],
-    raceName: json["race_name"],
-    distance: json["distance"],
-    trackCondition: trackConditionValues.map[json["track_condition"]]!,
-    trackType: trackTypeValues.map[json["track_type"]]!,
+    date: json["date"] != null
+        ? DateTime.parse(json["date"].toString())
+        : DateTime.now(),
+    meetingName: json["meeting_name"] as String? ?? '',
+    trackName: json["track_name"] as String? ?? '',
+    trackState: trackStateValues.map[json["track_state"]] ?? TrackState.ACT,
+    raceNumber: json["race_number"] as int? ?? 0,
+    raceName: json["race_name"] as String? ?? '',
+    distance: json["distance"] as int? ?? 0,
+    trackCondition:
+        trackConditionValues.map[json["track_condition"]] ?? TrackCondition.GOOD,
+    trackType: trackTypeValues.map[json["track_type"]] ?? TrackType.TURF,
     prizeMoney: json["prize_money"],
-    resultPosition: json["result_position"],
-    totalStarters: json["total_starters"],
+    resultPosition: json["result_position"] as int? ?? 0,
+    totalStarters: json["total_starters"] as int? ?? 0,
     margin: json["margin"],
     weightCarried: json["weight_carried"],
     startingPrice: json["starting_price"],
-    jockeyName: json["jockey_name"],
-    trainerName: trainerNameValues.map[json["trainer_name"]]!,
-    barrier: json["barrier"],
-    winnerHorseName: json["winner_horse_name"],
-    secondHorseName: json["second_horse_name"],
-    thirdHorseName: json["third_horse_name"],
-    isTrial: json["is_trial"],
+    jockeyName: json["jockey_name"] as String? ?? '',
+    trainerName: trainerNameValues.map[json["trainer_name"]] ??
+        TrainerName.DANNY_WILLIAMS,
+    barrier: json["barrier"] as int?,
+    winnerHorseName: json["winner_horse_name"] as String? ?? '',
+    secondHorseName: json["second_horse_name"] as String? ?? '',
+    thirdHorseName: json["third_horse_name"] as String? ?? '',
+    isTrial: json["is_trial"] as bool? ?? false,
   );
 
   Map<String, dynamic> toJson() => {

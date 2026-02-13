@@ -1,13 +1,20 @@
-class MeetingRaceModel {
-  factory MeetingRaceModel.fromJson(Map<String, dynamic> json) =>
-      MeetingRaceModel(
-        meeting: Meeting.fromJson(json["meeting"]),
-        races: List<Race>.from(json["races"].map((x) => Race.fromJson(x))),
-        raceCount: json["race_count"],
-        meetingDate: DateTime.parse(json["meeting_date"]),
-      );
+class MeetingDetailsModel {
+  factory MeetingDetailsModel.fromJson(Map<String, dynamic> json) {
+    final racesRaw = json["races"];
+    final racesList = racesRaw is List
+        ? racesRaw
+        : (racesRaw is Map ? racesRaw.values.toList() : <dynamic>[]);
+    return MeetingDetailsModel(
+      meeting: Meeting.fromJson(json["meeting"] as Map<String, dynamic>),
+      races: List<Race>.from(
+        racesList.map((x) => Race.fromJson(x as Map<String, dynamic>)),
+      ),
+      raceCount: json["race_count"],
+      meetingDate: json["meeting_date"] as String,
+    );
+  }
 
-  MeetingRaceModel({
+  MeetingDetailsModel({
     required this.meeting,
     required this.races,
     required this.raceCount,
@@ -16,12 +23,10 @@ class MeetingRaceModel {
   Meeting meeting;
   List<Race> races;
   int raceCount;
-  DateTime meetingDate;
-
+  String meetingDate;
 }
 
 class Meeting {
-
   factory Meeting.fromJson(Map<String, dynamic> json) => Meeting(
     meetingId: json["meetingId"],
     date: DateTime.parse(json["date"]),
@@ -42,23 +47,17 @@ class Meeting {
   String trackName;
   String trackCountry;
   String name;
-
-  Map<String, dynamic> toJson() => {
-    "meetingId": meetingId,
-    "date":
-        "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
-    "track_name": trackName,
-    "track_country": trackCountry,
-    "name": name,
-  };
 }
 
 class Race {
-  int number;
-  int raceId;
-  String name;
-  int distance;
-  String distanceUnits;
+  factory Race.fromJson(Map<String, dynamic> json) => Race(
+    number: json["number"],
+    raceId: json["raceId"],
+    name: json["name"],
+    distance: json["distance"],
+    distanceUnits: json["distance_units"],
+    startTimeUtc: json["startTimeUtc"],
+  );
 
   Race({
     required this.number,
@@ -66,21 +65,8 @@ class Race {
     required this.name,
     required this.distance,
     required this.distanceUnits,
+    required this.startTimeUtc,
   });
-
-  factory Race.fromJson(Map<String, dynamic> json) => Race(
-    number: json["number"],
-    raceId: json["raceId"],
-    name: json["name"],
-    distance: json["distance"],
-    distanceUnits: json["distance_units"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "number": number,
-    "raceId": raceId,
-    "name": name,
-    "distance": distance,
-    "distance_units": distanceUnits,
-  };
+  int number, raceId, distance;
+  String name, distanceUnits, startTimeUtc;
 }

@@ -8,7 +8,7 @@ import 'package:puntgpt_nick/service/search_engine/search_engine_api_service.dar
 
 class SearchEngineProvider extends ChangeNotifier {
   bool isSearched = false, _isMenuOpen = false, _isEditSavedSearch = false;
-  int _selectedTab = 0, _selectedRace = 0;
+  int _selectedTab = 0;
   JumpType _selectedRaceTimingEnum = JumpType.jumps_within_10mins;
   JumpType get selectedRaceTimingEnum => _selectedRaceTimingEnum;
   TextEditingController oddsRangeCtr = TextEditingController(),
@@ -60,7 +60,6 @@ class SearchEngineProvider extends ChangeNotifier {
   }
 
   int get selectedTab => _selectedTab;
-  int get selectedRace => _selectedRace;
   bool get isMenuOpen => _isMenuOpen;
   bool get isEditSavedSearch => _isEditSavedSearch;
 
@@ -71,11 +70,6 @@ class SearchEngineProvider extends ChangeNotifier {
 
   set setIsMenuOpen(bool value) {
     _isMenuOpen = value;
-    notifyListeners();
-  }
-
-  set changeSelectedRace(int value) {
-    _selectedRace = value;
     notifyListeners();
   }
 

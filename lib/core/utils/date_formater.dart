@@ -4,6 +4,7 @@ class DateFormatter {
   static String registerApiFormate(DateTime date) {
     return DateFormat('yyyy-MM-dd').format(date);
   }
+
   static DateTime parseRegisterApiDate(String dateString) {
     return DateFormat('yyyy-MM-dd').parse(dateString);
   }
@@ -52,6 +53,40 @@ class DateFormatter {
       return DateFormat(pattern).parse(dateStr);
     } catch (e) {
       return null;
+    }
+  }
+
+  /// Ordinal suffix for day: 1 → st, 2 → nd, 3 → rd, 4 → th, 21 → st, etc.
+  static String _ordinalSuffix(int day) {
+    if (day >= 11 && day <= 13) return 'th';
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  }
+
+  /// Format: 2nd February, 2026
+  static String formatDateWithOrdinal(DateTime date) {
+    final day = date.day;
+    final monthYear = DateFormat('MMMM, yyyy').format(date);
+    return '${day}${_ordinalSuffix(day)} $monthYear';
+  }
+
+  /// Format race date and time from UTC string (e.g. ISO): "2nd February, 2026, 2:35 PM"
+  static String formatRaceDateTime(String dateTimeUtc) {
+    try {
+      final dt = DateTime.parse(dateTimeUtc).toLocal();
+      final datePart = formatDateWithOrdinal(dt);
+      final timePart = formatTimeOnly(dt);
+      return '$datePart, $timePart';
+    } catch (e) {
+      return dateTimeUtc;
     }
   }
 }

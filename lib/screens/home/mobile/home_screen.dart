@@ -207,6 +207,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     col3: classicForm.meetingDate,
                     col4: "14:35",
                     onTap: () {
+                      provider.getMeetingRaceList(
+                        meetingId: classicForm.meetingId.toString(),
+                      );
+                      provider.getRaceFieldDetail(
+                        id: classicForm.races[provider.selectedRace].raceId
+                            .toString(),
+                      );
                       context.pushNamed(AppRoutes.selectedRace.name);
                     },
                   );
