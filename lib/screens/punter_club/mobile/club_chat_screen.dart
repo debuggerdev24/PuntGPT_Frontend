@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:puntgpt_nick/core/constants/constants.dart';
+import 'package:puntgpt_nick/core/router/app/app_router.dart';
 import 'package:puntgpt_nick/core/widgets/image_widget.dart';
 import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
@@ -92,13 +93,24 @@ class PuntClubChatScreen extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: regular(
-                      fontSize: (context.isBrowserMobile) ? 50.sp : 24.sp,
+                  GestureDetector(
+                    onTap: () {
+//* getting current location
+                      // final ctx = AppRouter.rootNavigatorKey.currentContext;
+                      // if (ctx != null) {
+                      //   final router = GoRouter.of(ctx);
+                      //   final location = router.state.name; // path
+                      //   Logger.info('Current route location: $location');
+                      // }
+                    },
+                    child: Text(
+                      title,
+                      style: regular(
+                        fontSize: (context.isBrowserMobile) ? 50.sp : 24.sp,
 
-                      fontFamily: AppFontFamily.secondary,
-                      height: 1.35,
+                        fontFamily: AppFontFamily.secondary,
+                        height: 1.35,
+                      ),
                     ),
                   ),
                   Text(
@@ -116,11 +128,8 @@ class PuntClubChatScreen extends StatelessWidget {
                 onTap: () {
                   final grp = provider.chatGroupsList![provider.selectedGroup];
                   provider.getUsersInviteList(
-                    groupId: grp
-                        .id
-                        .toString(),
-                    grpName:
-                       grp.name,
+                    groupId: grp.id.toString(),
+                    grpName: grp.name,
                   );
                   showModalBottomSheet(
                     context: context,

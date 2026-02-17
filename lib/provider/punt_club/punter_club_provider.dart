@@ -7,6 +7,7 @@ import 'package:puntgpt_nick/service/home/punt_club/punt_club_api_service.dart';
 
 class PuntClubProvider extends ChangeNotifier {
   int selectedGroup = 0;
+  String grpName = "", grpId = "";
   TextEditingController searchNameCtr = TextEditingController(),
       clubNameCtr = TextEditingController();
 
@@ -35,6 +36,9 @@ class PuntClubProvider extends ChangeNotifier {
       (r) {
         onSuccess.call();
         clubNameCtr.clear();
+        final club = r["data"]["club"];
+        grpName = club["name"];
+        grpId = club["id"];
         getChatGroups();
       },
     );
@@ -54,8 +58,8 @@ class PuntClubProvider extends ChangeNotifier {
         chatGroupsList = (r["data"] as List)
             .map((e) => ChatGroupModel.fromJson(e))
             .toList();
+
         notifyListeners();
-     
       },
     );
   }

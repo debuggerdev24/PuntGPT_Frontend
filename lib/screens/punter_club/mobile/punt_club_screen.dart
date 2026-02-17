@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:puntgpt_nick/core/constants/constants.dart';
 import 'package:puntgpt_nick/core/constants/text_style.dart';
+import 'package:puntgpt_nick/core/router/app/app_router.dart';
 import 'package:puntgpt_nick/core/router/app/app_routes.dart';
 import 'package:puntgpt_nick/core/router/web/web_routes.dart';
 import 'package:puntgpt_nick/core/utils/app_toast.dart';
@@ -247,6 +248,14 @@ class PunterClubScreen extends StatelessWidget {
                       context: context,
                       message: "Chat group created successfully",
                     );
+                    final ctx = AppRouter.rootNavigatorKey.currentContext;
+
+                    final router = GoRouter.of(ctx!);
+                    final location = router.state.name; // path
+                    Logger.info('Current route location: $location');
+                    if(location == AppRoutes.puntGptClub.name) {
+                      provider.getUsersInviteList(groupId: provider.grpId, grpName: provider.grpName);
+                    }
                     // if(provider.) {
                     showModalBottomSheet(
                       context: context,
