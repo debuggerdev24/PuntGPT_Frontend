@@ -41,7 +41,7 @@ class RunnersList extends StatelessWidget {
               Text("Total Runners: (${runners.length})", style: bold(fontSize: 16.sp)),
               GestureDetector(
                 onTap: () {
-                  context.push(AppRoutes.savedSearchedScreen);
+                  context.pushNamed(AppRoutes.savedSearchedScreen.name);
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -313,7 +313,7 @@ class RunnersList extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
               onTap: () {
-                context.push(AppRoutes.searchFilter);
+                context.pushNamed(AppRoutes.searchFilter.name);
               },
               child: Container(
                 decoration: BoxDecoration(color: AppColors.white),

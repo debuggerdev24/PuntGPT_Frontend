@@ -9,8 +9,9 @@ import 'package:puntgpt_nick/core/utils/app_toast.dart';
 import 'package:puntgpt_nick/core/widgets/image_widget.dart';
 import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/account/account_provider.dart';
-import 'package:puntgpt_nick/provider/classic_form/classic_form_provider.dart';
-import 'package:puntgpt_nick/provider/search_engine/search_engine_provider.dart';
+import 'package:puntgpt_nick/provider/home/classic_form/classic_form_provider.dart';
+import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
+import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/screens/dashboard/mobile/widgets/dashboard_app_bar.dart';
 import 'package:puntgpt_nick/screens/offline/widget/offline_view.dart';
 import 'package:puntgpt_nick/service/subscription/subscription_service.dart';
@@ -36,7 +37,6 @@ class _DashboardState extends State<Dashboard> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callInitAPIs(context: context);
     });
-
     super.initState();
   }
 
@@ -103,7 +103,9 @@ class _DashboardState extends State<Dashboard> {
                   onTap: () {
                     indexOfTab.value = 1;
                     AppRouter.indexedStackNavigationShell?.goBranch(1);
+                    context.read<PuntClubProvider>().getChatGroups();
                   },
+
                   text: "PuntGPT Punter Club",
                   icon: AppAssets.group,
 
@@ -222,6 +224,7 @@ void callInitAPIs({required BuildContext context}) {
   final accountProvider = context.read<AccountProvider>();
   final searchEngineProvider = context.read<SearchEngineProvider>();
   final classicFormGuideProvider = context.read<ClassicFormProvider>();
+  final puntClubProvider = context.read<PuntClubProvider>();
   Future.wait([
     accountProvider.getProfile(),
     accountProvider.getSubscriptionPlans(
@@ -234,7 +237,7 @@ void callInitAPIs({required BuildContext context}) {
     searchEngineProvider.getBarrierDetails(),
     classicFormGuideProvider.getClassicFormGuide(),
     classicFormGuideProvider.getNextToGo(),
-
+    puntClubProvider.getChatGroups(),
     // classicFormGuideProvider.getPunterClub(),
     SubscriptionService.instance.initialize(
       provider: context.read<SubscriptionProvider>(),

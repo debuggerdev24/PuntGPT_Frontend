@@ -9,7 +9,7 @@ import 'package:puntgpt_nick/core/widgets/app_outlined_button.dart';
 import 'package:puntgpt_nick/core/widgets/image_widget.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
 import 'package:puntgpt_nick/responsive/responsive_builder.dart';
-import 'package:puntgpt_nick/screens/punt_gpt_club/web/widgets/club_chat_screen_web.dart';
+import 'package:puntgpt_nick/screens/punter_club/web/widgets/club_chat_screen_web.dart';
 
 import '../../../core/constants/text_style.dart';
 import '../../../core/router/web/web_routes.dart';
@@ -58,7 +58,7 @@ class PunterClubScreenWebScreen extends StatelessWidget {
           Center(
             child: SizedBox(
               width: bodyWidth,
-              child: Consumer<PunterClubProvider>(
+              child: Consumer<PuntClubProvider>(
                 builder: (context, provider, child) {
                   return Row(
                     children: [
@@ -241,7 +241,7 @@ class PunterClubScreenWebScreen extends StatelessWidget {
   //todo create club dialogue
   void _createClubDialogue({
     required BuildContext context,
-    required PunterClubProvider provider,
+    required PuntClubProvider provider,
   }) {
     showDialog(
       context: context,
@@ -346,7 +346,7 @@ class PunterClubScreenWebScreen extends StatelessWidget {
   //todo invite user dialogue
   void _inviteUserDialogue({
     required BuildContext context,
-    required PunterClubProvider provider,
+    required PuntClubProvider provider,
   }) {
     showDialog(
       context: context,
@@ -496,7 +496,7 @@ class PunterClubScreenWebScreen extends StatelessWidget {
   //todo notification side sheet
   Widget _notificationSideSheet({
     required BuildContext context,
-    required PunterClubProvider provider,
+    required PuntClubProvider provider,
     required double sixteenResponsive,
     required double fourteenResponsive,
   }) {
@@ -551,7 +551,7 @@ class PunterClubScreenWebScreen extends StatelessWidget {
   //todo notification details box
   Widget _notificationBox({
     required BuildContext context,
-    required PunterClubProvider provider,
+    required PuntClubProvider provider,
     required double sixteenResponsive,
     required double fourteenResponsive,
   }) {
@@ -645,7 +645,7 @@ class PunterClubScreenWebScreen extends StatelessWidget {
   //todo enter user name dialogue
   void _enterUserNameDialogue({
     required BuildContext context,
-    required PunterClubProvider provider,
+    required PuntClubProvider provider,
   }) {
     showDialog(
       context: context,

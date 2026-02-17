@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:puntgpt_nick/core/router/app/account_routes.dart';
+import 'package:puntgpt_nick/core/router/app/route_pages/account_routes.dart';
 import 'package:puntgpt_nick/core/router/app/app_routes.dart';
-import 'package:puntgpt_nick/core/router/app/auth_routes.dart';
-import 'package:puntgpt_nick/core/router/app/bookies_routes.dart';
-import 'package:puntgpt_nick/core/router/app/home_routes.dart';
-import 'package:puntgpt_nick/core/router/app/punt_club_routes.dart';
+import 'package:puntgpt_nick/core/router/app/route_pages/auth_routes.dart';
+import 'package:puntgpt_nick/core/router/app/route_pages/bookies_routes.dart';
+import 'package:puntgpt_nick/core/router/app/route_pages/home_routes.dart';
+import 'package:puntgpt_nick/core/router/app/route_pages/punt_club_routes.dart';
 import 'package:puntgpt_nick/screens/offline/offline_screen.dart';
 
 import 'package:puntgpt_nick/screens/onboarding/mobile/age_confirmation_screen.dart';
@@ -25,27 +25,27 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
     debugLogDiagnostics: true,
-    initialLocation: AppRoutes.splash,
+    initialLocation: AppRoutes.splash.path,
     routes: [
       GoRoute(
-        path: AppRoutes.splash,
+        path: AppRoutes.splash.path,
         name: AppRoutes.splash.name,
         builder: (context, state) => SplashScreen(),
       ),
 
       GoRoute(
-        path: AppRoutes.ageConfirmationScreen,
+        path: AppRoutes.ageConfirmationScreen.path,
         name: AppRoutes.ageConfirmationScreen.name,
         builder: (context, state) => AgeConfirmationScreen(),
       ),
       GoRoute(
-        path: AppRoutes.offlineViewScreen,
+        path: AppRoutes.offlineViewScreen.path,
         name: AppRoutes.offlineViewScreen.name,
         builder: (context, state) => OfflineScreen(),
       ),
 
       GoRoute(
-        path: AppRoutes.onboardingScreen,
+        path: AppRoutes.onboardingScreen.path,
         name: AppRoutes.onboardingScreen.name,
         builder: (context, state) =>
             kIsWeb ? WebOnboardingScreen() : OnboardingScreen(),
@@ -92,7 +92,7 @@ class AppRouter {
             Text('Page not found: ${state.matchedLocation}'),
             SizedBox(height: 24),
             ElevatedButton(
-              onPressed: () => context.go(AppRoutes.homeScreen),
+              onPressed: () => context.go(AppRoutes.homeScreen.path),
               child: Text('Go Home'),
             ),
           ],

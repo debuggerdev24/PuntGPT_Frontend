@@ -12,11 +12,11 @@ import 'package:puntgpt_nick/core/widgets/app_text_field.dart';
 import 'package:puntgpt_nick/core/widgets/app_text_field_drop_down.dart';
 import 'package:puntgpt_nick/core/widgets/image_widget.dart';
 import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
-import 'package:puntgpt_nick/provider/search_engine/search_engine_provider.dart';
+import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/responsive/responsive_builder.dart';
 
-class SearchView extends StatelessWidget {
-  const SearchView({super.key, required this.providerh});
+class SearchFields extends StatelessWidget {
+  const SearchFields({super.key, required this.providerh});
   final SearchEngineProvider providerh;
 
   @override

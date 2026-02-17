@@ -126,8 +126,8 @@ class LoginScreen extends StatelessWidget {
                           ),
                           OnMouseTap(
                             onTap: () {
-                              context.pushReplacement(
-                                AppRoutes.signUpScreen,
+                              context.pushReplacementNamed(
+                                AppRoutes.signUpScreen.name,
                                 extra: {'is_free_sign_up': isFreeSignUp},
                               );
                             },

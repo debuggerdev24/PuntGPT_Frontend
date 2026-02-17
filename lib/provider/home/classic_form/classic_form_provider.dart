@@ -8,7 +8,7 @@ import 'package:puntgpt_nick/models/home/classic_form_guide/next_race_model.dart
 import 'package:puntgpt_nick/models/home/classic_form_guide/race_details_model.dart';
 import 'package:puntgpt_nick/models/home/classic_form_guide/speed_maps_model.dart';
 import 'package:puntgpt_nick/models/home/classic_form_guide/tips_analysis_model.dart';
-import 'package:puntgpt_nick/service/classic_form/classic_form_api_service.dart';
+import 'package:puntgpt_nick/service/home/classic_form/classic_form_api_service.dart';
 
 class ClassicFormProvider extends ChangeNotifier {
   List<NextRaceModel>? _nextRaceList;

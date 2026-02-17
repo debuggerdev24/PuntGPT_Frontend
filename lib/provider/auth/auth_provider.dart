@@ -114,7 +114,7 @@ class AuthProvider extends ChangeNotifier {
       (r) {
         AppToast.success(context: context, message: "Register Successfully.");
         context.pushNamed(
-          (kIsWeb) ? WebRoutes.logInScreen.name : AppRoutes.loginScreen,
+          (kIsWeb) ? WebRoutes.logInScreen.name : AppRoutes.loginScreen.name,
           extra: {"is_free_sign_up": isFreeSignUp},
         );
 

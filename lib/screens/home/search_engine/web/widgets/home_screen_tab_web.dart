@@ -7,7 +7,7 @@ import 'package:puntgpt_nick/core/constants/text_style.dart';
 import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
 import 'package:puntgpt_nick/responsive/responsive_builder.dart';
 
-import '../../../../../provider/search_engine/search_engine_provider.dart';
+import '../../../../../provider/home/search_engine/search_engine_provider.dart';
 
 class HomeScreenTabWeb extends StatelessWidget {
   const HomeScreenTabWeb({super.key, required this.selectedIndex, this.onTap});

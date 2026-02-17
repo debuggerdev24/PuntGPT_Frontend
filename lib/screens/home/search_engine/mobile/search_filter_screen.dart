@@ -6,7 +6,7 @@ import 'package:puntgpt_nick/core/constants/app_colors.dart';
 import 'package:puntgpt_nick/core/constants/text_style.dart';
 import 'package:puntgpt_nick/core/widgets/app_filed_button.dart';
 
-import '../../../../provider/search_engine/search_engine_provider.dart';
+import '../../../../provider/home/search_engine/search_engine_provider.dart';
 
 class SearchFilterScreen extends StatelessWidget {
   const SearchFilterScreen({super.key});

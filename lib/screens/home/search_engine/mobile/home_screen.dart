@@ -19,8 +19,8 @@ import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/race_star
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/runners_list_screen.dart';
 import '../../../../core/router/app/app_routes.dart';
 import '../../../../core/widgets/app_filed_button.dart';
-import '../../../../provider/classic_form/classic_form_provider.dart';
-import '../../../../provider/search_engine/search_engine_provider.dart';
+import '../../../../provider/home/classic_form/classic_form_provider.dart';
+import '../../../../provider/home/search_engine/search_engine_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -71,9 +71,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 provider.distanceDetails == null) {
               return homeScreenShimmer(context: context);
             }
-            // if (context.watch<ClassicFormGuideProvider>().classicFormGuide == null) {
-            //   return classicFormGuideShimmer(context: context);
-            // }
             return Column(
               children: [
                 Padding(
@@ -92,24 +89,27 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             context: context,
                           )
                         : Consumer<ClassicFormProvider>(
-                            builder: (context, provider, child) => Stack(
-                              children: [
+                            builder: (context, provider, child) =>
                                 provider.classicFormGuide == null
-                                    ? classicFormGuideShimmer(context: context)
-                                    : classicFormGuideView(
+                                ? classicFormGuideShimmer(context: context)
+                                : Stack(
+                                    children: [
+                                      classicFormGuideView(
                                         context: context,
                                         provider: provider,
                                       ),
-                                Positioned(
-                                  right: 20.w,
-                                  bottom: 20.w,
-                                  child: askPuntGPTButton(
-                                    context,
-                                    EdgeInsets.zero,
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: askPuntGPTButton(
+                                          context,
+                                          EdgeInsets.only(
+                                            right: 18.w,
+                                            bottom: 18.w,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
                           ),
                   ),
                 ),
@@ -327,7 +327,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   RunnersList(runnerData: provider.runnerData)
                 else ...[
                   RaceStartTimingOptions(),
-                  SearchView(providerh: provider),
+                  SearchFields(providerh: provider),
                 ],
                 if (!provider.isSearched) ...[
                   20.verticalSpace,
@@ -355,9 +355,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       onTap: () {
                         // formKey.currentState!.validate();
                         provider.getSearchEngine(
-                          onError: (error) {
-                            AppToast.error(context: context, message: error);
-                          },
                           onSuccess: () {
                             // Navigate to runners screen after data is loaded
                             if (provider.runnerData != null) {

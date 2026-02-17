@@ -56,6 +56,8 @@ class SearchEngineProvider extends ChangeNotifier {
 
   set setSelectedRaceTimingEnum(JumpType value) {
     _selectedRaceTimingEnum = value;
+    
+    
     notifyListeners();
   }
 
@@ -201,7 +203,7 @@ class SearchEngineProvider extends ChangeNotifier {
   }
 
   Future<void> getSearchEngine({
-    required Function(String error) onError,
+    // required Function(String error) onError,
     required VoidCallback onSuccess,
   }) async {
     runnerData = null;
@@ -222,8 +224,7 @@ class SearchEngineProvider extends ChangeNotifier {
     );
     result.fold(
       (l) {
-        Logger.error(l.errorMsg);
-        onError.call(l.errorMsg);
+        Logger.error("get search engine error: ${l.errorMsg}");
         runnerData = null;
       },
       (r) {

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:puntgpt_nick/core/constants/constants.dart';
 import 'package:puntgpt_nick/core/constants/text_style.dart';
 import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
-import 'package:puntgpt_nick/provider/search_engine/search_engine_provider.dart';
+import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 
 class RaceStartTimingOptions extends StatelessWidget {
   const RaceStartTimingOptions({super.key});

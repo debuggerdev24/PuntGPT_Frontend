@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:puntgpt_nick/core/constants/constants.dart';
 import 'package:puntgpt_nick/core/widgets/image_widget.dart';
 import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
+import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
 import 'package:puntgpt_nick/responsive/responsive_builder.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/home_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/home_screen_web.dart';
-import 'package:puntgpt_nick/screens/punt_gpt_club/mobile/punt_club_screen.dart';
-
+import 'package:puntgpt_nick/screens/punter_club/mobile/punt_club_screen.dart';
 import '../../../core/constants/text_style.dart';
 import '../../../core/widgets/app_devider.dart';
 import '../../home/search_engine/mobile/widgets/chat_section.dart';
@@ -22,50 +23,55 @@ class PuntClubChatScreen extends StatelessWidget {
     if (!context.isMobileView) {
       context.pop();
     }
-    return Column(
-      children: [
-        topBar(context),
-        Expanded(
-          child: Stack(
+    return Consumer<PuntClubProvider>(
+      builder: (context, provider, child) => Column(
+        children: [
+          topBar(context: context, provider: provider),
+          Expanded(
+            child: Stack(
+              children: [
+                ListView(children: [ChatSection(), ChatSection()]),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 25.h, right: 25.w),
+                  child: Align(
+                    alignment: AlignmentGeometry.bottomRight,
+                    child: (context.isBrowserMobile)
+                        ? askPuntGPTButtonWeb(context: context)
+                        : askPuntGPTButton(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              ListView(children: [ChatSection(), ChatSection()]),
-              Padding(
-                padding: EdgeInsets.only(bottom: 25.h, right: 25.w),
-                child: Align(
-                  alignment: AlignmentGeometry.bottomRight,
-                  child: (context.isBrowserMobile)
-                      ? askPuntGPTButtonWeb(context: context)
-                      : askPuntGPTButton(context),
+              horizontalDivider(),
+              TextField(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  prefix: SizedBox(
+                    width: (context.isBrowserMobile) ? 35.w : 25.w,
+                  ),
+                  hintText: "Type your message...",
+                  hintStyle: medium(
+                    fontStyle: FontStyle.italic,
+                    fontSize: (context.isBrowserMobile) ? 28.sp : 14.sp,
+                    color: AppColors.greyColor.withValues(alpha: 0.6),
+                  ),
                 ),
               ),
             ],
           ),
-        ),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            horizontalDivider(),
-            TextField(
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                prefix: SizedBox(
-                  width: (context.isBrowserMobile) ? 35.w : 25.w,
-                ),
-                hintText: "Type your message...",
-                hintStyle: medium(
-                  fontStyle: FontStyle.italic,
-                  fontSize: (context.isBrowserMobile) ? 28.sp : 14.sp,
-                  color: AppColors.greyColor.withValues(alpha: 0.6),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget topBar(BuildContext context) {
+  Widget topBar({
+    required BuildContext context,
+    required PuntClubProvider provider,
+  }) {
     return Column(
       children: [
         Padding(
@@ -108,6 +114,14 @@ class PuntClubChatScreen extends StatelessWidget {
 
               OnMouseTap(
                 onTap: () {
+                  final grp = provider.chatGroupsList![provider.selectedGroup];
+                  provider.getUsersInviteList(
+                    groupId: grp
+                        .id
+                        .toString(),
+                    grpName:
+                       grp.name,
+                  );
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,

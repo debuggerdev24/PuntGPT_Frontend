@@ -14,49 +14,49 @@ class AccountRoutes {
   static final List<RouteBase> routes = [
     GoRoute(
       name: AppRoutes.account.name,
-      path: AppRoutes.account,
+      path: AppRoutes.account.path,
       builder: (BuildContext context, GoRouterState state) {
         return AccountScreen();
       },
     ),
     GoRoute(
       name: AppRoutes.personalDetailsScreen.name,
-      path: AppRoutes.personalDetailsScreen,
+      path: AppRoutes.personalDetailsScreen.path,
       builder: (BuildContext context, GoRouterState state) {
         return PersonalDetailsScreen();
       },
     ),
     GoRoute(
       name: AppRoutes.manageSubscriptionScreen.name,
-      path: AppRoutes.manageSubscriptionScreen,
+      path: AppRoutes.manageSubscriptionScreen.path,
       builder: (BuildContext context, GoRouterState state) {
         return ManageSubscriptionScreen();
       },
     ),
     GoRoute(
       name: AppRoutes.changePassword.name,
-      path: AppRoutes.changePassword,
+      path: AppRoutes.changePassword.path,
       builder: (BuildContext context, GoRouterState state) {
         return ChangePasswordScreen();
       },
     ),
     GoRoute(
       name: AppRoutes.tipSlipScreen.name,
-      path: AppRoutes.tipSlipScreen,
+      path: AppRoutes.tipSlipScreen.path,
       builder: (BuildContext context, GoRouterState state) {
         return TipSlipScreen();
       },
     ),
     GoRoute(
       name: AppRoutes.selectedPlanScreen.name,
-      path: AppRoutes.selectedPlanScreen,
+      path: AppRoutes.selectedPlanScreen.path,
       builder: (BuildContext context, GoRouterState state) {
         return SelectedPlanScreen(plan: (state.extra as SubscriptionPlanModel));
       },
     ),
     GoRoute(
       name: AppRoutes.currentPlanScreen.name,
-      path: AppRoutes.currentPlanScreen,
+      path: AppRoutes.currentPlanScreen.path,
       builder: (BuildContext context, GoRouterState state) {
         return CurrentPlanScreen();
       },

@@ -5,7 +5,7 @@ import 'package:puntgpt_nick/screens/bookies/mobile/bookies_screen.dart';
 class BookiesRoutes {
   static final List<RouteBase> routes = [
     GoRoute(
-      path: AppRoutes.bookies,
+      path: AppRoutes.bookies.path,
       name: AppRoutes.bookies.name,
       builder: (context, state) => BookiesScreen(),
     ),

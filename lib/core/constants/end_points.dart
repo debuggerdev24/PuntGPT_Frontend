@@ -79,16 +79,16 @@ class EndPoints {
   static const String getSearchDisplay = "/horse-race/search-filter-display/";
 
   //* notification
-  static const String notification = "/chat-group/notification/";
+  static const String getAllNotification = "/chat-group/notification/";
   static const String deleteSingleNotification = "/chat-group/notification/";
   static const String deleteAllNotification =
       "/chat-group/notification/clear-all/";
 
   //* chat group
   static const String createChatGroup = "/chat-group/create-group/";
-  static String chatGroupInvitation({required String id}) =>
-      "/chat-group/invite-user-to-group/$id/";
-  static String getUserInviteList({required String groupId}) =>
+  static String getChatGroups = "/chat-group/list-groups/";
+  static String chatGroupInvitation({required String id}) => "/chat-group/invite-user-to-group/$id/";
+  static String getUserInviteList({required String groupId,required String grpName}) =>
       "/chat-group/invitation-user-list/?group_id=$groupId";
   static String acceptInvitation({required String id}) =>
       "/chat-group/invite/5/$id/accept/";

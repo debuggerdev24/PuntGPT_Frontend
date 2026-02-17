@@ -66,8 +66,8 @@ class SignUpScreen extends StatelessWidget {
                       30.h.verticalSpace,
                       SignUpBottomSection(
                         onLoginTap: () {
-                          context.pushReplacement(
-                            AppRoutes.loginScreen,
+                          context.pushReplacementNamed(
+                            AppRoutes.loginScreen.name,
                             extra: {"is_free_sign_up": isFreeSignUp},
                           );
                         },

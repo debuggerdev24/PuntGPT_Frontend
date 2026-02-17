@@ -23,7 +23,7 @@ import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/search_secti
 import '../../../../core/router/app/app_routes.dart';
 import '../../../../core/router/web/web_routes.dart';
 import '../../../../core/widgets/app_filed_button.dart';
-import '../../../../provider/search_engine/search_engine_provider.dart';
+import '../../../../provider/home/search_engine/search_engine_provider.dart';
 import '../../../../responsive/responsive_builder.dart';
 import '../mobile/home_screen.dart';
 
@@ -118,7 +118,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
                 Expanded(
                   child: (provider.isSearched)
                       ? RunnersListWeb(runnerData: provider.runnerData!)
-                      : SearchView(providerh: provider),
+                      : SearchFields(providerh: provider),
                 ),
                 Align(
                   alignment: AlignmentGeometry.bottomCenter,

@@ -11,14 +11,14 @@ class AuthRoutes {
 
   static final List<RouteBase> routes = [
     GoRoute(
-        path: AppRoutes.loginScreen,
-        name: AppRoutes.loginScreen,
+        path: AppRoutes.loginScreen.path,
+        name: AppRoutes.loginScreen.name,
         builder: (context, state) =>
             LoginScreen(isFreeSignUp: (state.extra as Map)['is_free_sign_up']),
       ),
 
       GoRoute(
-        path: AppRoutes.signUpScreen,
+        path: AppRoutes.signUpScreen.path,
         name: AppRoutes.signUpScreen.name,
         builder: (context, state) =>
             SignUpScreen(isFreeSignUp: (state.extra as Map)['is_free_sign_up']),
@@ -26,28 +26,28 @@ class AuthRoutes {
 
       GoRoute(
         name: AppRoutes.searchFilter.name,
-        path: AppRoutes.searchFilter,
+        path: AppRoutes.searchFilter.path,
         builder: (context, state) {
           return SearchFilterScreen();
         },
       ),
       GoRoute(
         name: AppRoutes.forgotPasswordScreen.name,
-        path: AppRoutes.forgotPasswordScreen,
+        path: AppRoutes.forgotPasswordScreen.path,
         builder: (context, state) {
           return ForgotPasswordScreen();
         },
       ),
       GoRoute(
         name: AppRoutes.verifyOTPScreen.name,
-        path: AppRoutes.verifyOTPScreen,
+        path: AppRoutes.verifyOTPScreen.path,
         builder: (context, state) {
           return VerifyOtpScreen();
         },
       ),
       GoRoute(
         name: AppRoutes.resetPasswordScreen.name,
-        path: AppRoutes.resetPasswordScreen,
+        path: AppRoutes.resetPasswordScreen.path,
         builder: (context, state) {
           return ResetPasswordScreen();
         },

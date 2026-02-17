@@ -14,7 +14,7 @@ import '../../../core/constants/text_style.dart';
 import '../../../core/widgets/image_widget.dart';
 import '../../../core/widgets/on_button_tap.dart';
 import '../../../provider/account/account_provider.dart';
-import '../../../provider/search_engine/search_engine_provider.dart';
+import '../../../provider/home/search_engine/search_engine_provider.dart';
 import '../mobile/dashboard.dart';
 
 ValueNotifier<int> indexOfWebTab = ValueNotifier<int>(2);
