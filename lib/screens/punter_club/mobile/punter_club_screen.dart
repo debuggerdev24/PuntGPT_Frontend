@@ -11,6 +11,7 @@ import 'package:puntgpt_nick/core/router/app/app_routes.dart';
 import 'package:puntgpt_nick/core/router/web/web_routes.dart';
 import 'package:puntgpt_nick/core/utils/app_toast.dart';
 import 'package:puntgpt_nick/core/utils/custom_loader.dart';
+import 'package:puntgpt_nick/core/utils/date_formater.dart';
 import 'package:puntgpt_nick/core/widgets/app_devider.dart';
 import 'package:puntgpt_nick/core/widgets/app_outlined_button.dart';
 import 'package:puntgpt_nick/core/widgets/image_widget.dart';
@@ -612,7 +613,7 @@ class NotificationSheetView extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "You’ve been invited to join Punter Club",
+                        text: notification.message,//"You’ve been invited to join Punter Club",
                         style: medium(
                           fontSize: 16.sp,
                           fontFamily: AppFontFamily.primary,
@@ -631,7 +632,7 @@ class NotificationSheetView extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-
+                Text(DateFormatter.parseDateShort(notification.createdAt), style: regular(fontSize: 12.sp, fontFamily: AppFontFamily.primary),),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
