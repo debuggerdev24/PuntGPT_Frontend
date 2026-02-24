@@ -42,4 +42,39 @@ class PuntClubApiService {
       data: {"user_ids": userIds},
     );
   }
+
+  Future<Either<ApiException, Map<String, dynamic>>> acceptInvitation({required String inviteId}) async {
+    return await BaseApiHelper.instance.post<Map<String, dynamic>>(
+      EndPoints.acceptInvitation(inviteId: inviteId),
+
+    );
+  }
+
+  Future<Either<ApiException, Map<String, dynamic>>> userNameSetup({required String groupId, required String username}) async {
+    return await BaseApiHelper.instance.patch<Map<String, dynamic>>(
+      EndPoints.userNameSetup(groupId: groupId),
+      data: {"group_username": username},
+    );
+  }
+
+  Future<Either<ApiException, Map<String, dynamic>>> rejectInvitation({required String rejectId}) async {
+    return await BaseApiHelper.instance.post<Map<String, dynamic>>(
+      EndPoints.rejectInvitation(rejectId: rejectId),
+    );
+  }
+
+  Future<Either<ApiException, Map<String, dynamic>>> deleteSingleNotification({required String notificationId}) async {
+    return await BaseApiHelper.instance.delete<Map<String, dynamic>>(
+      EndPoints.deleteSingleNotification(notificationId: notificationId),
+      parser: (_) => {},
+    );
+  }
+  Future<Either<ApiException, Map<String, dynamic>>> deleteAllNotification() async {
+    return await BaseApiHelper.instance.delete<Map<String, dynamic>>(
+      EndPoints.deleteAllNotification,
+      parser: (_) => {},
+
+    );
+  }
+  
 }

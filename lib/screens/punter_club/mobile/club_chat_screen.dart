@@ -42,7 +42,6 @@ class PuntClubChatScreen extends StatelessWidget {
                         : askPuntGPTButton(context),
                   ),
                 ),
-                
               ],
             ),
           ),
@@ -97,19 +96,19 @@ class PuntClubChatScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-//* getting current location
+                      //* getting current location
                       // final ctx = AppRouter.rootNavigatorKey.currentContext;
                       // if (ctx != null) {
                       //   final router = GoRouter.of(ctx);
                       //   final location = router.state.name; // path
                       //   Logger.info('Current route location: $location');
                       // }
+                      provider.getUsersInviteList(groupId: provider.groupId);
                     },
                     child: Text(
                       title,
                       style: regular(
                         fontSize: (context.isBrowserMobile) ? 50.sp : 24.sp,
-
                         fontFamily: AppFontFamily.secondary,
                         height: 1.35,
                       ),

@@ -79,7 +79,9 @@ class AppTextField extends StatelessWidget {
           return error;
         },
         onFieldSubmitted: (value) {
-          onSubmit!.call();
+          if(onSubmit != null) {
+            onSubmit!.call();
+          }
         },
         style:
             textStyle ??

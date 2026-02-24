@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:puntgpt_nick/core/constants/constants.dart';
 import 'package:puntgpt_nick/core/constants/text_style.dart';
-import 'package:puntgpt_nick/core/router/app/app_router.dart';
 import 'package:puntgpt_nick/core/router/app/app_routes.dart';
 import 'package:puntgpt_nick/core/router/web/web_routes.dart';
 import 'package:puntgpt_nick/core/utils/app_toast.dart';
@@ -89,20 +88,20 @@ class PunterClubScreen extends StatelessWidget {
 
                 horizontalDivider(),
                 // Spacer(),
-                ],
+              ],
             ),
             Align(
-                  alignment: AlignmentGeometry.bottomRight,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 25.w,
-                      vertical: 25.h,
-                    ),
-                    child: askPuntGPTButton(context),
-                  ),
-                ),
-              
-            if (provider.isCreatingChatGroupLoading) FullPageIndicator(),
+              alignment: AlignmentGeometry.bottomRight,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 25.h),
+                child: askPuntGPTButton(context),
+              ),
+            ),
+
+            if (provider.isCreatingChatGroupLoading ||
+                // provider.isUserNameSetup ||
+                provider.isInvitingUser)
+              FullPageIndicator(),
           ],
         );
       },
@@ -140,26 +139,27 @@ class PunterClubScreen extends StatelessWidget {
           //* Notification sheet button
           GestureDetector(
             onTap: () {
-              
+              provider.getNotifications();
               showModalBottomSheet(
                 context: context,
                 useRootNavigator: true,
                 showDragHandle: true,
                 backgroundColor: AppColors.white,
                 builder: (sheetContext) {
-                  return const NotificationSheetView();
+                  return NotificationSheetView(sheetContext: sheetContext);
                 },
               );
             },
             behavior: HitTestBehavior.opaque,
             child: badge.Badge(
+              showBadge: (provider.notificationCount) > 0,
               position: badge.BadgePosition.topStart(
                 top: -10,
                 start: context.isBrowserMobile ? 48.w : 20.w,
               ),
               badgeStyle: badge.BadgeStyle(badgeColor: AppColors.black),
               badgeContent: Text(
-                provider.notificationList?.length.toString() ?? '0',
+                provider.notificationCount.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: context.isBrowserMobile ? 9 : 10,
@@ -236,7 +236,7 @@ class PunterClubScreen extends StatelessWidget {
             ),
             AppFilledButton(
               margin: EdgeInsets.only(top: 24.h),
-              text: "Invite Users",
+              text: "Create Club",
               onTap: () {
                 sheetContext.pop();
                 if (provider.clubNameCtr.text.trim().isEmpty) {
@@ -247,21 +247,25 @@ class PunterClubScreen extends StatelessWidget {
                   return;
                 }
                 //* Create chat group
+
                 provider.createChatGroup(
+                  onError: (error) {
+                    AppToast.error(context: context, message: error);
+                  },
                   onSuccess: () {
                     AppToast.success(
                       context: context,
                       message: "Chat group created successfully",
                     );
-                    final ctx = AppRouter.rootNavigatorKey.currentContext;
+                    // final ctx = AppRouter.rootNavigatorKey.currentContext;
 
-                    final router = GoRouter.of(ctx!);
-                    final location = router.state.name; // path
-                    Logger.info('Current route location: $location');
-                    if (location == AppRoutes.puntGptClub.name) {
-                      provider.getUsersInviteList(groupId: provider.grpId);
-                    }
-                    // if(provider.) {
+                    // final router = GoRouter.of(ctx!);
+                    // final location = router.state.name;
+                    // Logger.info('Current route location: $location');
+                    // if (location == AppRoutes.puntGptClub.name) {
+                    //   provider.getUsersInviteList(groupId: provider.grpId);
+                    // }
+                    provider.getUsersInviteList(groupId: provider.groupId);
                     //* Show invite user sheet
                     showModalBottomSheet(
                       context: context,
@@ -284,15 +288,10 @@ class PunterClubScreen extends StatelessWidget {
   }
 }
 
-class InviteUserSheet extends StatefulWidget {
+class InviteUserSheet extends StatelessWidget {
   const InviteUserSheet({super.key, this.showInviteLater = false});
   final bool? showInviteLater;
 
-  @override
-  State<InviteUserSheet> createState() => _InviteUserSheetState();
-}
-
-class _InviteUserSheetState extends State<InviteUserSheet> {
   @override
   Widget build(BuildContext context) {
     return Consumer<PuntClubProvider>(
@@ -387,13 +386,20 @@ class _InviteUserSheetState extends State<InviteUserSheet> {
                                       : "Send to All (${selectedIds.length})",
                                   onTap: () {
                                     provider.inviteUser(
-                                      groupId: (provider.grpId.isEmpty)
+                                      onSuccess: () {
+                                        context.pop();
+                                        AppToast.success(
+                                          context: context,
+                                          message: "Invite sent successfully",
+                                        );
+                                      },
+                                      groupId: (provider.groupId.isEmpty)
                                           ? provider
                                                 .chatGroupsList![provider
                                                     .selectedGroup]
                                                 .id
                                                 .toString()
-                                          : provider.grpId,
+                                          : provider.groupId,
                                       userIds: selectedIds
                                           .map((id) => id.toString())
                                           .toList(),
@@ -404,11 +410,14 @@ class _InviteUserSheetState extends State<InviteUserSheet> {
                                 )
                               : const SizedBox.shrink(),
                         ),
-                        if (widget.showInviteLater == true)
+                        if (showInviteLater == true)
                           AppOutlinedButton(
-                            margin: EdgeInsets.only(top: 8.w),
+                            margin: EdgeInsets.only(top: 8.w, bottom: 16.w),
                             text: "Invite Later",
-                            onTap: () => context.pop(),
+                            onTap: () {
+                              provider.resetInviteState();
+                              context.pop();
+                            },
                           ),
                       ],
                     ),
@@ -521,7 +530,8 @@ class _InviteUserSheetState extends State<InviteUserSheet> {
 
 //* Notification sheet view
 class NotificationSheetView extends StatelessWidget {
-  const NotificationSheetView({super.key});
+  const NotificationSheetView({super.key, required this.sheetContext});
+  final BuildContext sheetContext;
 
   @override
   Widget build(BuildContext context) {
@@ -563,7 +573,81 @@ class NotificationSheetView extends StatelessWidget {
                   itemCount: notifications.length,
                   itemBuilder: (context, index) {
                     final notification = notifications[index];
-                    return notificationBox(context: context, notification: notification);
+                    Logger.info('notification id: ${notification.inviteId}');
+
+                    return notificationBox(
+                      context: context,
+                      notification: notification,
+                      onReject: () {
+                        provider.removeNotificationAt(index);
+                        provider.rejectInvitation(
+                          rejectId: notification.inviteId!,
+                          onSuccess: () {
+                            AppToast.success(
+                              context: context,
+                              message: "Notification deleted successfully",
+                            );
+                          },
+                        );
+                      },
+                      onAccept: () {
+                        // Capture root navigator before the async gap so it
+                        // remains valid after the notification sheet is popped.
+                        final rootNav = Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        );
+                        rootNav.pop();
+
+                        provider.acceptInvitation(
+                          inviteId: notification.inviteId!,
+                          onSuccess: () {
+                            // Pop the notification sheet first.
+                            // Show toast and username sheet using the root
+                            // navigator's context, which is always mounted.
+                            AppToast.success(
+                              context: rootNav.context,
+                              message:
+                                  "Invite accepted. Please create a username.",
+                            );
+                            showModalBottomSheet(
+                              context: rootNav.context,
+                              isScrollControlled: true,
+                              enableDrag: false,
+                              backgroundColor: AppColors.white,
+                              showDragHandle: true,
+                              useRootNavigator: true,
+                              builder: (sheetContext) {
+                                return createUserNameSheet(
+                                  sheetContext: sheetContext,
+                                  provider: provider,
+                                  onSubmit: () {
+                                    sheetContext.pop();
+                                    provider.userNameSetup(
+                                      username: provider.usernameCtr.text
+                                          .trim(),
+                                      onSuccess: () {
+                                        AppToast.success(
+                                          context: rootNav.context,
+                                          message: "Username created successfully",
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                      onDelete: () {
+                        provider.removeNotificationAt(index);
+                        provider.deleteSingleNotification(
+                          notificationId: notification.id.toString(),
+                          onSuccess: () {},
+                        );
+                      },
+                    );
                   },
                 ),
               ),
@@ -576,7 +660,14 @@ class NotificationSheetView extends StatelessWidget {
                     color: AppColors.redButton,
                   ),
                   text: "Clear all",
-                  onTap: () {},
+                  onTap: () {
+                    provider.clearNotificationList();
+                    AppToast.success(
+                      context: context,
+                      message: "All notifications deleted successfully",
+                    );
+                    provider.deleteAllNotification();
+                  },
                 ),
               ),
             ],
@@ -586,9 +677,59 @@ class NotificationSheetView extends StatelessWidget {
     );
   }
 
+  Widget createUserNameSheet({
+    required BuildContext sheetContext,
+    required PuntClubProvider provider,
+    required VoidCallback onSubmit,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
+      ),
+      child: Container(
+        height: 370.w,
+        padding: EdgeInsets.symmetric(horizontal: 25.w),
+        child: Column(
+          children: [
+            Text(
+              "Create Username",
+              style: regular(
+                fontSize: 24.sp,
+                fontFamily: AppFontFamily.secondary,
+              ),
+            ),
+            10.h.verticalSpace,
+            Text(
+              "Your username will be displayed to your club members.",
+              style: semiBold(
+                fontSize: 14.sp,
+                color: AppColors.primary.withValues(alpha: 0.6),
+              ),
+            ),
+            22.w.verticalSpace,
+            horizontalDivider(),
+            24.w.verticalSpace,
+            AppTextField(
+              controller: provider.usernameCtr,
+              hintText: "Enter username",
+            ),
+            AppFilledButton(
+              margin: EdgeInsets.only(top: 24.w),
+              text: "Save",
+              onTap: onSubmit,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget notificationBox({
     required BuildContext context,
     required NotificationModel notification,
+    required VoidCallback onReject,
+    required VoidCallback onAccept,
+    required VoidCallback onDelete,
   }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.w),
@@ -596,135 +737,104 @@ class NotificationSheetView extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: ImageWidget(type: ImageType.svg, path: AppAssets.groupIcon),
-          ),
-          SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              spacing: 10,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: notification.message,//"You’ve been invited to join Punter Club",
-                        style: medium(
-                          fontSize: 16.sp,
-                          fontFamily: AppFontFamily.primary,
-                        ),
-                      ),
-
-                      TextSpan(
-                        text: "PuntGPT Legends",
-                        style: semiBold(
-                          fontSize: 16.sp,
-                          fontFamily: AppFontFamily.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: ImageWidget(
+                  type: ImageType.svg,
+                  path: AppAssets.groupIcon,
                 ),
-                Text(DateFormatter.parseDateShort(notification.createdAt), style: regular(fontSize: 12.sp, fontFamily: AppFontFamily.primary),),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+              ),
+              10.w.horizontalSpace,
+              Expanded(
+                child: Column(
+                  spacing: 10,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppFilledButton(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 28.w,
-                        vertical: 9.h,
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: notification
+                                .message, //"You’ve been invited to join Punter Club",
+                            style: medium(
+                              fontSize: 16.sp,
+                              fontFamily: AppFontFamily.primary,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "PuntGPT Legends",
+                            style: semiBold(
+                              fontSize: 16.sp,
+                              fontFamily: AppFontFamily.primary,
+                            ),
+                          ),
+                        ],
                       ),
-                      isExpand: false,
-                      text: "Join",
-                      textStyle: semiBold(
-                        fontSize: 14.sp,
-                        color: AppColors.white,
-                      ),
-                      onTap: () {
-                        context.pop();
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: AppColors.white,
-                          showDragHandle: true,
-                          useRootNavigator: true,
-                          builder: (sheetContext) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                bottom: MediaQuery.viewInsetsOf(
-                                  sheetContext,
-                                ).bottom,
-                              ),
-                              child: Container(
-                                height: 370.h,
-                                padding: EdgeInsets.symmetric(horizontal: 25.w),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      "Create Username",
-                                      style: regular(
-                                        fontSize: 24.sp,
-                                        fontFamily: AppFontFamily.secondary,
-                                      ),
-                                    ),
-                                    10.h.verticalSpace,
-                                    Text(
-                                      "Your username will be displayed to your club members.",
-                                      style: semiBold(
-                                        fontSize: 14.sp,
-                                        color: AppColors.primary.withValues(
-                                          alpha: 0.6,
-                                        ),
-                                      ),
-                                    ),
-                                    22.w.verticalSpace,
-                                    horizontalDivider(),
-                                    24.w.verticalSpace,
-                                    AppTextField(
-                                      controller: TextEditingController(),
-                                      hintText: "Enter username",
-                                    ),
-                                    AppFilledButton(
-                                      margin: EdgeInsets.only(top: 24.w),
-                                      text: "Save",
-                                      onTap: () {},
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    AppOutlinedButton(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 28.w,
-                        vertical: 8.h,
+                    Text(
+                      DateFormatter.formatWithTime(
+                        DateTime.parse(notification.createdAt).toLocal(),
                       ),
-                      isExpand: false,
-                      textStyle: semiBold(
-                        fontSize: 14.sp,
-                        color: AppColors.black,
+                      style: regular(
+                        fontSize: 12.sp,
+                        fontFamily: AppFontFamily.primary,
                       ),
+                    ),
+                    if (notification.inviteId != null)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          AppFilledButton(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 28.w,
+                              vertical: 9.h,
+                            ),
+                            isExpand: false,
+                            text: "Join",
+                            textStyle: semiBold(
+                              fontSize: 14.sp,
+                              color: AppColors.white,
+                            ),
+                            onTap: onAccept,
+                          ),
+                          AppOutlinedButton(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 28.w,
+                              vertical: 8.h,
+                            ),
+                            isExpand: false,
+                            textStyle: semiBold(
+                              fontSize: 14.sp,
+                              color: AppColors.black,
+                            ),
 
-                      text: "Decline",
-                      onTap: () {},
-                      margin: EdgeInsets.only(left: 10.w),
-                    ),
-                    Spacer(),
-                    Icon(Icons.close_rounded, size: 16),
+                            text: "Decline",
+                            onTap: onReject,
+                            margin: EdgeInsets.only(left: 10.w),
+                          ),
+
+                          // Spacer(),
+                        ],
+                      ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              6.w.horizontalSpace,
+              Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                  onTap: onDelete,
+                  child: Icon(Icons.close_rounded, size: 16),
+                ),
+              ),
+            ],
           ),
         ],
       ),

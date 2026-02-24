@@ -159,7 +159,7 @@ class PunterClubShimmers {
           // Clear all button shimmer
           SafeArea(
             child: Container(
-              margin: EdgeInsets.symmetric(vertical: 10.w,horizontal: 20.w),
+              margin: EdgeInsets.fromLTRB(25.w, 10.w, 25.w, 18.w),
               height: 48.h,
               width: double.infinity,
               decoration: BoxDecoration(

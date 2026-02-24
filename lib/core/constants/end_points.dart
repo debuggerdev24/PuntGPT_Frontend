@@ -80,9 +80,8 @@ class EndPoints {
 
   //* notification
   static const String getAllNotification = "/chat-group/notification/";
-  static const String deleteSingleNotification = "/chat-group/notification/";
-  static const String deleteAllNotification =
-      "/chat-group/notification/clear-all/";
+  static String deleteSingleNotification({required String notificationId}) => "/chat-group/notification/$notificationId/delete/";
+  static const String deleteAllNotification = "/chat-group/notification/clear-all/";
 
   //* chat group
   static const String createChatGroup = "/chat-group/create-group/";
@@ -90,12 +89,12 @@ class EndPoints {
   static String inviteUser({required String groupId}) => "/chat-group/invite-user-to-group/$groupId/";
   static String getUserInviteList({required String groupId}) =>
       "/chat-group/invitation-user-list/?group_id=$groupId";
-  static String acceptInvitation({required String id}) =>
-      "/chat-group/invite/5/$id/accept/";
-  static String rejectInvitation({required String id}) =>
-      "/chat-group/invite/5/$id/reject/";
-  static String userNameSetup({required String id}) =>
-      "/chat-group/username-setup/$id/";
+  static String acceptInvitation({required String inviteId}) =>
+      "/chat-group/invite/$inviteId/accept/";
+  static String rejectInvitation({required String rejectId}) =>
+       "/chat-group/invite/$rejectId/reject/";
+  static String userNameSetup({required String groupId}) =>
+      "/chat-group/username-setup/$groupId/";
   static String getGroupMemberInfo({required String id}) =>
       "/chat-group/group-member-info/$id/";
   static String leaveGroup({required String id}) =>

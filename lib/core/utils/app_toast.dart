@@ -23,7 +23,7 @@ class AppToast {
       context: context,
       type: type,
       backgroundColor: backgroundColor,
-      autoCloseDuration: duration ?? const Duration(seconds: 2),
+      autoCloseDuration: duration ?? const Duration(seconds: 3),
       alignment: Alignment.topCenter,
       icon: icon,
       title: Text(

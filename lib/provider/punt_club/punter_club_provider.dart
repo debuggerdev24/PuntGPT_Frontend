@@ -11,10 +11,11 @@ class PuntClubProvider extends ChangeNotifier {
     searchNameCtr = TextEditingController();
     searchNameCtr.addListener(notifyListeners);
   }
-  int selectedGroup = 0;
-  String grpId = "";
+  int selectedGroup = 0,notificationCount = 0;
+  String groupId = "";
   late final TextEditingController searchNameCtr;
   final TextEditingController clubNameCtr = TextEditingController();
+  final TextEditingController usernameCtr = TextEditingController();
 
   @override
   void dispose() {
@@ -50,8 +51,24 @@ class PuntClubProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  clearSelectedIds() {
+  void clearSelectedIds() {
     selectedIds.clear();
+    notifyListeners();
+  }
+
+  void resetInviteState() {
+    selectedIds.clear();
+    // isInvitingUser = false;
+    notifyListeners();
+  }
+
+  void removeNotificationAt(int index) {
+    notificationList?.removeAt(index);
+    notifyListeners();
+  }
+
+  void clearNotificationList() {
+    notificationList?.clear();
     notifyListeners();
   }
 
@@ -62,7 +79,7 @@ class PuntClubProvider extends ChangeNotifier {
 
   //* create chat group
   bool isCreatingChatGroupLoading = false;
-  Future<void> createChatGroup({required VoidCallback onSuccess}) async {
+  Future<void> createChatGroup({required VoidCallback onSuccess, required Function(String error) onError}) async {
     isCreatingChatGroupLoading = true;
     notifyListeners();
     final response = await PuntClubApiService.instance.createChatGroup(
@@ -72,17 +89,22 @@ class PuntClubProvider extends ChangeNotifier {
     response.fold(
       (l) {
         Logger.error("create chat group error: ${l.errorMsg}");
+        onError.call(l.errorMsg);
       },
       (r) {
+        Logger.info("createChatGroup response: $r");
         onSuccess.call();
         clubNameCtr.clear();
-        final club = r["data"]["club"];
-        grpId = club["id"];
+        final data = r["data"];
+        final club = (data is Map && data.containsKey("club")) ? data["club"] : data;
+        groupId = (club["id"]).toString();
+        Logger.info("groupId: $groupId");
         getChatGroups();
       },
     );
+    clubNameCtr.clear();
     isCreatingChatGroupLoading = false;
-    notifyListeners();
+notifyListeners();
   }
 
   //* get chat groups
@@ -106,7 +128,7 @@ class PuntClubProvider extends ChangeNotifier {
 
   //* get users invite list
   Future<void> getUsersInviteList({required String groupId}) async {
-    if (userInvitesList != null) return;
+    // if (userInvitesList != null) return;
     // userInvitesList = null;
     notifyListeners();
     final response = await PuntClubApiService.instance.getUsersInviteList(
@@ -139,6 +161,7 @@ class PuntClubProvider extends ChangeNotifier {
         notificationList = (r["data"] as List)
             .map((e) => NotificationModel.fromJson(e))
             .toList();
+        notificationCount = notificationList?.length ?? 0;
         notifyListeners();
       },
     );
@@ -150,6 +173,7 @@ class PuntClubProvider extends ChangeNotifier {
     required List<String> userIds,
     required String groupId,
     required BuildContext context,
+    required VoidCallback onSuccess,
   }) async {
     isInvitingUser = true;
     notifyListeners();
@@ -189,6 +213,113 @@ class PuntClubProvider extends ChangeNotifier {
       },
     );
     isInvitingUser = false;
+    notifyListeners();
+  }
+
+
+
+  //* delete single notification
+  Future<void> deleteSingleNotification({
+    required String notificationId,
+    required VoidCallback onSuccess,
+  }) async {
+    final response = await PuntClubApiService.instance.deleteSingleNotification(
+      notificationId: notificationId,
+    );
+    response.fold(
+      (l) {
+        Logger.error("delete single notification error: ${l.errorMsg}");
+      },
+      (r) {
+        // onSuccess.call();
+        // getNotifications();
+      },
+    );
+  }
+
+
+  //* delete all notification
+  bool isDeletingAllNotification = false;
+  Future<void> deleteAllNotification() async {
+    isDeletingAllNotification = true;
+    notifyListeners();
+    final response = await PuntClubApiService.instance.deleteAllNotification();
+    response.fold(
+      (l) {
+        Logger.error("delete all notification error: ${l.errorMsg}");
+      },
+      (r) {
+      },
+    );
+    isDeletingAllNotification = false;
+    notifyListeners();
+  }
+
+  //* accept invitation
+  bool isAcceptingInvitation = false;
+  Future<void> acceptInvitation({
+    required String inviteId,
+    required VoidCallback onSuccess,
+  }) async {
+    isAcceptingInvitation = true;
+    notifyListeners();
+    final response = await PuntClubApiService.instance.acceptInvitation(
+      inviteId: inviteId,
+    );
+    response.fold(
+      (l) {
+        Logger.error("accept invitation error: ${l.errorMsg}");
+      },
+      (r) {
+        onSuccess.call();
+        getChatGroups();
+        getNotifications();
+      },
+    );
+    isAcceptingInvitation = false;
+    notifyListeners();
+  }
+
+  //* user name setup
+  bool isUserNameSetup = false;
+  Future<void> userNameSetup({required String username, required VoidCallback onSuccess}) async {
+    isUserNameSetup = true;
+    notifyListeners();
+    Logger.info("user name setup: $groupId, $username");
+    final response = await PuntClubApiService.instance.userNameSetup(groupId: groupId, username: username);
+    response.fold(
+      (l) {
+        Logger.error("user name setup error: ${l.errorMsg}");
+      },
+      (r) {
+        onSuccess.call();
+      },
+    );
+    isUserNameSetup = false;
+    notifyListeners();
+  }
+
+  //* reject invitation
+  bool isRejectingInvitation = false;
+  Future<void> rejectInvitation({
+    required String rejectId,
+    required VoidCallback onSuccess,
+  }) async {
+    isRejectingInvitation = true;
+    notifyListeners();
+    final response = await PuntClubApiService.instance.rejectInvitation(
+      rejectId: rejectId,
+    );
+    response.fold(
+      (l) {
+        Logger.error("reject invitation error: ${l.errorMsg}");
+      },
+      (r) {
+        onSuccess.call();
+        getNotifications();
+      },
+    );
+    isRejectingInvitation = false;
     notifyListeners();
   }
 }
