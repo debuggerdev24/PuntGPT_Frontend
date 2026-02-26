@@ -1,18 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/utils/app_toast.dart';
-import 'package:puntgpt_nick/core/widgets/app_filed_button.dart';
-import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
-
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/text_style.dart';
-import '../../../core/utils/custom_loader.dart';
-import '../../../core/utils/field_validators.dart';
-import '../../../core/widgets/app_devider.dart';
-import '../../../core/widgets/app_text_field.dart';
-import '../../../provider/account/account_provider.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/provider/account/account_provider.dart';
 
 class ChangePasswordSectionWeb extends StatefulWidget {
   const ChangePasswordSectionWeb({super.key});

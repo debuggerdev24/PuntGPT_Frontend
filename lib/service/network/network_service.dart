@@ -1,8 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-
-import '../../main.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/main.dart';
 
 Future<void> checkConnectivity({required BuildContext context}) async {
   Connectivity().onConnectivityChanged.listen((

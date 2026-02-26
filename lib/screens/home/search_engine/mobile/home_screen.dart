@@ -6,7 +6,6 @@ import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_section_shimmers.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_screen_tab.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/race_start_timing_options.dart';
-import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/runners_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/search_section.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -342,17 +341,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
                       onTap: () {
                         context.pushNamed(AppRoutes.runnersScreen.name);
-                        // formKey.currentState!.validate();
+
                         provider.getSearchEngine(
                           onSuccess: () {
-                            AppToast.success(context: context, message: "Search successful");
-                            // Navigate to runners screen after data is loaded
-                            // if (provider.runnerData != null) {
-                            //   context.pushNamed(
-                            //     AppRoutes.runnersScreen.name,
-                            //     extra: provider.runnerData,
-                            //   );
-                            // }
+                            // AppToast.success(context: context, message: "Search successful");
                           },
                         );
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/constants/app_colors.dart';
+import 'package:puntgpt_nick/core/theme/app_colors.dart';
 import 'package:puntgpt_nick/core/constants/app_theme.dart';
 import 'package:puntgpt_nick/core/router/app/app_router.dart';
 import 'package:puntgpt_nick/core/router/web/web_router.dart';

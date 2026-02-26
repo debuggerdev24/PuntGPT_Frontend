@@ -1,16 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:go_router/go_router.dart';
-import 'package:puntgpt_nick/core/router/web/web_routes.dart';
-import 'package:puntgpt_nick/core/utils/app_toast.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/service/auth/auth_api_service.dart';
 import 'package:puntgpt_nick/service/storage/locale_storage_service.dart';
-
-import '../../core/helper/log_helper.dart';
-import '../../core/router/app/app_routes.dart';
 
 class AuthProvider extends ChangeNotifier {
   TextEditingController firstNameCtr = TextEditingController(),

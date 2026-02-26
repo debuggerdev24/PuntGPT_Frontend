@@ -1,18 +1,6 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/router/web/web_routes.dart';
 import 'package:puntgpt_nick/provider/account/account_provider.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
 import 'package:puntgpt_nick/screens/account/mobile/widgets/subscription_plan.dart';
-
-import '../../../core/constants/text_style.dart';
-import '../../../core/router/app/app_routes.dart';
-import '../../../core/widgets/app_devider.dart';
-import '../../../core/widgets/app_filed_button.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 
 List activePlan = [
   {"icon": AppAssets.done, "point": "Chat function with PuntGPT"},

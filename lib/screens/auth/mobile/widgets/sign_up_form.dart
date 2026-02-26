@@ -1,5 +1,6 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
+import 'package:puntgpt_nick/screens/auth/auth_constants.dart';
 
 class SignUpForm extends StatelessWidget {
   const SignUpForm({super.key, required this.formKey});
@@ -241,34 +242,3 @@ class SignUpForm extends StatelessWidget {
     );
   }
 }
-
-List<String> states = [
-  "Andhra Pradesh",
-  "Arunachal Pradesh",
-  "Assam",
-  "Bihar",
-  "Chhattisgarh",
-  "Goa",
-  "Gujarat",
-  "Haryana",
-  "Himachal Pradesh",
-  "Jharkhand",
-  "Karnataka",
-  "Kerala",
-  "Madhya Pradesh",
-  "Maharashtra",
-  "Manipur",
-  "Meghalaya",
-  "Mizoram",
-  "Nagaland",
-  "Odisha",
-  "Punjab",
-  "Rajasthan",
-  "Sikkim",
-  "Tamil Nadu",
-  "Telangana",
-  "Tripura",
-  "Uttar Pradesh",
-  "Uttarakhand",
-  "West Bengal",
-];

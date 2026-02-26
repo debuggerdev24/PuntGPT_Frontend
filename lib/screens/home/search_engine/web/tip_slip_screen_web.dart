@@ -1,15 +1,5 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/router/web/web_router.dart';
-import 'package:puntgpt_nick/core/widgets/app_filed_button.dart';
-import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
-
-import '../../../../core/constants/text_style.dart';
-import '../../../../core/widgets/app_devider.dart';
-import 'home_screen_web.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/web/home_screen_web.dart';
 
 class TipSlipScreenWeb extends StatelessWidget {
   const TipSlipScreenWeb({super.key});

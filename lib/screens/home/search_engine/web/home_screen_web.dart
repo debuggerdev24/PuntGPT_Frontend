@@ -1,31 +1,16 @@
-import 'package:animate_do/animate_do.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/constants/text_style.dart';
-import 'package:puntgpt_nick/core/widgets/app_devider.dart';
-import 'package:puntgpt_nick/core/widgets/image_widget.dart';
-import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
-import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/search_section.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/mobile/home_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_screen_tab.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/race_table.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/search_section.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/chat_section_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/home_screen_tab_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/race_start_timing_option_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/race_table_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/runners_list_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/search_section_web.dart';
-
-import '../../../../core/router/app/app_routes.dart';
-import '../../../../core/router/web/web_routes.dart';
-import '../../../../core/widgets/app_filed_button.dart';
-import '../../../../provider/home/search_engine/search_engine_provider.dart';
-import '../../../../responsive/responsive_builder.dart';
-import '../mobile/home_screen.dart';
 
 class HomeScreenWeb extends StatefulWidget {
   const HomeScreenWeb({super.key});
@@ -117,7 +102,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
                 RaceStartTimingOptionsWeb(),
                 Expanded(
                   child: (provider.isSearched)
-                      ? RunnersListWeb(runnerData: provider.runnerData!)
+                      ? RunnersListWeb(runnersList: provider.runnersList!)
                       : SearchFields(providerh: provider),
                 ),
                 Align(

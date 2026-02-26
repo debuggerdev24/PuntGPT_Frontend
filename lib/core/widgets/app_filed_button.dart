@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/constants/text_style.dart';
+
+import 'package:puntgpt_nick/core/app_imports.dart';
 
 class AppFilledButton extends StatelessWidget {
   const AppFilledButton({

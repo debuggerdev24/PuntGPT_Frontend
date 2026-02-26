@@ -42,11 +42,25 @@ class DateFormatter {
     return DateFormat('hh:mm a').format(date);
   }
 
-  /// Parse time string (ISO or similar) and format as "hh:mm am/pm"
+  // Parse time string (ISO, "yyyy-MM-dd HH:mm:ss", or "HH:mm:ss") and format as "hh:mm am/pm" (no seconds)
   static String formatTimeFromString(String? timeStr) {
     if (timeStr == null || timeStr.isEmpty) return '-';
     try {
-      final dt = DateTime.parse(timeStr).toLocal();
+      DateTime dt;
+      if (timeStr.contains(' ')) {
+        // e.g. "2026-02-26 05:40:00"
+        final parts = timeStr.split(' ');
+        if (parts.length >= 2) {
+          dt = DateFormat('yyyy-MM-dd HH:mm:ss').parse(timeStr).toLocal();
+        } else {
+          dt = DateTime.parse(timeStr).toLocal();
+        }
+      } else if (RegExp(r'^\d{1,2}:\d{2}:\d{2}').hasMatch(timeStr)) {
+        // e.g. "05:40:00" – time only, use today
+        dt = DateFormat('HH:mm:ss').parse(timeStr);
+      } else {
+        dt = DateTime.parse(timeStr).toLocal();
+      }
       return formatTimeOnly(dt);
     } catch (e) {
       return timeStr;

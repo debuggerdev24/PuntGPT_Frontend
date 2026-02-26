@@ -1,27 +1,24 @@
 class RunnerDataModel {
   factory RunnerDataModel.fromJson(Map<String, dynamic> json) {
-    final runnersList = (json["runners"] as List?)
-        ?.take(10)
-            .map((x) => Runner.fromJson(x as Map<String, dynamic>))
+    final runnersList =
+        (json["runners"] as List?)
+            ?.map((x) => RunnerModel.fromJson(x as Map<String, dynamic>))
             .toList() ??
         [];
-        
+
     return RunnerDataModel(
       runnerCount: json["runner_count"],
       runnersList: runnersList,
     );
   }
 
-  RunnerDataModel({
-    this.runnerCount,
-    this.runnersList = const [],
-  });
+  RunnerDataModel({this.runnerCount, this.runnersList = const []});
   int? runnerCount;
-  List<Runner> runnersList;
+  List<RunnerModel> runnersList;
 }
 
-class Runner {
-  Runner({
+class RunnerModel {
+  RunnerModel({
     this.selectionId,
     this.selectionNumber,
     this.horseName,
@@ -33,34 +30,29 @@ class Runner {
     this.jumpTimeAu,
     this.silksImage,
     this.odds,
+    this.barrier,
   });
 
-  factory Runner.fromJson(Map<String, dynamic> json) => Runner(
-        selectionId: json["selection_id"],
-        selectionNumber: json["selection_number"],
-        horseName: json["horse_name"],
-        jockeyName: json["jockey_name"] ?? "Jockey Name",
-        trainerName: json["trainer_name"],
-        track: json["track"],
-        raceId: json["race_id"],
-        raceNumber: json["race_number"],
-        jumpTimeAu: json["jump_time_au"],
-        silksImage: json["silks_image"],
-        odds: json["odds"] != null
-            ? (json["odds"] is num
-                ? (json["odds"] as num).toDouble()
-                : double.tryParse(json["odds"].toString()))
-            : null,
-      );
+  factory RunnerModel.fromJson(Map<String, dynamic> json) => RunnerModel(
+    selectionId: json["selection_id"],
+    selectionNumber: json["selection_number"],
+    horseName: json["horse_name"],
+    jockeyName: json["jockey_name"] ?? "Jockey Name",
+    trainerName: json["trainer_name"],
+    track: json["track"],
+    raceId: json["race_id"],
+    raceNumber: json["race_number"],
+    jumpTimeAu: json["jump_time_au"],
+    silksImage: json["silks_image"],
+    barrier: json["barrier"],
+    odds: json["odds"] != null
+        ? (json["odds"] is num
+              ? (json["odds"] as num).toDouble()
+              : double.tryParse(json["odds"].toString()))
+        : null,
+  );
 
-  int? selectionId;
-  int? selectionNumber;
-  String? horseName;
-  String? jockeyName;
-  String? trainerName;
-  String? track;
-  int? raceId;
-  int? raceNumber;
-  String? jumpTimeAu,silksImage;
+  int? selectionId, selectionNumber, raceId, raceNumber, barrier;
+  String? horseName, jockeyName, trainerName, track, jumpTimeAu, silksImage;
   double? odds;
 }

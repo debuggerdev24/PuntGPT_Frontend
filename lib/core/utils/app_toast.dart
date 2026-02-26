@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:puntgpt_nick/responsive/responsive_builder.dart';
 import 'package:toastification/toastification.dart';
 
-import '../constants/app_colors.dart';
-import '../constants/text_style.dart';
+import '../theme/app_colors.dart';
+import '../theme/text_style.dart';
 
 class AppToast {
   // Base show method

@@ -1,22 +1,9 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/constants/text_style.dart';
-import 'package:puntgpt_nick/core/router/web/web_routes.dart';
-import 'package:puntgpt_nick/core/widgets/app_devider.dart';
-import 'package:puntgpt_nick/core/widgets/app_filed_button.dart';
-import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/home/search_engine/runner_model.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
-
-import '../../../../../core/router/app/app_routes.dart';
-import '../../../../../core/widgets/image_widget.dart';
 
 class RunnersListWeb extends StatelessWidget {
-  const RunnersListWeb({super.key, required this.runnerData});
-  final RunnerDataModel runnerData;
+  const RunnersListWeb({super.key, required this.runnersList});
+  final List<RunnerModel> runnersList;
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +59,10 @@ class RunnersListWeb extends StatelessWidget {
           child: ListView.separated(
             padding: EdgeInsets.symmetric(horizontal: 25.w),
 
-            itemCount: runnerData.runnersList.length,
+            itemCount: runnersList.length,
             separatorBuilder: (context, index) => 16.h.verticalSpace,
             itemBuilder: (context, index) {
-              final runner = runnerData.runnersList[index];
+              final runner = runnersList[index];
               
               return RunnerWidget(runner: runner);
             },
@@ -88,7 +75,7 @@ class RunnersListWeb extends StatelessWidget {
 
 class RunnerWidget extends StatelessWidget {
   const RunnerWidget({super.key, required this.runner});
-  final Runner runner;
+  final RunnerModel runner;
 
   @override
   Widget build(BuildContext context) {

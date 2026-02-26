@@ -28,6 +28,9 @@ class ImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (path.isEmpty) {
+      return errorWidget ?? _defaultErrorWidget();
+    }
     Widget image;
     switch (type) {
       case ImageType.asset:

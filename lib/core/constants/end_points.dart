@@ -42,11 +42,16 @@ class EndPoints {
   static const String tipSlipCreation = "/horse-race/tip-slip/";
   static const String getAlltipSlipCreation = "/horse-race/tip-slip";
 
+  static String deleteTipSlip({required String tipSlipId}) {
+    return "/horse-race/tip-slip/9/";
+  }
+  static const String compareHorses = "/bot/compare/";
+  
   static String getSingleTipSlipDetails({required String id}) {
     return "/horse-race/tip-slip/$id/";
   }
 
-  static String deleteTipSlip({required String id}) {
+  static String removeFromTipSlip({required String id}) {
     return "/horse-race/tip-slip/$id/";
   }
 

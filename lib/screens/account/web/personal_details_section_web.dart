@@ -1,21 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/utils/app_toast.dart';
-import 'package:puntgpt_nick/core/utils/custom_loader.dart';
-import 'package:puntgpt_nick/core/utils/de_bouncing.dart';
-import 'package:puntgpt_nick/core/utils/field_validators.dart';
-import 'package:puntgpt_nick/core/widgets/app_filed_button.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
-
-import '../../../core/constants/text_style.dart';
-import '../../../core/widgets/app_devider.dart';
-import '../../../core/widgets/app_outlined_button.dart';
-import '../../../core/widgets/app_text_field.dart';
-import '../../../core/widgets/on_button_tap.dart';
-import '../../../provider/account/account_provider.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/provider/account/account_provider.dart';
 
 class PersonalDetailsSectionWeb extends StatelessWidget {
   const PersonalDetailsSectionWeb({super.key});

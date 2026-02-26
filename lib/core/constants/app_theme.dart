@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/constants/text_style.dart';
+
+import 'package:puntgpt_nick/core/app_imports.dart';
 
 class AppTheme {
   AppTheme._();

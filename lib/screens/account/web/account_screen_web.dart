@@ -1,24 +1,12 @@
-import 'package:animate_do/animate_do.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/constants/app_colors.dart';
-import 'package:puntgpt_nick/core/constants/text_style.dart';
-import 'package:puntgpt_nick/core/router/web/web_routes.dart';
-import 'package:puntgpt_nick/core/widgets/app_devider.dart';
-import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/account/account_provider.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
 import 'package:puntgpt_nick/screens/account/web/change_password_section_web.dart';
 import 'package:puntgpt_nick/screens/account/web/current_plan_section_web.dart';
 import 'package:puntgpt_nick/screens/account/web/manage_subscription_section_web.dart';
 import 'package:puntgpt_nick/screens/account/web/personal_details_section_web.dart';
 import 'package:puntgpt_nick/screens/account/web/selected_plan_section_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/home_screen_web.dart';
-
-import '../../../core/utils/app_toast.dart';
-import '../../../provider/auth/auth_provider.dart';
 
 class AccountScreenWeb extends StatefulWidget {
   const AccountScreenWeb({super.key});

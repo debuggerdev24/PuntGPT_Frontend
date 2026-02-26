@@ -1,21 +1,10 @@
-import 'package:animate_do/animate_do.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/router/web/web_router.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/core/widgets/offline/widget/offline_view.dart';
 import 'package:puntgpt_nick/main.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/provider/account/account_provider.dart';
+import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
+import 'package:puntgpt_nick/screens/dashboard/mobile/dashboard.dart';
 import 'package:puntgpt_nick/screens/dashboard/web/widgets/web_dashboard_app_bar.dart';
-import 'package:puntgpt_nick/screens/offline/widget/offline_view.dart';
-
-import '../../../core/constants/text_style.dart';
-import '../../../core/widgets/image_widget.dart';
-import '../../../core/widgets/on_button_tap.dart';
-import '../../../provider/account/account_provider.dart';
-import '../../../provider/home/search_engine/search_engine_provider.dart';
-import '../mobile/dashboard.dart';
 
 ValueNotifier<int> indexOfWebTab = ValueNotifier<int>(2);
 

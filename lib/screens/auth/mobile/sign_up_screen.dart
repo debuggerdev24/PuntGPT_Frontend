@@ -1,9 +1,9 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/widgets/web_top_section.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
-import 'package:puntgpt_nick/screens/auth/screens/mobile/widgets/sign_up_bottom_section.dart';
-import 'package:puntgpt_nick/screens/auth/screens/mobile/widgets/sign_up_form.dart';
-import 'package:puntgpt_nick/screens/auth/screens/mobile/widgets/sign_up_title.dart';
+import 'package:puntgpt_nick/screens/auth/mobile/widgets/sign_up_bottom_section.dart';
+import 'package:puntgpt_nick/screens/auth/mobile/widgets/sign_up_form.dart';
+import 'package:puntgpt_nick/screens/auth/mobile/widgets/sign_up_title.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key, required this.isFreeSignUp});

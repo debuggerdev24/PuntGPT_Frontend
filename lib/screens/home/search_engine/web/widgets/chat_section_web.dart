@@ -1,10 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
-
-import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/text_style.dart';
-import '../../../../../core/widgets/app_devider.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 
 class ChatSectionWeb extends StatelessWidget {
   const ChatSectionWeb({super.key});

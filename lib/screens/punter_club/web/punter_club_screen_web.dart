@@ -1,23 +1,8 @@
-import 'package:animate_do/animate_do.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/widgets/app_outlined_button.dart';
-import 'package:puntgpt_nick/core/widgets/image_widget.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
-import 'package:puntgpt_nick/screens/punter_club/web/widgets/club_chat_screen_web.dart';
 
-import '../../../core/constants/text_style.dart';
-import '../../../core/router/web/web_routes.dart';
-import '../../../core/utils/field_validators.dart';
-import '../../../core/widgets/app_devider.dart';
-import '../../../core/widgets/app_filed_button.dart';
-import '../../../core/widgets/app_text_field.dart';
-import '../../../core/widgets/on_button_tap.dart';
+import 'package:puntgpt_nick/screens/punter_club/web/widgets/club_chat_screen_web.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import '../../home/search_engine/web/home_screen_web.dart';
 
 class PunterClubScreenWebScreen extends StatelessWidget {

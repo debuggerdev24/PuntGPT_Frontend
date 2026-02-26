@@ -1,20 +1,8 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/helper/date_picker.dart';
-import 'package:puntgpt_nick/core/utils/date_formater.dart';
-import 'package:puntgpt_nick/core/utils/field_validators.dart';
-import 'package:puntgpt_nick/core/widgets/app_text_field.dart';
-import 'package:puntgpt_nick/core/widgets/app_text_field_drop_down.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
-
-import '../../../../../core/constants/text_style.dart';
-import '../../../../../responsive/responsive_builder.dart';
-import '../../mobile/widgets/sign_up_form.dart';
+import 'package:puntgpt_nick/screens/auth/auth_constants.dart';
 
 class WebSignUpForm extends StatelessWidget {
   const WebSignUpForm({super.key, required this.formKey});

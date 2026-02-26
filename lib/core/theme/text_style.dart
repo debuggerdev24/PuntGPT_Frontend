@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
 
+import 'package:puntgpt_nick/core/app_imports.dart';
 class AppFontFamily {
   AppFontFamily._();
 

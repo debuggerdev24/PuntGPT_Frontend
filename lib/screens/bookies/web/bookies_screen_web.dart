@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/home_screen_web.dart';
 
 class BookiesScreenWeb extends StatelessWidget {

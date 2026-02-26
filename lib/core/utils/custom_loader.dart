@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:puntgpt_nick/responsive/responsive_builder.dart';
 
-import '../constants/app_colors.dart' show AppColors;
+import '../theme/app_colors.dart' show AppColors;
 
 class FullPageIndicator extends StatelessWidget {
   const FullPageIndicator({super.key});
@@ -35,6 +35,19 @@ Widget webProgressIndicator(BuildContext context, {Color? color}) {
   return SizedBox(
     width: (context.isDesktop) ? 35.w : 45.w,
     height: (context.isDesktop) ? 35.w : 45.w,
+    child: CircularProgressIndicator(
+      strokeWidth: 2.5,
+      color: color ?? AppColors.white,
+      strokeCap: StrokeCap.round,
+    ),
+  );
+}
+
+Widget progressIndicator({Color? color, double? size}) {
+  final s = size ?? 28.w;
+  return SizedBox(
+    width: s,
+    height: s,
     child: CircularProgressIndicator(
       strokeWidth: 2.5,
       color: color ?? AppColors.white,

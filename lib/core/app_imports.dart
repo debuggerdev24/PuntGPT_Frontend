@@ -1,13 +1,3 @@
-/// Central export file for common UI imports across the app.
-///
-/// Use in screens/widgets:
-/// ```dart
-/// import 'package:puntgpt_nick/core/app_imports.dart';
-/// ```
-///
-/// Includes: Flutter, third-party packages, constants, router, utils, widgets,
-/// and responsive utilities. Add screen-specific imports (providers, models,
-/// feature widgets) separately.
 
 // Flutter (hide RefreshCallback - clash cupertino vs material)
 export 'package:flutter/cupertino.dart' hide RefreshCallback;
@@ -24,7 +14,7 @@ export 'package:shimmer/shimmer.dart';
 
 // App - Constants
 export 'package:puntgpt_nick/core/constants/constants.dart';
-export 'package:puntgpt_nick/core/constants/text_style.dart';
+export 'package:puntgpt_nick/core/theme/text_style.dart';
 export 'package:puntgpt_nick/core/enum/app_enums.dart';
 
 // Router
@@ -36,10 +26,18 @@ export 'package:puntgpt_nick/core/router/web/web_routes.dart' hide WebRouteExten
 // Utils
 export 'package:puntgpt_nick/core/utils/app_toast.dart';
 export 'package:puntgpt_nick/core/utils/custom_loader.dart';
-export 'package:puntgpt_nick/core/utils/date_formater.dart';
+export 'package:puntgpt_nick/core/utils/date_time_formater.dart';
 export 'package:puntgpt_nick/core/utils/de_bouncing.dart';
 export 'package:puntgpt_nick/core/utils/field_validators.dart';
 export 'package:puntgpt_nick/core/helper/date_picker.dart';
+export 'package:puntgpt_nick/core/constants/app_assets.dart';
+export 'package:puntgpt_nick/core/theme/app_colors.dart';
+export 'package:puntgpt_nick/core/constants/app_config.dart';
+export 'package:puntgpt_nick/core/constants/app_theme.dart';
+export 'package:puntgpt_nick/core/helper/log_helper.dart';
+export 'package:puntgpt_nick/core/extensions/color_extensions.dart';
+export 'package:puntgpt_nick/core/extensions/context_extensions.dart';
+export 'package:puntgpt_nick/core/extensions/double_extensions.dart';
 
 // Widgets
 export 'package:puntgpt_nick/core/widgets/app_devider.dart';

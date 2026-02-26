@@ -1,13 +1,10 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/router/app/route_pages/account_routes.dart';
-import 'package:puntgpt_nick/core/router/app/app_routes.dart';
 import 'package:puntgpt_nick/core/router/app/route_pages/auth_routes.dart';
 import 'package:puntgpt_nick/core/router/app/route_pages/bookies_routes.dart';
 import 'package:puntgpt_nick/core/router/app/route_pages/home_routes.dart';
 import 'package:puntgpt_nick/core/router/app/route_pages/punt_club_routes.dart';
-import 'package:puntgpt_nick/screens/offline/offline_screen.dart';
+import 'package:puntgpt_nick/core/widgets/offline/offline_screen.dart';
 
 import 'package:puntgpt_nick/screens/onboarding/mobile/age_confirmation_screen.dart';
 import 'package:puntgpt_nick/screens/onboarding/mobile/on_boarding_screen.dart';

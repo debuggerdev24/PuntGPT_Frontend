@@ -1,10 +1,9 @@
-import 'package:go_router/go_router.dart';
-import 'package:puntgpt_nick/core/router/app/app_routes.dart';
-import 'package:puntgpt_nick/screens/auth/screens/mobile/forgot_password_screen.dart';
-import 'package:puntgpt_nick/screens/auth/screens/mobile/login_screen.dart';
-import 'package:puntgpt_nick/screens/auth/screens/mobile/reset_password_screen.dart';
-import 'package:puntgpt_nick/screens/auth/screens/mobile/sign_up_screen.dart';
-import 'package:puntgpt_nick/screens/auth/screens/mobile/verify_otp_screen.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/screens/auth/mobile/forgot_password_screen.dart';
+import 'package:puntgpt_nick/screens/auth/mobile/login_screen.dart';
+import 'package:puntgpt_nick/screens/auth/mobile/reset_password_screen.dart';
+import 'package:puntgpt_nick/screens/auth/mobile/sign_up_screen.dart';
+import 'package:puntgpt_nick/screens/auth/mobile/verify_otp_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/search_filter_screen.dart';
 
 class AuthRoutes {

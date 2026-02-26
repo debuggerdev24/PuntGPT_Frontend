@@ -1,11 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/constants/text_style.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 
-import 'image_widget.dart';
 
 class AppTextField extends StatelessWidget {
   const AppTextField({

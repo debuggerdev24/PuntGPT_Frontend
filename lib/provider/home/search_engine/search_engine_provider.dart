@@ -1,14 +1,26 @@
-import 'package:flutter/material.dart';
-import 'package:puntgpt_nick/core/enum/app_enums.dart';
-import 'package:puntgpt_nick/core/helper/log_helper.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/home/search_engine/runner_model.dart';
 import 'package:puntgpt_nick/models/home/search_engine/search_model.dart';
+import 'package:puntgpt_nick/models/home/search_engine/tip_slip_model.dart';
 import 'package:puntgpt_nick/models/home/search_engine/track_item_model.dart';
 import 'package:puntgpt_nick/service/search_engine/search_engine_api_service.dart';
 
 class SearchEngineProvider extends ChangeNotifier {
   bool isSearched = false, _isMenuOpen = false, _isEditSavedSearch = false;
   int _selectedTab = 0;
+  List<TipSlipModel>? tipSlips;
+  int? expandedTipSlipId;
+
+  void toggleTipSlipExpand(int tipSlipId) {
+    expandedTipSlipId = expandedTipSlipId == tipSlipId ? null : tipSlipId;
+    notifyListeners();
+  }
+
+  void removeTipSlipAt(int index) {
+    tipSlips?.removeAt(index);
+    notifyListeners();
+  }
+
   JumpType _selectedRaceTimingEnum = JumpType.jumps_within_10mins;
   JumpType get selectedRaceTimingEnum => _selectedRaceTimingEnum;
   TextEditingController oddsRangeCtr = TextEditingController(),
@@ -16,6 +28,7 @@ class SearchEngineProvider extends ChangeNotifier {
   List<SaveSearchModel>? saveSearches;
   List<String>? trackDetails, distanceDetails, searchFilterDetails, barrierList;
   SaveSearchModel? selectedSaveSearch;
+  List<RunnerModel>? runnersList;
 
   String? selectedTrack,
       selectedPlaceAtDistance,
@@ -56,8 +69,7 @@ class SearchEngineProvider extends ChangeNotifier {
 
   set setSelectedRaceTimingEnum(JumpType value) {
     _selectedRaceTimingEnum = value;
-    
-    
+
     notifyListeners();
   }
 
@@ -132,8 +144,6 @@ class SearchEngineProvider extends ChangeNotifier {
     }
   }
 
-  RunnerDataModel? runnerData;
-
   void setIsSearched({required bool value}) {
     isSearched = value;
     notifyListeners();
@@ -202,12 +212,8 @@ class SearchEngineProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isGettingRunners = false;
-  Future<void> getSearchEngine({
-    // required Function(String error) onError,
-    required VoidCallback onSuccess,
-  }) async {
-    isGettingRunners = true;
+  Future<void> getSearchEngine({required VoidCallback onSuccess}) async {
+    runnersList = null;
     notifyListeners();
     // Get the first checked track item, if any
     String? trackValue;
@@ -226,18 +232,39 @@ class SearchEngineProvider extends ChangeNotifier {
     result.fold(
       (l) {
         Logger.error("get search engine error: ${l.errorMsg}");
-        runnerData = null;
+        runnersList = null;
       },
-      (r) {
-        Logger.info(r.toString());
-        runnerData = (r["data"] != null)
-            ? RunnerDataModel.fromJson(r["data"] as Map<String, dynamic>)
-            : null;
+      (r) async {
+        final data = r["data"];
+        final runners = data["runners"] ?? [];
+
+        if (runners.isEmpty) {
+          notifyListeners();
+          return;
+        }
+
+        final int total = runners.length;
+        final int chunkSize = (total / 3).ceil();
+
+        for (int i = 0; i < total; i += chunkSize) {
+          final chunk = runners.skip(i).take(chunkSize);
+
+          final convertedChunk = chunk
+              .map((e) => RunnerModel.fromJson(e))
+              .toList();
+          runnersList = [...runnersList ?? [], ...convertedChunk];
+          // runnersList!.addAll(convertedChunk);
+
+          notifyListeners();
+
+          // Optional small delay to allow UI frame rendering
+          await Future.delayed(const Duration(milliseconds: 50));
+        }
+
         onSuccess.call();
+        notifyListeners();
       },
     );
-    isGettingRunners = false;
-    notifyListeners();
   }
 
   Future<void> createSaveSearch({
@@ -500,6 +527,97 @@ class SearchEngineProvider extends ChangeNotifier {
       (r) {
         onSuccess.call();
         getAllSaveSearch();
+      },
+    );
+  }
+
+  //! ============= tip slip section ====================
+  //* create tip slip
+  bool isCreatingTipSlip = false;
+  String? creatingForSelectionId;
+  Future<void> createTipSlip({
+    required String selectionId,
+    required Function(String error) onError,
+    required BuildContext context,
+  }) async {
+    isCreatingTipSlip = true;
+    creatingForSelectionId = selectionId;
+    notifyListeners();
+
+    final result = await SearchEngineAPISearvice.instance.createTipSlip(
+      data: {"selection": selectionId},
+    );
+    result.fold(
+      (l) {
+        onError.call("createTipSlip function error: ${l.errorMsg}");
+      },
+      (r) {
+        final data = r["data"];
+        if (data == null) {
+          AppToast.info(context: context, message: "Already added to tip slip");
+          return;
+        }
+        if (data["tip_slip"] != null) {
+          AppToast.success(
+            context: context,
+            message: "Added to tip slip successfully",
+          );
+        }
+      },
+    );
+    isCreatingTipSlip = false;
+    creatingForSelectionId = null;
+    notifyListeners();
+  }
+
+  //* get tip slips
+  Future<void> getTipSlips() async {
+    tipSlips = null;
+    notifyListeners();
+    final result = await SearchEngineAPISearvice.instance.getTipSlips();
+    result.fold(
+      (l) {
+        Logger.error(l.errorMsg);
+      },
+      (r) {
+        Logger.info(r.toString());
+        final data = r["data"];
+        tipSlips = (data != null)
+            ? (data["tip_slips"] as List)
+                  .map((e) => TipSlipModel.fromJson(e))
+                  .toList()
+            : [];
+      },
+    );
+    notifyListeners();
+  }
+
+  //* remove from tip slip
+  Future<void> removeFromTipSlip({required String tipSlipId}) async {
+    final result = await SearchEngineAPISearvice.instance.removeFromTipSlip(
+      tipSlipId: tipSlipId,
+    );
+    result.fold(
+      (l) {
+        Logger.error(l.errorMsg);
+      },
+      (r) {
+        getTipSlips();
+      },
+    );
+  }
+
+  //* compare horses
+  Future<void> compareHorses({required String selectionId}) async {
+    final result = await SearchEngineAPISearvice.instance.compareHorses(
+      data: {"selection_id": selectionId},
+    );
+    result.fold(
+      (l) {
+        Logger.error(l.errorMsg);
+      },
+      (r) {
+        Logger.info(r.toString());
       },
     );
   }

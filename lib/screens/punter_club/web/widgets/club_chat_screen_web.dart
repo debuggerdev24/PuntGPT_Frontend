@@ -1,18 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/widgets/app_outlined_button.dart';
-import 'package:puntgpt_nick/core/widgets/image_widget.dart';
-import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/provider/account/account_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/chat_section_web.dart';
-
-import '../../../../core/constants/text_style.dart';
-import '../../../../core/widgets/app_devider.dart';
-import '../../../../core/widgets/app_text_field.dart';
-import '../../../../provider/account/account_provider.dart';
 
 class PunterClubChatSectionWeb extends StatelessWidget {
   const PunterClubChatSectionWeb({super.key});

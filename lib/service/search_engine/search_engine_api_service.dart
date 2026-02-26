@@ -6,13 +6,14 @@ class SearchEngineAPISearvice {
   SearchEngineAPISearvice._();
   static SearchEngineAPISearvice instance = SearchEngineAPISearvice._();
 
-
   Future<Either<ApiException, Map<String, dynamic>>> getTrackDetails() async {
     return await BaseApiHelper.instance.get<Map<String, dynamic>>(
       EndPoints.trackDetails,
     );
   }
-  Future<Either<ApiException, Map<String, dynamic>>> getDistanceDetails() async {
+
+  Future<Either<ApiException, Map<String, dynamic>>>
+  getDistanceDetails() async {
     return await BaseApiHelper.instance.get<Map<String, dynamic>>(
       EndPoints.distanceDetails,
     );
@@ -23,7 +24,9 @@ class SearchEngineAPISearvice {
       EndPoints.barrierDetails,
     );
   }
-  Future<Either<ApiException, Map<String, dynamic>>> getSearchFilterDetails() async {
+
+  Future<Either<ApiException, Map<String, dynamic>>>
+  getSearchFilterDetails() async {
     return await BaseApiHelper.instance.get<Map<String, dynamic>>(
       EndPoints.searchFilterDetails,
     );
@@ -71,10 +74,45 @@ class SearchEngineAPISearvice {
     );
   }
 
-  Future<Either<ApiException, Map<String, dynamic>>> deleteSaveSearch({required String id}) async {
+  Future<Either<ApiException, Map<String, dynamic>>> deleteSaveSearch({
+    required String id,
+  }) async {
     return await BaseApiHelper.instance.delete<Map<String, dynamic>>(
       EndPoints.deleteSaveSearch(id: id),
     );
   }
-  
+
+  //*tip slip section
+  Future<Either<ApiException, Map<String, dynamic>>> createTipSlip({
+    required Map<String, dynamic> data,
+  }) async {
+    return await BaseApiHelper.instance.post<Map<String, dynamic>>(
+      EndPoints.tipSlipCreation,
+      data: data,
+    );
+  }
+
+  Future<Either<ApiException, Map<String, dynamic>>> getTipSlips() async {
+    return await BaseApiHelper.instance.get<Map<String, dynamic>>(
+      EndPoints.getAlltipSlipCreation,
+    );
+  }
+
+  Future<Either<ApiException, Map<String, dynamic>>> removeFromTipSlip({
+    required String tipSlipId,
+  }) async {
+    return await BaseApiHelper.instance.delete<Map<String, dynamic>>(
+      EndPoints.removeFromTipSlip(id: tipSlipId),
+      parser: (data) => data ?? <String, dynamic>{},
+    );
+  }
+
+  Future<Either<ApiException, Map<String, dynamic>>> compareHorses({
+    required Map<String, dynamic> data,
+  }) async {
+    return await BaseApiHelper.instance.post(
+      EndPoints.compareHorses,
+      parser: (data) => data,
+    );
+  }
 }

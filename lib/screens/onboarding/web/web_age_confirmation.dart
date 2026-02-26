@@ -1,14 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/constants/text_style.dart';
-import 'package:puntgpt_nick/core/router/web/web_routes.dart';
-import 'package:puntgpt_nick/core/widgets/app_filed_button.dart';
-import 'package:puntgpt_nick/core/widgets/app_outlined_button.dart';
-import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
 import 'package:puntgpt_nick/core/widgets/web_top_section.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+
+import 'package:puntgpt_nick/core/app_imports.dart';
 
 class WebAgeConfirmationScreen extends StatelessWidget {
   const WebAgeConfirmationScreen({super.key});

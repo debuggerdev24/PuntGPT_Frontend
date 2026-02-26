@@ -1,18 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/router/web/web_routes.dart';
-import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/widgets/web_top_section.dart';
-import 'package:puntgpt_nick/screens/auth/screens/web/widgets/web_sign_up_form.dart';
-import 'package:puntgpt_nick/screens/auth/screens/web/widgets/web_signup_bottom.dart';
-
-import '../../../../core/utils/custom_loader.dart';
-import '../../../../core/utils/de_bouncing.dart';
-import '../../../../provider/auth/auth_provider.dart';
-import '../../../../responsive/responsive_builder.dart';
-import '../mobile/widgets/sign_up_title.dart';
+import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
+import 'package:puntgpt_nick/screens/auth/mobile/widgets/sign_up_title.dart';
+import 'package:puntgpt_nick/screens/auth/web/widgets/web_sign_up_form.dart';
+import 'package:puntgpt_nick/screens/auth/web/widgets/web_signup_bottom.dart';
 
 class WebSignUpScreen extends StatelessWidget {
   const WebSignUpScreen({super.key, required this.isFreeSignUp});

@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/account/profile_model.dart';
 import 'package:puntgpt_nick/models/account/subscription_plan_model.dart';
 import 'package:puntgpt_nick/service/account/account_api_service.dart';

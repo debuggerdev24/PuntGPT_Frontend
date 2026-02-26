@@ -1,11 +1,5 @@
 import 'dart:ui';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:puntgpt_nick/core/constants/constants.dart';
-import 'package:puntgpt_nick/core/widgets/image_widget.dart';
-import 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 
 class AppCheckBox extends StatelessWidget {
   const AppCheckBox({

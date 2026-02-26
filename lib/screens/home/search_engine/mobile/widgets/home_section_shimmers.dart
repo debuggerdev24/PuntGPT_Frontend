@@ -958,3 +958,363 @@ Widget tipsAndAnalysisScreenShimmer({required BuildContext context}) {
     ),
   );
 }
+
+/// Shimmer for the Tip Slip screen. Matches layout: top bar (back + title +
+/// subtitle), list of tip slip items (chevron, silks, horse details, odds, remove),
+/// Play Fantasy Picks button, Upgrade to Pro Punter text.
+Widget tipSlipScreenShimmer({required BuildContext context}) {
+  return Shimmer.fromColors(
+    baseColor: AppColors.shimmerBaseColor,
+    highlightColor: AppColors.shimmerHighlightColor,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        //* Top bar: back arrow + title + subtitle
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 15.w, horizontal: 25.w),
+          child: Row(
+            children: [
+              Container(
+                width: 16.w,
+                height: 16.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+              ),
+              SizedBox(width: 14.w),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: context.isBrowserMobile ? 120.w : 70.w,
+                    height: context.isBrowserMobile ? 32.h : 20.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4.r),
+                    ),
+                  ),
+                  SizedBox(height: 6.h),
+                  Container(
+                    width: context.isBrowserMobile ? 260.w : 180.w,
+                    height: 14.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4.r),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        horizontalDivider(opacity: 0.8),
+        //* List of tip slip items
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(25.w, 15.w, 25.w, 10.w),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(vertical: 15.w),
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      return _tipSlipItemShimmer(context: context);
+                    },
+                  ),
+                ),
+                //* Play Fantasy Picks button shimmer
+                Container(
+                  margin: EdgeInsets.only(top: 8, bottom: 12.h),
+                  height: 48.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                ),
+                //* Upgrade to Pro Punter text shimmer
+                Container(
+                  width: 160.w,
+                  height: 16.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.7),
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _tipSlipItemShimmer({required BuildContext context}) {
+  return Container(
+    margin: EdgeInsets.only(bottom: 12.h),
+    padding: EdgeInsets.all(12.w),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(
+        color: AppColors.shimmerBaseColor.withValues(alpha: 0.5),
+      ),
+      borderRadius: BorderRadius.circular(8.r),
+    ),
+    child: Row(
+      children: [
+        // Chevron shimmer
+        Container(
+          width: 20.w,
+          height: 20.w,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(4.r),
+          ),
+        ),
+        12.w.horizontalSpace,
+        // Silks placeholder (40x40)
+        Container(
+          width: 40.w,
+          height: 40.w,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(6.r),
+            border: Border.all(
+              color: AppColors.shimmerBaseColor.withValues(alpha: 0.5),
+            ),
+          ),
+        ),
+        12.w.horizontalSpace,
+        // Horse details
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: context.isBrowserMobile ? 140.w : 100.w,
+                height: context.isBrowserMobile ? 20.h : 16.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+              ),
+              4.h.verticalSpace,
+              Container(
+                width: context.isBrowserMobile ? 100.w : 80.w,
+                height: context.isBrowserMobile ? 16.h : 13.h,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+              ),
+            ],
+          ),
+        ),
+        12.w.horizontalSpace,
+        // Odds box shimmer
+        Container(
+          width: 55.w,
+          height: 32.h,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(4.r),
+          ),
+        ),
+        8.w.horizontalSpace,
+        // Remove button shimmer
+        Container(
+          width: 32.w,
+          height: 32.w,
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.6),
+            shape: BoxShape.circle,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget runnerShimmer() {
+  return Column(
+    children: [
+      // Total Runners + Saved Searches row shimmer
+      Padding(
+        padding: EdgeInsets.fromLTRB(25.w, 16.w, 25.w, 16.w),
+        child: Shimmer.fromColors(
+          baseColor: AppColors.shimmerBaseColor,
+          highlightColor: AppColors.shimmerHighlightColor,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: 160.w,
+                height: 18.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 16.w,
+                    height: 16.w,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  Container(
+                    width: 100.w,
+                    height: 16.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      Expanded(
+        child: ListView.builder(
+          shrinkWrap: true,
+          // physics: NeverScrollableScrollPhysics(),
+          itemCount: 10,
+          itemBuilder: (context, index) {
+            return Container(
+              margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 16),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppColors.greyColor.withValues(alpha: 0.15),
+                ),
+              ),
+              child: Shimmer.fromColors(
+                baseColor: AppColors.shimmerBaseColor,
+                highlightColor: AppColors.shimmerHighlightColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header section with checkbox, name, and odds
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(12, 12, 12, 3),
+                      child: Row(
+                        children: [
+                          // Checkbox shimmer
+                          Container(
+                            width: 22,
+                            height: 22,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: AppColors.greyColor.withValues(
+                                  alpha: 0.15,
+                                ),
+                              ),
+                              color: Colors.white,
+                            ),
+                          ),
+                          15.horizontalSpace,
+                          // Race number shimmer
+                          Container(
+                            width: 30.w,
+                            height: 18.h,
+                            color: Colors.white,
+                          ),
+                          5.horizontalSpace,
+                          // Jockey name shimmer
+                          Container(
+                            width: 120.w,
+                            height: 18.h,
+                            color: Colors.white,
+                          ),
+                          Spacer(),
+                          // Odds shimmer
+                          Container(
+                            width: 60.w,
+                            height: 18.h,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Divider
+                    Divider(
+                      color: AppColors.greyColor.withValues(alpha: 0.15),
+                      height: 1,
+                    ),
+                    // Date/time info row
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(12, 6, 12, 2),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 80.w,
+                            height: 16.h,
+                            color: Colors.white,
+                          ),
+                          Container(
+                            width: 70.w,
+                            height: 16.h,
+                            color: Colors.white,
+                          ),
+                          Container(
+                            width: 90.w,
+                            height: 16.h,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Divider
+                    Divider(
+                      color: AppColors.greyColor.withValues(alpha: 0.15),
+                      height: 1,
+                    ),
+                    // "Odds may differ with:" text shimmer
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(12, 6, 12, 2),
+                      child: Container(
+                        width: 150.w,
+                        height: 16.h,
+                        color: Colors.white,
+                      ),
+                    ),
+                    // Divider
+                    Divider(
+                      color: AppColors.greyColor.withValues(alpha: 0.15),
+                      height: 1,
+                    ),
+                    // Buttons section
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(8, 6, 8, 16),
+                      child: Row(
+                        spacing: 6.w,
+                        children: [
+                          Expanded(
+                            child: Container(height: 44.h, color: Colors.white),
+                          ),
+                          Expanded(
+                            child: Container(height: 44.h, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    ],
+  );
+}

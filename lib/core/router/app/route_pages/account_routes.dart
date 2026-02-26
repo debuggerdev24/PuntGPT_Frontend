@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:puntgpt_nick/core/router/app/app_routes.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/account/subscription_plan_model.dart';
 import 'package:puntgpt_nick/screens/account/mobile/account_screen.dart';
 import 'package:puntgpt_nick/screens/account/mobile/change_password_screen.dart';

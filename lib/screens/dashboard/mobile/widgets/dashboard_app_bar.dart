@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 
 class DashboardAppBar extends StatefulWidget {
   const DashboardAppBar({super.key, required this.navigationShell});
@@ -63,6 +62,7 @@ class _DashboardAppBarState extends State<DashboardAppBar> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
+          context.read<SearchEngineProvider>().getTipSlips();
           if (kIsWeb) {
             WebRouter.indexedStackNavigationShell!.goBranch(3);
             return;

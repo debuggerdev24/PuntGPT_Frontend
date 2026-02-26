@@ -1,17 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-import 'package:puntgpt_nick/core/widgets/app_outlined_button.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/provider/account/account_provider.dart';
 import 'package:puntgpt_nick/screens/account/web/widgets/subscription_plan_web.dart';
-
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/text_style.dart';
-import '../../../core/utils/custom_loader.dart';
-import '../../../core/widgets/app_devider.dart';
-import '../../../core/widgets/app_filed_button.dart';
-import '../../../core/widgets/on_button_tap.dart';
-import '../../../provider/account/account_provider.dart';
 
 class SelectedPlanSectionWeb extends StatelessWidget {
   const SelectedPlanSectionWeb({super.key});
