@@ -127,6 +127,15 @@ class PuntClubProvider extends ChangeNotifier {
     );
   }
 
+  //* get chat group history
+  // Future<void> getChatGroupHistory({required String groupId}) async {
+  //   chatGroupHistoryList = null;
+  //   notifyListeners();
+  //   final response = await PuntClubApiService.instance.getChatGroupHistory(
+  //     groupId: groupId,
+  //   );
+  // }
+
   //* get users invite list
   Future<void> getUsersInviteList({required String groupId}) async {
     // if (userInvitesList != null) return;
@@ -378,4 +387,6 @@ class PuntClubProvider extends ChangeNotifier {
     isLeavingGroup = false;
     notifyListeners();
   }
+
+
 }

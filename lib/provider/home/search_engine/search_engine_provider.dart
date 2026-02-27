@@ -21,6 +21,13 @@ class SearchEngineProvider extends ChangeNotifier {
   List<RunnerModel>? runnersList;
   CompareHorseModel? compareHorse;
 
+  @override
+  void dispose() {
+    super.dispose();
+    oddsRangeCtr.dispose();
+    jockeyHorseWinsCtr.dispose();
+  }
+
   void toggleTipSlipExpand(int tipSlipId) {
     expandedTipSlipId = expandedTipSlipId == tipSlipId ? null : tipSlipId;
     notifyListeners();

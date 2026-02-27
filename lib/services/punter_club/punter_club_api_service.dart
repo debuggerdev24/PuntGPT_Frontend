@@ -88,4 +88,10 @@ class PuntClubApiService {
       EndPoints.leaveGroup(groupId: groupId),
     );
   }
+
+  Future<Either<ApiException, Map<String, dynamic>>> getChatGroupHistory({required String groupId}) async {
+    return await BaseApiHelper.instance.get<Map<String, dynamic>>(
+      EndPoints.getChatGroupHistory(groupId: groupId),
+    );
+  }
 }

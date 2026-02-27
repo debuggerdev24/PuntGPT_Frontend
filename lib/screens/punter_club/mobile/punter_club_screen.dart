@@ -41,7 +41,9 @@ class PunterClubScreen extends StatelessWidget {
                             itemCount: provider.chatGroupsList!.length,
                             padding: EdgeInsets.zero,
                             itemBuilder: (context, index) {
+                              
                               final chatGroup = provider.chatGroupsList![index];
+                              Logger.info('chat group id: ${chatGroup.id}');
                               return GestureDetector(
                                 behavior: HitTestBehavior.opaque,
                                 onTap: () {

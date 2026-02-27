@@ -104,8 +104,8 @@ class EndPoints {
       "/chat-group/group-member-info/$id/";
   static String leaveGroup({required String groupId}) =>
       "/chat-group/leave-group/$groupId/";
-  static String getChatHistory({required String id}) =>
-      "/chat-group/history/$id/";
+  static String getChatGroupHistory({required String groupId})=>
+      "/chat-group/history/$groupId/";
   static String groupMembersList({required String groupId}) =>
       "/chat-group/group-member-info/$groupId/";
   //* bot

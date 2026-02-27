@@ -24,7 +24,9 @@ class PuntClubChatScreen extends StatelessWidget {
               Expanded(
                 child: Stack(
                   children: [
-                    ListView(children: [ChatSection(), ChatSection()]),
+                    ListView(children: [
+                      // ChatSection(), ChatSection()
+                    ]),
                     Padding(
                       padding: EdgeInsets.only(bottom: 25.h, right: 25.w),
                       child: Align(
@@ -72,7 +74,7 @@ class PuntClubChatScreen extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(4.w, 12.h, 25.w, 16.h),
+          padding: EdgeInsets.fromLTRB(4.w, 10.w, 25.w, 14.w),
           child: Row(
             children: [
               IconButton(

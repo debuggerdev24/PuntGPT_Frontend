@@ -1,4 +1,5 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/models/bot/answer_model.dart';
 import 'package:puntgpt_nick/models/bot/chat_message_model.dart';
 import 'package:puntgpt_nick/service/bot/bot_api_service.dart';
 
@@ -29,14 +30,12 @@ class BotProvider extends ChangeNotifier {
       timestamp: DateTime.now(),
     );
     _messages.add(userMsg);
-    notifyListeners();
 
     _isLoading = true;
     notifyListeners();
 
     final result = await BotApiService.instance.getBotResponse(
-      userQuery: content.trim(),
-      sessionId: _sessionId,
+      data: {'user_query': content.trim()},
     );
 
     _isLoading = false;
@@ -47,10 +46,11 @@ class BotProvider extends ChangeNotifier {
         notifyListeners();
       },
       (r) {
-        _sessionId = r.sessionId;
+        final data = AnswerModel.fromJson(r);
+        _sessionId = data.sessionId;
         final botMsg = ChatMessageModel(
           isUser: false,
-          content: r.answer,
+          content: data.answer,
           timestamp: DateTime.now(),
         );
         _messages.add(botMsg);

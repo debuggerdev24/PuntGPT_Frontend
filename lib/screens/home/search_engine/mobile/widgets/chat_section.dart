@@ -14,7 +14,7 @@ class ChatSection extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         (context.isBrowserMobile) ? 35.w : 25.w,
-        12.h,
+        12.w,
         25.w,
         0,
       ),
