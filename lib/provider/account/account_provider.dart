@@ -1,7 +1,7 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/account/profile_model.dart';
 import 'package:puntgpt_nick/models/account/subscription_plan_model.dart';
-import 'package:puntgpt_nick/service/account/account_api_service.dart';
+import 'package:puntgpt_nick/services/account/account_api_service.dart';
 
 class AccountProvider extends ChangeNotifier {
   TextEditingController nameCtr = TextEditingController();

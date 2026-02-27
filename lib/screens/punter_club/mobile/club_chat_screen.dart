@@ -1,14 +1,55 @@
+import 'dart:async';
+
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/models/punt_club/club_chat_message_model.dart';
+import 'package:puntgpt_nick/services/punter_club/chat_service.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/home_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/home_screen_web.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/punter_club_screen.dart';
+import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/club_chat_message_bubble.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/dialogue_sheets.dart';
-import '../../home/search_engine/mobile/widgets/chat_section.dart';
 
-class PuntClubChatScreen extends StatelessWidget {
+/// Club chat screen: connects to WebSocket, shows messages, supports send/edit/delete and typing.
+class PuntClubChatScreen extends StatefulWidget {
   const PuntClubChatScreen({super.key, required this.title});
   final String title;
+
+  @override
+  State<PuntClubChatScreen> createState() => _PuntClubChatScreenState();
+}
+
+class _PuntClubChatScreenState extends State<PuntClubChatScreen> {
+  final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  bool _hasInitiatedChat = false;
+  StreamSubscription<ChatConnectionState>? _connectionSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectionSubscription = ChatService.instance.connectionState.listen((state) {
+      if (state == ChatConnectionState.connected && mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            AppToast.success(
+              context: context,
+              message: 'Chat connected successfully',
+              duration: const Duration(seconds: 2),
+            );
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _connectionSubscription?.cancel();
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,58 +57,266 @@ class PuntClubChatScreen extends StatelessWidget {
       context.pop();
     }
     return Consumer<PuntClubProvider>(
-      builder: (context, provider, child) => Stack(
-        children: [
-          Column(
-            children: [
-              topBar(context: context, provider: provider),
-              Expanded(
-                child: Stack(
-                  children: [
-                    ListView(children: [
-                      // ChatSection(), ChatSection()
-                    ]),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 25.h, right: 25.w),
-                      child: Align(
-                        alignment: AlignmentGeometry.bottomRight,
-                        child: (context.isBrowserMobile)
-                            ? askPuntGPTButtonWeb(context: context)
-                            : askPuntGPTButton(context),
+      builder: (context, provider, child) {
+        // Connect to chat once when we have groupId (avoids infinite loop from notifyListeners → rebuild → callback)
+        if (!_hasInitiatedChat) {
+          final gid = provider.selectedGroupId ?? provider.groupId;
+          if (gid.isNotEmpty) {
+            _hasInitiatedChat = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              await provider.connectChat();
+            });
+          }
+        }
+        return Stack(
+          children: [
+            Column(
+              children: [
+                _topBar(context: context, provider: provider),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      // Message list
+                      ListView.builder(
+                        controller: _scrollController,
+                        padding: EdgeInsets.only(
+                          bottom: 100.h,
+                          left: 0,
+                          right: 0,
+                          top: 8.h,
+                        ),
+                        itemCount: provider.chatMessages.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == 0 && provider.chatMessages.isEmpty) {
+                            return _buildEmptyState(context);
+                          }
+                          if (index >= provider.chatMessages.length) {
+                            return const SizedBox.shrink();
+                          }
+                          final msg = provider.chatMessages[index];
+                          return ClubChatMessageBubble(
+                            message: msg,
+                            isOwnMessage: provider.isMyMessage(msg),
+                            onEdit: () =>
+                                _showEditDialog(context, provider, msg),
+                            onDelete: () =>
+                                _showDeleteDialog(context, provider, msg),
+                          );
+                        },
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  horizontalDivider(),
-                  TextField(
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      prefix: SizedBox(
-                        width: (context.isBrowserMobile) ? 35.w : 25.w,
+                      // Typing indicator bar (above input)
+                      if (provider.typingUsers.isNotEmpty)
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 60.h,
+                          child: _buildTypingIndicator(provider),
+                        ),
+                      // Ask PuntGPT FAB
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 25.h, right: 25.w),
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: context.isBrowserMobile
+                              ? askPuntGPTButtonWeb(context: context)
+                              : askPuntGPTButton(context),
+                        ),
                       ),
-                      hintText: "Type your message...",
-                      hintStyle: medium(
-                        fontStyle: FontStyle.italic,
-                        fontSize: (context.isBrowserMobile) ? 28.sp : 14.sp,
-                        color: AppColors.primary.withValues(alpha: 0.6),
-                      ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            ],
+                ),
+                // Input area
+                _buildInputArea(context, provider),
+              ],
+            ),
+            if (provider.isLeavingGroup || provider.isUserNameSetupLoading)
+              const FullPageIndicator(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(40.w),
+      child: Center(
+        child: Text(
+          "No messages yet. Say hello!",
+          style: medium(
+            fontSize: context.isBrowserMobile ? 28.sp : 16.sp,
+            color: AppColors.primary.withValues(alpha: 0.6),
           ),
-          if (provider.isLeavingGroup || provider.isUserNameSetupLoading) FullPageIndicator(),
+        ),
+      ),
+    );
+  }
+
+  /// Typing indicator: "User1, User2 are typing..."
+  Widget _buildTypingIndicator(PuntClubProvider provider) {
+    final names = provider.typingUsers.values.toList();
+    final text = names.length == 1
+        ? '${names.first} is typing...'
+        : names.length == 2
+            ? '${names[0]} and ${names[1]} are typing...'
+            : '${names[0]} and ${names.length - 1} others are typing...';
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 25.w),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 16.w,
+            height: 16.w,
+            child: const CircularProgressIndicator(strokeWidth: 2),
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Text(
+              text,
+              style: medium(
+                fontSize: context.isBrowserMobile ? 24.sp : 13.sp,
+                color: AppColors.primary.withValues(alpha: 0.7),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget topBar({
+  Widget _buildInputArea(BuildContext context, PuntClubProvider provider) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        horizontalDivider(),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _messageController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  prefix: SizedBox(
+                    width: (context.isBrowserMobile) ? 35.w : 25.w,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () => _sendMessage(provider),
+                    icon: Icon(
+                      Icons.send_rounded,
+                      size: (context.isBrowserMobile) ? 32.w : 22.w,
+                    ),
+                  ),
+                  hintText: "Type your message...",
+                  hintStyle: medium(
+                    fontStyle: FontStyle.italic,
+                    fontSize: (context.isBrowserMobile) ? 28.sp : 14.sp,
+                    color: AppColors.primary.withValues(alpha: 0.6),
+                  ),
+                ),
+                onChanged: (_) {
+                  // Typing: debounce start, send stop when empty
+                  deBouncer.run(() {
+                    if (_messageController.text.trim().isEmpty) {
+                      provider.sendStopTyping();
+                    } else {
+                      provider.sendTyping();
+                    }
+                  });
+                },
+                onSubmitted: (_) => _sendMessage(provider),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _sendMessage(PuntClubProvider provider) {
+    final text = _messageController.text.trim();
+    if (text.isEmpty) return;
+    _messageController.clear();
+    provider.sendStopTyping();
+    provider.sendChatMessage(text);
+  }
+
+  void _showEditDialog(
+    BuildContext context,
+    PuntClubProvider provider,
+    ClubChatMessageModel msg,
+  ) {
+    final controller = TextEditingController(text: msg.content);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.white,
+        title: const Text('Edit message'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter updated message',
+          ),
+          maxLines: 3,
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              final newContent = controller.text.trim();
+              if (newContent.isEmpty) return;
+              provider.editChatMessage(msg.messageId, newContent);
+              Navigator.pop(ctx);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(
+    BuildContext context,
+    PuntClubProvider provider,
+    ClubChatMessageModel msg,
+  ) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.white,
+        title: const Text('Delete message'),
+        content: const Text(
+          'Are you sure you want to delete this message?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              provider.deleteChatMessage(msg.messageId);
+              Navigator.pop(ctx);
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _topBar({
     required BuildContext context,
     required PuntClubProvider provider,
   }) {
@@ -80,6 +329,7 @@ class PuntClubChatScreen extends StatelessWidget {
               IconButton(
                 padding: EdgeInsets.zero,
                 onPressed: () {
+                  provider.disconnectChat();
                   context.pop();
                 },
                 icon: Icon(
@@ -87,17 +337,18 @@ class PuntClubChatScreen extends StatelessWidget {
                   size: 16.h.flexClamp(16, 24),
                 ),
               ),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
                     onTap: () {
-                      //* getting current location
-                      provider.getUsersInviteList(groupId: provider.groupId);
+                      final grp = provider.chatGroupsList![provider.selectedGroup];
+                      provider.getUsersInviteList(
+                        groupId: grp.id.toString(),
+                      );
                     },
                     child: Text(
-                      title,
+                      widget.title,
                       style: regular(
                         fontSize: (context.isBrowserMobile) ? 50.sp : 24.sp,
                         fontFamily: AppFontFamily.secondary,
@@ -118,19 +369,14 @@ class PuntClubChatScreen extends StatelessWidget {
               OnMouseTap(
                 onTap: () {
                   final grp = provider.chatGroupsList![provider.selectedGroup];
-                  provider.getUsersInviteList(
-                    groupId: grp.id.toString(),
-                    // grpName: grp.name,
-                  );
+                  provider.getUsersInviteList(groupId: grp.id.toString());
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
                     useRootNavigator: true,
                     showDragHandle: true,
                     backgroundColor: AppColors.white,
-                    builder: (context) {
-                      return InviteUserSheet();
-                    },
+                    builder: (context) => const InviteUserSheet(),
                   );
                 },
                 child: ImageWidget(
@@ -140,9 +386,7 @@ class PuntClubChatScreen extends StatelessWidget {
                   color: AppColors.primary,
                 ),
               ),
-              (context.isBrowserMobile)
-                  ? 40.w.horizontalSpace
-                  : 20.w.horizontalSpace,
+              (context.isBrowserMobile) ? 40.w.horizontalSpace : 20.w.horizontalSpace,
               GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
@@ -151,12 +395,10 @@ class PuntClubChatScreen extends StatelessWidget {
                     useRootNavigator: true,
                     showDragHandle: true,
                     backgroundColor: AppColors.white,
-                    builder: (sheetContext) {
-                      return OptionsSheetView(
-                        provider: provider,
-                        sheetContext: sheetContext,
-                      );
-                    },
+                    builder: (sheetContext) => OptionsSheetView(
+                      provider: provider,
+                      sheetContext: sheetContext,
+                    ),
                   );
                 },
                 child: ImageWidget(
@@ -223,7 +465,6 @@ class OptionsSheetView extends StatelessWidget {
               title: "Change Name",
               onTap: () {
                 context.pop();
-                // final currentCtx = AppRouter.rootNavigatorKey.currentContext;
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
@@ -236,7 +477,6 @@ class OptionsSheetView extends StatelessWidget {
                       provider: provider,
                       onSubmit: () {
                         sheetContext.pop();
-
                         provider.userNameSetup(
                           onSuccess: () {
                             final currentCtx =
@@ -255,7 +495,7 @@ class OptionsSheetView extends StatelessWidget {
             ),
             spacing,
             horizontalDivider(),
-            Spacer(),
+            const Spacer(),
             AppOutlinedButton(
               borderColor: AppColors.red,
               textStyle: semiBold(fontSize: 18.sp, color: AppColors.red),
@@ -298,7 +538,6 @@ class OptionsSheetView extends StatelessWidget {
         spacing: 11.w,
         children: [
           Text(title, style: semiBold(fontSize: 16.sp)),
-
           Icon(Icons.arrow_forward_ios_rounded, size: 12),
         ],
       ),
@@ -311,7 +550,6 @@ class OptionsSheetView extends StatelessWidget {
   }) {
     showDialog(
       context: context,
-
       builder: (dialogContext) {
         return ZoomIn(
           child: AlertDialog(
@@ -325,16 +563,14 @@ class OptionsSheetView extends StatelessWidget {
             ),
             actions: [
               myActionButtonTheme(
-                onPressed: () async {
+                onPressed: () {
                   dialogContext.pop();
                   onLeaveGroup.call();
                 },
                 title: "Yes",
               ),
               myActionButtonTheme(
-                onPressed: () {
-                  dialogContext.pop();
-                },
+                onPressed: () => dialogContext.pop(),
                 title: "Cancel",
               ),
             ],

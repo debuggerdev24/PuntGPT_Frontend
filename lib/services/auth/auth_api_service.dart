@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:puntgpt_nick/service/storage/locale_storage_service.dart';
+import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 
 import '../../core/constants/end_points.dart';
 import '../../core/helper/base_api_helper.dart';

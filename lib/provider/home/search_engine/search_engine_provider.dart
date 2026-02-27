@@ -4,7 +4,7 @@ import 'package:puntgpt_nick/models/home/search_engine/runner_model.dart';
 import 'package:puntgpt_nick/models/home/search_engine/search_model.dart';
 import 'package:puntgpt_nick/models/home/search_engine/tip_slip_model.dart';
 import 'package:puntgpt_nick/models/home/search_engine/track_item_model.dart';
-import 'package:puntgpt_nick/service/search_engine/search_engine_api_service.dart';
+import 'package:puntgpt_nick/services/search_engine/search_engine_api_service.dart';
 
 class SearchEngineProvider extends ChangeNotifier {
   bool isSearched = false, _isMenuOpen = false, _isEditSavedSearch = false;

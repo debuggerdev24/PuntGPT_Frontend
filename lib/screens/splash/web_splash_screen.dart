@@ -6,9 +6,9 @@ import 'package:puntgpt_nick/core/widgets/web_top_section.dart';
 
 import 'package:puntgpt_nick/core/app_imports.dart';
 import '../../main.dart';
-import '../../service/account/account_api_service.dart';
-import '../../service/auth/auth_api_service.dart';
-import '../../service/storage/locale_storage_service.dart';
+import '../../services/account/account_api_service.dart';
+import '../../services/auth/auth_api_service.dart';
+import '../../services/storage/locale_storage_service.dart';
 
 class WebSplashScreen extends StatefulWidget {
   const WebSplashScreen({super.key});

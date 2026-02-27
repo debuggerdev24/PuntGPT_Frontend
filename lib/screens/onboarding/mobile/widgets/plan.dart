@@ -2,7 +2,7 @@
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
 import '../../../../provider/auth/auth_provider.dart';
-import '../../../../service/storage/locale_storage_service.dart';
+import '../../../../services/storage/locale_storage_service.dart';
 
 class Plans extends StatefulWidget {
   const Plans({super.key});

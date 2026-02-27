@@ -1,14 +1,22 @@
+import 'dart:async';
+
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/punt_club/chat_group_model.dart';
+import 'package:puntgpt_nick/models/punt_club/club_chat_message_model.dart';
 import 'package:puntgpt_nick/models/punt_club/notification_model.dart';
 import 'package:puntgpt_nick/models/punt_club/user_invites_list.dart';
-import 'package:puntgpt_nick/service/home/punter_club/punter_club_api_service.dart';
+import 'package:puntgpt_nick/services/punter_club/chat_service.dart';
+import 'package:puntgpt_nick/services/punter_club/punter_club_api_service.dart';
+import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 
 class PuntClubProvider extends ChangeNotifier {
   PuntClubProvider() {
     searchNameCtr = TextEditingController();
     searchNameCtr.addListener(notifyListeners);
   }
+
+  /// Subscription to ChatService events. Cancel in dispose.
+  StreamSubscription<Map<String, dynamic>>? _chatEventSubscription;
   int selectedGroup = 0, notificationCount = 0;
   String groupId = "";
   late final TextEditingController searchNameCtr;
@@ -17,11 +25,182 @@ class PuntClubProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    disconnectChat();
+    _chatEventSubscription?.cancel();
     searchNameCtr.removeListener(notifyListeners);
     searchNameCtr.dispose();
     clubNameCtr.dispose();
     super.dispose();
   }
+
+  //* ========== CHAT (WebSocket) ==========
+  /// List of messages in the current group chat.
+  final List<ClubChatMessageModel> chatMessages = [];
+  /// Typing indicators: sender_id -> sender_username.
+  final Map<int, String> typingUsers = {};
+  /// Last connected group id – used to avoid clearing messages when reconnecting to same group.
+  String? _lastConnectedGroupId;
+  /// Current user id for "is mine" check. From LocaleStorageService.
+  int get _currentUserId =>
+      int.tryParse(LocaleStorageService.userId) ?? 0;
+  /// True if a message was sent by the current user.
+  bool isMyMessage(ClubChatMessageModel m) => m.senderId == _currentUserId;
+
+  /// Connects to chat WebSocket for the selected group and loads history.
+  /// When reconnecting to the *same* group, keeps existing messages instead of clearing.
+  Future<void> connectChat() async {
+    final groupId = selectedGroupId ?? this.groupId;
+    if (groupId.isEmpty) return;
+    // Only clear when switching to a different group (prevents messages disappearing when navigating back)
+    final isSameGroup = _lastConnectedGroupId == groupId;
+    if (!isSameGroup) {
+      chatMessages.clear();
+      typingUsers.clear();
+      _lastConnectedGroupId = groupId;
+      notifyListeners();
+      await _loadChatHistory(groupId);
+    } else {
+      // Reconnecting to same group: keep messages, just reconnect WebSocket
+      typingUsers.clear();
+    }
+    // Connect WebSocket and listen for events.
+    Logger.info('connecting to chat: $groupId');
+    ChatService.instance.connect(groupId: groupId);
+    _chatEventSubscription?.cancel();
+    _chatEventSubscription = ChatService.instance.events.listen(_onChatEvent);
+    notifyListeners();
+  }
+
+  /// Loads chat history from REST API before WebSocket takes over.
+  Future<void> _loadChatHistory(String gid) async {
+    final r = await PuntClubApiService.instance.getChatGroupHistory(groupId: gid);
+    r.fold(
+      (l) => Logger.error('[PuntClubProvider] load chat history: ${l.errorMsg}'),
+      (data) {
+        final list = data['data'] ?? data['messages'];
+        if (list is List) {
+          for (final e in list) {
+            final m = e is Map ? Map<String, dynamic>.from(e) : null;
+            if (m != null && (m['message_id'] != null || m['id'] != null)) {
+              chatMessages.add(ClubChatMessageModel.fromNewMessageJson(m));
+            }
+          }
+          notifyListeners();
+        }
+      },
+    );
+  }
+
+  /// Handles incoming WebSocket events by "type" field.
+  void _onChatEvent(Map<String, dynamic> e) {
+    final type = (e['type'] ?? '').toString();
+    switch (type) {
+      case 'message':
+        // New message: add to list
+        chatMessages.add(ClubChatMessageModel.fromNewMessageJson(e));
+        break;
+      case 'message_edited':
+        _handleMessageEdited(e);
+        break;
+      case 'message_deleted':
+        _handleMessageDeleted(e);
+        break;
+      case 'typing':
+        _handleTyping(e);
+        break;
+      case 'stop_typing':
+        _handleStopTyping(e);
+        break;
+      case 'error':
+        _handleError(e);
+        break;
+      default:
+        break;
+    }
+    notifyListeners();
+  }
+
+  void _handleMessageEdited(Map<String, dynamic> e) {
+    final id = _intFrom(e['message_id']);
+    final content = (e['content'] ?? '').toString();
+    final editedAt = e['edited_at'] != null ? DateTime.tryParse(e['edited_at'].toString()) : null;
+    for (final m in chatMessages) {
+      if (m.messageId == id) {
+        m.content = content;
+        m.isEdited = true;
+        if (editedAt != null) m.editedAt = editedAt;
+        break;
+      }
+    }
+  }
+
+  void _handleMessageDeleted(Map<String, dynamic> e) {
+    final id = _intFrom(e['message_id']);
+    chatMessages.removeWhere((m) => m.messageId == id);
+  }
+
+  void _handleTyping(Map<String, dynamic> e) {
+    final senderId = _intFrom(e['sender_id'] ?? e['user_id']);
+    final username = (e['sender_username'] ?? e['username'] ?? '').toString();
+    // Don't show self: exclude current user and invalid sender_id (0)
+    if (senderId > 0 && senderId != _currentUserId) {
+      typingUsers[senderId] = username;
+    }
+  }
+
+  void _handleStopTyping(Map<String, dynamic> e) {
+    final senderId = _intFrom(e['sender_id'] ?? e['user_id']);
+    if (senderId > 0) typingUsers.remove(senderId);
+  }
+
+  void _handleError(Map<String, dynamic> e) {
+    final msg = (e['message'] ?? 'Unknown error').toString();
+    Logger.error('[PuntClubProvider] Chat error: $msg');
+  }
+
+  static int _intFrom(dynamic v) {
+    if (v == null) return 0;
+    if (v is int) return v;
+    return int.tryParse(v.toString()) ?? 0;
+  }
+
+  /// Disconnects from chat and clears messages/typing.
+  void disconnectChat() {
+    _chatEventSubscription?.cancel();
+    _chatEventSubscription = null;
+    ChatService.instance.disconnect();
+    chatMessages.clear();
+    typingUsers.clear();
+    _lastConnectedGroupId = null;
+    notifyListeners();
+  }
+
+  /// Sends a new message.
+  void sendChatMessage(String content) {
+    ChatService.instance.sendMessage(content);
+  }
+
+  /// Edits an existing message (own messages only, within 15 min).
+  void editChatMessage(int messageId, String content) {
+    ChatService.instance.sendEdit(messageId, content);
+  }
+
+  /// Deletes a message.
+  void deleteChatMessage(int messageId) {
+    ChatService.instance.sendDelete(messageId);
+  }
+
+  /// Notifies server that user started typing.
+  void sendTyping() {
+    ChatService.instance.sendTyping();
+  }
+
+  /// Notifies server that user stopped typing.
+  void sendStopTyping() {
+    ChatService.instance.sendStopTyping();
+  }
+
+  //* ========== END CHAT ==========
 
   List<ChatGroupModel>? chatGroupsList;
   List<UserInvitesList>? userInvitesList;

@@ -1,7 +1,7 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/bot/answer_model.dart';
 import 'package:puntgpt_nick/models/bot/chat_message_model.dart';
-import 'package:puntgpt_nick/service/bot/bot_api_service.dart';
+import 'package:puntgpt_nick/services/bot/bot_api_service.dart';
 
 class BotProvider extends ChangeNotifier {
   final List<ChatMessageModel> _messages = [];

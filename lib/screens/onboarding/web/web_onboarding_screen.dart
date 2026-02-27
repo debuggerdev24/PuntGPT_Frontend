@@ -4,7 +4,7 @@ import 'package:puntgpt_nick/core/widgets/web_top_section.dart';
 import 'package:puntgpt_nick/screens/onboarding/mobile/widgets/video_widget.dart';
 
 import '../../../provider/auth/auth_provider.dart';
-import '../../../service/storage/locale_storage_service.dart';
+import '../../../services/storage/locale_storage_service.dart';
 
 class WebOnboardingScreen extends StatelessWidget {
   const WebOnboardingScreen({super.key});

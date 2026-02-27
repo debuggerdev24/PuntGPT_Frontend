@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:puntgpt_nick/service/subscription/subscription_service.dart';
+import 'package:puntgpt_nick/services/subscription/subscription_service.dart';
 
 import '../../core/enum/app_enums.dart';
 
