@@ -17,8 +17,8 @@ class ClubChatMessageModel {
   /// Also supports REST history format with "id" instead of "message_id".
   factory ClubChatMessageModel.fromJson(Map<String, dynamic> json) {
     return ClubChatMessageModel(
-      messageId: _intFrom(json['id']),
-      senderId: _intFrom(json['sender_user_id']),
+      messageId: _intFrom(json['id'] ?? json['message_id']),
+      senderId: _intFrom(json['sender_user_id'] ?? json['sender_id']),
       senderUsername: (json['sender_username'] ?? ''),
       content: (json['content'] ?? ''),
       createdAt: _parseDateTime(json['created_at']),

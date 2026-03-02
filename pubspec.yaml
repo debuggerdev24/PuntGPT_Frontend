@@ -38,6 +38,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   uses-material-design: true
@@ -62,3 +63,9 @@ flutter:
     - family: ChangaOne
       fonts:
         - asset: assets/fonts/ChangaOne-Regular.ttf
+
+flutter_launcher_icons:
+  image_path: assets/images/app_logo.png
+  android: true
+  ios: true
+  remove_alpha_ios: true

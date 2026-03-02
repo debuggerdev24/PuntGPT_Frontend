@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
-
 import '../../core/constants/end_points.dart';
 import '../../core/helper/base_api_helper.dart';
 
@@ -30,6 +29,11 @@ class AuthApiService {
     required String password,
     required String confirmPassword,
     required String agreedToTerms,
+    required String addressLine1,
+    required String addressLine2,
+    required String suburb,
+    required String postCode,
+    required String country,
   }) async {
     return await BaseApiHelper.instance.post<Map<String, dynamic>>(
       EndPoints.userRegister,
@@ -43,6 +47,11 @@ class AuthApiService {
         "password": password,
         "confirm_password": confirmPassword,
         "agreed_to_terms": agreedToTerms,
+        "address_line_1": addressLine1,
+        "address_line_2": addressLine2,
+        "suburb": suburb,
+        "post_code": postCode,
+        "country": country,
       },
     );
   }

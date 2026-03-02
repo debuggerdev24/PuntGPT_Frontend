@@ -18,7 +18,12 @@ class AuthProvider extends ChangeNotifier {
       forgotPasswordCtr = TextEditingController(text: "test@gmail.com"),
       newPasswordCtr = TextEditingController(),
       resetConfirmPasswordCtr = TextEditingController(),
-      otpCtr = TextEditingController();
+      otpCtr = TextEditingController(),
+      addressLine1Ctr = TextEditingController(),
+      addressLine2Ctr = TextEditingController(),
+      suburbCtr = TextEditingController(),
+      postCodeCtr = TextEditingController(),
+      countryCtr = TextEditingController();
 
   int _selectedTab = 0, _resendSeconds = 0;
   Timer? _resendTimer;
@@ -98,6 +103,11 @@ class AuthProvider extends ChangeNotifier {
       password: passwordCtr.text.trim(),
       confirmPassword: confirmPasswordCtr.text.trim(),
       agreedToTerms: isReadTermsAndConditions.toString(),
+      addressLine1: addressLine1Ctr.text.trim(),
+      addressLine2: addressLine2Ctr.text.trim(),
+      suburb: suburbCtr.text.trim(),
+      postCode: postCodeCtr.text.trim(),
+      country: countryCtr.text.trim(),
     );
 
     result.fold(
@@ -352,6 +362,11 @@ class AuthProvider extends ChangeNotifier {
     passwordCtr.clear();
     dobCtr.clear();
     confirmPasswordCtr.clear();
+    addressLine1Ctr.clear();
+    addressLine2Ctr.clear();
+    suburbCtr.clear();
+    postCodeCtr.clear();
+    countryCtr.clear();
     selectedState = "";
     _isReadTermsAndConditions = false;
   }

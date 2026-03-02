@@ -29,7 +29,7 @@ class SignUpForm extends StatelessWidget {
         return Form(
           key: formKey,
           child: Column(
-            spacing: 8.h,
+            spacing: 8.w,
             children: [
               AppTextField(
                 controller: provider.firstNameCtr,
@@ -69,6 +69,46 @@ class SignUpForm extends StatelessWidget {
                 selectedValue: provider.selectedState,
                 validator: (value) =>
                     FieldValidators().required(value, "State"),
+              ),
+              AppTextField(
+                controller: provider.addressLine1Ctr,
+                hintText: "Address Line 1",
+                validator: (value) =>
+                    FieldValidators().required(value, "Address Line 1"),
+              ),
+              AppTextField(
+                controller: provider.addressLine2Ctr,
+                hintText: "Address Line 2",
+                validator: (value) =>
+                    FieldValidators().required(value, "Address Line 2"),
+              ),
+              AppTextField(
+                controller: provider.suburbCtr,
+                hintText: "Suburb",
+                validator: (value) =>
+                    FieldValidators().required(value, "Suburb"),
+              ),
+              AppTextField(
+                controller: provider.postCodeCtr,
+                
+                keyboardType: TextInputType.number,
+                inputFormatter: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                hintText: "Post Code",
+                validator: (value) {
+                  final r = FieldValidators().required(value, "Post Code");
+                  if (r != null) return r;
+                  final min = FieldValidators().minLength(value, 3);
+                  if (min != null) return min;
+                  return FieldValidators().maxLength(value, 10);
+                },
+              ),
+              AppTextField(
+                controller: provider.countryCtr,
+                hintText: "Country",
+                validator: (value) =>
+                    FieldValidators().required(value, "Country"),
               ),
               AppTextField(
                 controller: provider.emailCtr,
