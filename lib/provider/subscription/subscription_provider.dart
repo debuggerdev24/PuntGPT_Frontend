@@ -6,13 +6,12 @@ import '../../core/enum/app_enums.dart';
 class SubscriptionProvider extends ChangeNotifier {
   /// Store all active subscriptions
   final Set<AppEnum> _activeSubscriptions = {
-    // AppEnum.monthlyPlan,
+    AppEnum.monthlyPlan,
   };
 
   bool _isSubscriptionProcessing = false;
-
+  
   bool get isSubscriptionProcessing => _isSubscriptionProcessing;
-
   bool get isMonthlyPlanSubscribed =>
       _activeSubscriptions.contains(AppEnum.monthlyPlan);
   bool get isAnnualPlanSubscribed =>

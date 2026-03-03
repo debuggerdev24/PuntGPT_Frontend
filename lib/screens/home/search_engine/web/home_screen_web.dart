@@ -110,7 +110,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
                   child: (provider.isSearched)
                       ? GestureDetector(
                           onTap: () {
-                            context.pushNamed(AppRoutes.searchFilter.name);
+                            // context.pushNamed(AppRoutes.searchFilter.name);
                           },
                           child: IntrinsicHeight(
                             child: Container(

@@ -40,4 +40,5 @@ class AppAssets {
   static const b3 = "$_imagePath/b3.png";
   static const webLogo = "$_imagePath/webLogo.png";
   static const onBoardingImage = "$_imagePath/on_boarding_image.png";
+  static const unibatLogo = "$_imagePath/unibat_logo.png";
 }

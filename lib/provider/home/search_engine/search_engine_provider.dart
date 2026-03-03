@@ -223,7 +223,7 @@ class SearchEngineProvider extends ChangeNotifier {
   }
 
   Future<void> getSearchEngine({required VoidCallback onSuccess}) async {
-    // runnersList = null;
+    runnersList = null;
     notifyListeners();
     // Get the first checked track item, if any
     String? trackValue;

@@ -23,13 +23,13 @@ class AuthRoutes {
             SignUpScreen(isFreeSignUp: (state.extra as Map)['is_free_sign_up']),
       ),
 
-      GoRoute(
-        name: AppRoutes.searchFilter.name,
-        path: AppRoutes.searchFilter.path,
-        builder: (context, state) {
-          return SearchFilterScreen();
-        },
-      ),
+      // GoRoute(
+      //   name: AppRoutes.searchFilter.name,
+      //   path: AppRoutes.searchFilter.path,
+      //   builder: (context, state) {
+      //     return SearchFilterScreen();
+      //   },
+      // ),
       GoRoute(
         name: AppRoutes.forgotPasswordScreen.name,
         path: AppRoutes.forgotPasswordScreen.path,

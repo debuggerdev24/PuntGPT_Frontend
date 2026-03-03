@@ -67,6 +67,7 @@ pro -3 parth
 */
 Meera a id: 
 
+-> Worked on creating the privacy policy.
 
 
 */ 

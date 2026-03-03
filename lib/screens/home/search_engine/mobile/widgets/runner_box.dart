@@ -18,6 +18,7 @@ class RunnerBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final padding = EdgeInsets.fromLTRB(8.w, 3, 8.w, 0);
     return Container(
       margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 16),
       decoration: BoxDecoration(
@@ -73,7 +74,10 @@ class RunnerBox extends StatelessWidget {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    _showSaveSearchDialog(context: context, onSave: onAddToSaveSearch);
+                    _showSaveSearchDialog(
+                      context: context,
+                      onSave: onAddToSaveSearch,
+                    );
                   },
                   child: Icon(Icons.bookmark_add_outlined),
                 ),
@@ -83,7 +87,7 @@ class RunnerBox extends StatelessWidget {
           Divider(color: AppColors.primary.withValues(alpha: 0.15)),
           //*----------- second row section
           Padding(
-            padding: EdgeInsets.fromLTRB(8.w, 6, 8.w, 2),
+            padding: padding,
             child: Row(
               spacing: 10,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,16 +97,28 @@ class RunnerBox extends StatelessWidget {
                   "${runner.jumpTimeAu?.split(" ").first ?? '-'}\n${DateFormatter.formatTimeFromString(runner.jumpTimeAu)}",
                   style: medium(fontSize: 16.sp),
                 ),
-
-                Text(runner.trainerName ?? '-', style: medium(fontSize: 16.sp)),
+                Expanded(
+                  child: Text(
+                    textAlign: TextAlign.start,
+                    runner.jockeyName ?? '-',
+                    style: medium(fontSize: 16.sp),
+                  ),
+                ),
               ],
             ),
           ),
           Divider(color: AppColors.primary.withValues(alpha: 0.15)),
           //*----------- third row section
           Padding(
-            padding: EdgeInsets.fromLTRB(8.w, 6, 8.w, 2),
-            child: Text("Odds may differ with:", style: bold(fontSize: 16.sp)),
+            padding: padding,
+            child: Column(
+              spacing: 2,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Odds may differ with:", style: bold(fontSize: 16.sp)),
+                ImageWidget(path: AppAssets.unibatLogo, height: 26.w),
+              ],
+            ),
           ),
           // Divider(color: AppColors.greyColor.withValues(alpha: 0.15)),
           // Padding(
@@ -114,7 +130,7 @@ class RunnerBox extends StatelessWidget {
           // ),
           Divider(color: AppColors.primary.withValues(alpha: 0.15)),
           Padding(
-            padding: EdgeInsets.fromLTRB(8.w, 6, 8.w, 16),
+            padding: padding,
             child: Row(
               spacing: 6.w,
               children: [
@@ -193,7 +209,9 @@ class RunnerBox extends StatelessWidget {
           child: Consumer<SearchEngineProvider>(
             builder: (_, provider, __) {
               if (provider.compareHorse == null) {
-                return HomeSectionShimmers.fieldComparisonShimmer(context: modalContext);
+                return HomeSectionShimmers.fieldComparisonShimmer(
+                  context: modalContext,
+                );
               }
               return Column(
                 mainAxisSize: MainAxisSize.min,
@@ -224,17 +242,19 @@ class RunnerBox extends StatelessWidget {
     );
   }
 
-  void _showSaveSearchDialog({required BuildContext context, required Function(String name, BuildContext context) onSave}) {
+  void _showSaveSearchDialog({
+    required BuildContext context,
+    required Function(String name, BuildContext context) onSave,
+  }) {
     showDialog(
       context: context,
       builder: (dialogContext) {
-        
         return ZoomIn(
-        child: _SaveSearchDialogContent(
-          onCancel: () => context.pop(dialogContext),
-          onSave: onSave
-        ),
-      );
+          child: _SaveSearchDialogContent(
+            onCancel: () => context.pop(dialogContext),
+            onSave: onSave,
+          ),
+        );
       },
     );
   }

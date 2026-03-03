@@ -45,7 +45,9 @@ class SearchFields extends StatelessWidget {
                             ? AppRoutes.savedSearchedScreen.name
                             : WebRoutes.savedSearchedScreen.name,
                       );
-                      provider.getAllSaveSearch();
+                      if (subProvider.isSubscribed) {
+                        provider.getAllSaveSearch();
+                      }
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

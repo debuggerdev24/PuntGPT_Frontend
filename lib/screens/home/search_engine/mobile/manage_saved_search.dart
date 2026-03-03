@@ -25,7 +25,7 @@ class SearchDetailScreen extends StatelessWidget {
           },
           child: Column(
             children: [
-              topBar(
+              _buildTopBar(
                 context: context,
                 provider: provider,
                 title: provider.selectedSaveSearch?.name ?? "",
@@ -117,7 +117,7 @@ class SearchDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget topBar({
+  Widget _buildTopBar({
     required BuildContext context,
     required SearchEngineProvider provider,
     required String title,

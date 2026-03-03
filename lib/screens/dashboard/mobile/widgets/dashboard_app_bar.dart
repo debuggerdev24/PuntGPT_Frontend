@@ -78,7 +78,7 @@ class _DashboardAppBarState extends State<DashboardAppBar> {
 
   Widget _tipSlip() {
     return Consumer<SearchEngineProvider>(
-      builder: (context, provider, child) {
+      builder: (context, provider, child){
         return SizedBox(
           height: (12.w.flexClamp(18, 22) * 1.2) + 20,
           child: GestureDetector(
