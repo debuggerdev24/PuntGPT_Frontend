@@ -35,7 +35,11 @@ Future<void> main() async {
 
 todo Joseph
 
+
 todo Nick
+
+
+
 name: "Custom Name 3",
 filters: {
 track: Flemington
@@ -61,13 +65,9 @@ jockey_strike_rate_last_12_months: ""
 //* IMPORTANT           // Yellow
 // TODO: refactor       // Default todo
 pro -2 meera a 16
-pro -3 parth 
-
-
+pro -3 parth
 */
 Meera a id: 
-
--> Worked on creating the privacy policy.
 
 
 */ 

@@ -13,9 +13,9 @@ class SubscriptionService {
   final InAppPurchase _iap = InAppPurchase.instance;
 
   // todo Mock product IDs for now
-  static const Map<AppEnum, String> productIds = {
-    AppEnum.monthlyPlan: "com.monthlyPlan",
-    AppEnum.annualPlan: "com.yearlyPlan",
+  static const Map<SubscriptionEnum, String> productIds = {
+    SubscriptionEnum.monthlyPlan: "com.monthlyPlan",
+    SubscriptionEnum.annualPlan: "com.yearlyPlan",
     // AppEnum.yearlyPlan: "mock.tier3.monthly",
   };
 
@@ -76,7 +76,7 @@ class SubscriptionService {
   // BUY (CALLED BY PROVIDER)
   // ---------------------------------------------------------------------------
   Future<bool> buy({
-    required AppEnum tier,
+    required SubscriptionEnum tier,
     required BuildContext context,
   }) async {
     try {
@@ -141,7 +141,7 @@ class SubscriptionService {
     }
   }
 
-  AppEnum? _mapProductToTier(String id) {
+  SubscriptionEnum? _mapProductToTier(String id) {
     try {
       return productIds.entries.firstWhere((e) => e.value == id).key;
     } catch (_) {
@@ -152,7 +152,7 @@ class SubscriptionService {
   // ---------------------------------------------------------------------------
   // CANCEL (CALLED BY PROVIDER)
   // ---------------------------------------------------------------------------
-  Future<bool> cancel({required AppEnum tier}) async {
+  Future<bool> cancel({required SubscriptionEnum tier}) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return true;
   }

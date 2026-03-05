@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:puntgpt_nick/core/constants/app_config.dart';
+import 'package:puntgpt_nick/core/enum/app_enums.dart';
 import 'package:puntgpt_nick/core/helper/log_helper.dart';
 import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -35,8 +36,7 @@ class ChatService {
       StreamController<ChatConnectionState>.broadcast();
   final _eventController = StreamController<Map<String, dynamic>>.broadcast();
 
-  Stream<ChatConnectionState> get connectionState =>
-      _connectionStateController.stream;
+  Stream<ChatConnectionState> get connectionState => _connectionStateController.stream;
   Stream<Map<String, dynamic>> get events => _eventController.stream;
 
   ChatConnectionState _state = ChatConnectionState.disconnected;
@@ -107,7 +107,7 @@ class ChatService {
         cancelOnError: false,
       );
 
-      // Consider connected once the channel is established (stream starts)
+      //* Consider connected once the channel is established (stream starts)
       _setState(ChatConnectionState.connected);
       Logger.info('[ChatService] Connected to club $groupId');
     } catch (e, st) {
@@ -131,7 +131,7 @@ class ChatService {
     }
   }
 
-  /// Sends a JSON payload. Must have "type" field.
+  //* Sends a JSON payload. Must have "type" field.
   void _send(Map<String, dynamic> payload) {
     if (!isConnected || _channel == null) {
       Logger.warning('[ChatService] Cannot send: not connected');
@@ -144,34 +144,41 @@ class ChatService {
     }
   }
 
+  //* Sends a message.
   void sendMessage(String content, {String? senderUsername}) {
     if (content.trim().isEmpty) return;
-    final payload = <String, dynamic>{'type': 'message', 'content': content.trim()};
-    if (senderUsername != null && senderUsername.trim().isNotEmpty) {
-      payload['sender_username'] = senderUsername.trim();
-    }
+    final payload = <String, dynamic>{
+      'type': ChatMessageType.message.name,
+      'content': content.trim(),
+    };
     _send(payload);
   }
 
+  //* Edits a message.
   void sendEdit(int messageId, String content) {
     if (content.trim().isEmpty) return;
-    _send({'type': 'edit', 'message_id': messageId, 'content': content.trim()});
+    _send({
+      'type': ChatMessageType.edit.name,
+      'message_id': messageId,
+      'content': content.trim(),
+    });
   }
 
+  //* Deletes a message.
   void sendDelete(int messageId) {
-    _send({'type': 'delete', 'message_id': messageId});
+    _send({'type': ChatMessageType.delete.name, 'message_id': messageId});
   }
 
+  //* Starts typing.
   void sendTyping({String? senderUsername}) {
-    final payload = <String, dynamic>{'type': 'typing'};
-    if (senderUsername != null && senderUsername.trim().isNotEmpty) {
-      payload['sender_username'] = senderUsername.trim();
-    }
+    final payload = <String, dynamic>{'type': ChatMessageType.typing.name};
+
     _send(payload);
   }
 
+  //* Stops typing.
   void sendStopTyping() {
-    _send({'type': 'stop_typing'});
+    _send({'type': ChatMessageType.stop_typing.name});
   }
 
   void disconnect() {

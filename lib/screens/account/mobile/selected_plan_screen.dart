@@ -25,11 +25,11 @@ class SelectedPlanScreen extends StatelessWidget {
         AppFilledButton(
           text: "Pay & Subscribe",
           onTap: () {
-            var selectedPlan = AppEnum.monthlyPlan;
+            var selectedPlan = SubscriptionEnum.monthlyPlan;
             if (plan.id == 3) {
-              selectedPlan = AppEnum.annualPlan;
+              selectedPlan = SubscriptionEnum.annualPlan;
             } else if (plan.id == 4) {
-              selectedPlan = AppEnum.lifeTimePlan;
+              selectedPlan = SubscriptionEnum.lifeTimePlan;
             }
             Logger.info(selectedPlan.name);
             context.read<SubscriptionProvider>().buy(

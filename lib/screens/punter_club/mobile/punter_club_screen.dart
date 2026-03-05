@@ -1,12 +1,11 @@
 import 'package:badges/badges.dart' as badge;
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/widgets/subscription_gate_view.dart';
-import 'package:puntgpt_nick/models/punt_club/notification_model.dart';
-import 'package:puntgpt_nick/models/punt_club/user_invites_list.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
 import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/home_screen.dart';
-import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/dialogue_sheets.dart';
+import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/create_chat_group_sheet.dart';
+import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/notification_sheet.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/punter_club_shimmers.dart';
 
 class PunterClubScreen extends StatelessWidget {
@@ -25,7 +24,7 @@ class PunterClubScreen extends StatelessWidget {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                topBar(context: context, provider: provider),
+                _topBar(context: context, provider: provider),
                 horizontalDivider(),
                 Expanded(
                   child: SubscriptionGateView(
@@ -48,7 +47,7 @@ class PunterClubScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   //* top bar
-                  topBar(context: context, provider: provider),
+                  _topBar(context: context, provider: provider),
                   horizontalDivider(),
                   Expanded(
                     child: (provider.chatGroupsList!.isEmpty)
@@ -57,13 +56,18 @@ class PunterClubScreen extends StatelessWidget {
                             provider: provider,
                           )
                         : ListView.separated(
-                            separatorBuilder: (context, index) =>
-                                horizontalDivider(),
+                            separatorBuilder: (context, index) => Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
+                              child: horizontalDivider(),
+                            ),
                             shrinkWrap: true,
-                            itemCount: provider.chatGroupsList!.length,
+                            itemCount: provider.chatGroupsList!.length + 1,
                             padding: EdgeInsets.zero,
+
                             itemBuilder: (context, index) {
-                              
+                              if (index == provider.chatGroupsList!.length) {
+                                return const SizedBox.shrink();
+                              }
                               final chatGroup = provider.chatGroupsList![index];
                               Logger.info('chat group id: ${chatGroup.id}');
                               return GestureDetector(
@@ -76,21 +80,94 @@ class PunterClubScreen extends StatelessWidget {
                                         : AppRoutes.punterClubChatScreen.name,
                                     extra: chatGroup.name,
                                   );
+                                  provider.getChatGroups();
                                 },
-                                child: Container(
+                                child: Padding(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 25.w,
-                                    vertical: 20.h,
+                                    vertical: 20.w,
                                   ),
-
-                                  child: Text(
-                                    chatGroup.name,
-                                    style: bold(
-                                      fontSize: (context.isBrowserMobile)
-                                          ? 32.sp
-                                          : 16.sp,
-                                      // color: (index % 2 == 0) ? null : AppColors.white,
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                chatGroup.name,
+                                                style: bold(
+                                                  fontSize:
+                                                      (context.isBrowserMobile)
+                                                      ? 32.sp
+                                                      : 16.sp,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            if (chatGroup.unreadMessageCount >
+                                                0) ...[
+                                              8.w.horizontalSpace,
+                                              Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 8.w,
+                                                  vertical: 4.h,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.primary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        12.r,
+                                                      ),
+                                                ),
+                                                child: Text(
+                                                  chatGroup.unreadMessageCount >
+                                                          99
+                                                      ? "99+"
+                                                      : "${chatGroup.unreadMessageCount}",
+                                                  style: semiBold(
+                                                    fontSize:
+                                                        (context
+                                                            .isBrowserMobile)
+                                                        ? 24.sp
+                                                        : 12.sp,
+                                                    color: AppColors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                      if (chatGroup.isAdmin)
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 8.w,
+                                            vertical: 4.h,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary.withValues(
+                                              alpha: 0.08,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              6.r,
+                                            ),
+                                            border: Border.all(
+                                              color: AppColors.primary
+                                                  .withValues(alpha: 0.25),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            "Admin",
+                                            style: semiBold(
+                                              fontSize:
+                                                  (context.isBrowserMobile)
+                                                  ? 22.sp
+                                                  : 11.sp,
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
                               );
@@ -102,18 +179,17 @@ class PunterClubScreen extends StatelessWidget {
                   // Spacer(),
                 ],
               ),
-              Align(
-                alignment: AlignmentGeometry.bottomRight,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 25.w,
-                    vertical: 25.h,
-                  ),
-                  child: askPuntGPTButton(context),
-                ),
-              ),
+              // Align(
+              //   alignment: AlignmentGeometry.bottomRight,
+              //   child: Padding(
+              //     padding: EdgeInsets.symmetric(
+              //       horizontal: 25.w,
+              //       vertical: 25.h,
+              //     ),
+              //     child: askPuntGPTButton(context),
+              //   ),
+              // ),
               if (provider.isCreatingChatGroupLoading ||
-                  // provider.isUserNameSetup ||
                   provider.isInvitingUser)
                 FullPageIndicator(),
             ],
@@ -124,14 +200,14 @@ class PunterClubScreen extends StatelessWidget {
   }
 
   //* Top bar
-  Widget topBar({
+  Widget _topBar({
     required BuildContext context,
     required PuntClubProvider provider,
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: (context.isBrowserMobile) ? 35.w : 25.w,
-        vertical: 22.w,
+        vertical: 18.w,
       ),
       child: Row(
         children: [
@@ -200,7 +276,7 @@ class PunterClubScreen extends StatelessWidget {
                 showDragHandle: true,
                 useRootNavigator: true,
                 builder: (sheetContext) {
-                  return createChatGroupSheet(provider, sheetContext, context);
+                  return CreateChatGroupSheet(provider: provider);
                 },
               );
             },
@@ -220,88 +296,6 @@ class PunterClubScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget createChatGroupSheet(
-    PuntClubProvider provider,
-    BuildContext sheetContext,
-    BuildContext context,
-  ) {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
-      ),
-      child: Container(
-        height: 310.h,
-        padding: EdgeInsets.symmetric(horizontal: 25.w),
-        child: Column(
-          children: [
-            Text(
-              "Create Punter Club",
-              style: regular(
-                fontSize: 24.sp,
-                fontFamily: AppFontFamily.secondary,
-              ),
-            ),
-            16.h.verticalSpace,
-            horizontalDivider(),
-            24.h.verticalSpace,
-            AppTextField(
-              controller: provider.clubNameCtr,
-              hintText: "Enter Club Name",
-            ),
-            AppFilledButton(
-              margin: EdgeInsets.only(top: 24.h),
-              text: "Create Club",
-              onTap: () {
-                sheetContext.pop();
-                if (provider.clubNameCtr.text.trim().isEmpty) {
-                  AppToast.error(
-                    context: context,
-                    message: "Please enter club name",
-                  );
-                  return;
-                }
-                //* Create chat group
-
-                provider.createChatGroup(
-                  onError: (error) {
-                    AppToast.error(context: context, message: error);
-                  },
-                  onSuccess: () {
-                    AppToast.success(
-                      context: context,
-                      message: "Chat group created successfully",
-                    );
-                    // final ctx = AppRouter.rootNavigatorKey.currentContext;
-
-                    // final router = GoRouter.of(ctx!);
-                    // final location = router.state.name;
-                    // Logger.info('Current route location: $location');
-                    // if (location == AppRoutes.puntGptClub.name) {
-                    //   provider.getUsersInviteList(groupId: provider.grpId);
-                    // }
-                    provider.getUsersInviteList(groupId: provider.groupId);
-                    //* Show invite user sheet
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      showDragHandle: true,
-                      useRootNavigator: true,
-                      backgroundColor: AppColors.white,
-                      builder: (_) {
-                        return InviteUserSheet(showInviteLater: true);
-                      },
-                    );
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
 
   Widget _buildEmptyStateCreateFirstGroup({
     required BuildContext context,
@@ -356,7 +350,7 @@ class PunterClubScreen extends StatelessWidget {
                   showDragHandle: true,
                   useRootNavigator: true,
                   builder: (sheetContext) {
-                    return createChatGroupSheet(provider, sheetContext, context);
+                    return CreateChatGroupSheet(provider: provider);
                   },
                 );
               },
@@ -365,10 +359,7 @@ class PunterClubScreen extends StatelessWidget {
                 fontSize: (context.isBrowserMobile) ? 26.sp : 16.sp,
                 color: AppColors.white,
               ),
-              padding: EdgeInsets.symmetric(
-                horizontal: 28.w,
-                vertical: 14.h,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 14.h),
             ),
           ],
         ),
@@ -376,516 +367,3 @@ class PunterClubScreen extends StatelessWidget {
     );
   }
 }
-
-class InviteUserSheet extends StatelessWidget {
-  const InviteUserSheet({super.key, this.showInviteLater = false});
-  final bool? showInviteLater;
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<PuntClubProvider>(
-      builder: (context, provider, child) {
-        // Show shimmer while user list is loading
-        if (provider.userInvitesList == null) {
-          return SizedBox(
-            height: context.screenHeight - 0.15.sh,
-            child: PunterClubShimmers.inviteUserSheetShimmer(context: context),
-          );
-        }
-        if (provider.userInvitesList!.isEmpty) {
-          return const Center(child: Text("No users to invite"));
-        }
-
-        final filtered = provider.filteredUserList;
-        final isSearching = provider.searchNameCtr.text.trim().isNotEmpty;
-        final keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
-        final selectedIds = provider.selectedIds;
-        final hasSelection = selectedIds.isNotEmpty;
-
-        return SizedBox(
-          height: context.screenHeight - 0.15.sh,
-          child: Stack(
-            children: [
-              Padding(
-                // bottom padding = keyboard height so content lifts above keyboard
-                padding: EdgeInsets.fromLTRB(25.w, 5, 25.w, keyboardHeight),
-                child: Stack(
-                  children: [
-                    Column(
-                      children: [
-                        //* Title
-                        Text(
-                          "Invite Users",
-                          style: regular(
-                            fontSize: 24.twentyFourSp(context),
-                            fontFamily: AppFontFamily.secondary,
-                          ),
-                        ),
-                        20.h.verticalSpace,
-                        horizontalDivider(),
-                        20.h.verticalSpace,
-                        // Search field
-                        AppTextField(
-                          controller: provider.searchNameCtr,
-                          hintText: "Search by username",
-                          trailingIcon: AppAssets.searchIcon,
-                        ),
-                        8.w.verticalSpace,
-                        // User list
-                        Expanded(
-                          child: filtered.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    isSearching
-                                        ? 'No users found for "${provider.searchNameCtr.text.trim()}"'
-                                        : "No users to invite",
-                                  ),
-                                )
-                              : ListView.builder(
-                                  itemCount: filtered.length,
-                                  itemBuilder: (context, index) {
-                                    final user = filtered[index];
-                                    final isSelected = selectedIds.contains(
-                                      user.id,
-                                    );
-                                    return _userBox(
-                                      context: context,
-                                      user: user,
-                                      isSelected: isSelected,
-                                      onTap: () => provider.toggleUser(user.id),
-                                    );
-                                  },
-                                ),
-                        ),
-                        // Send button — visible only when at least one user is selected
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 220),
-                          transitionBuilder: (child, animation) =>
-                              SizeTransition(
-                                sizeFactor: animation,
-                                axisAlignment: -1,
-                                child: child,
-                              ),
-                          child: hasSelection
-                              ? AppFilledButton(
-                                  key: ValueKey(selectedIds.length),
-                                  margin: EdgeInsets.only(top: 8.w, bottom: 4),
-                                  text: selectedIds.length == 1
-                                      ? "Send Invite"
-                                      : "Send to All (${selectedIds.length})",
-                                  onTap: () {
-                                    provider.inviteUser(
-                                      onSuccess: () {
-                                        context.pop();
-                                        AppToast.success(
-                                          context: context,
-                                          message: "Invite sent successfully",
-                                        );
-                                      },
-                                      groupId: (provider.groupId.isEmpty)
-                                          ? provider
-                                                .chatGroupsList![provider
-                                                    .selectedGroup]
-                                                .id
-                                                .toString()
-                                          : provider.groupId,
-                                      userIds: selectedIds
-                                          .map((id) => id.toString())
-                                          .toList(),
-
-                                      context: context,
-                                    );
-                                  },
-                                )
-                              : const SizedBox.shrink(),
-                        ),
-                        if (showInviteLater == true)
-                          AppOutlinedButton(
-                            margin: EdgeInsets.only(top: 8.w, bottom: 16.w),
-                            text: "Invite Later",
-                            onTap: () {
-                              provider.resetInviteState();
-                              context.pop();
-                            },
-                          ),
-                      ],
-                    ),
-                    //* Back arrow
-                    Padding(
-                      padding: EdgeInsets.only(top: 7),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: GestureDetector(
-                          onTap: () => context.pop(),
-                          child: Icon(
-                            Icons.arrow_back_ios_new,
-                            size: 18.eighteenSp(context),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (provider.isInvitingUser) FullPageIndicator(),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _userBox({
-    required BuildContext context,
-    required UserInvitesList user,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    final height = (context.isBrowserMobile) ? 96.w : 48.w;
-    final width = (context.isBrowserMobile) ? 68.w : 48.w;
-
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        margin: EdgeInsets.only(top: 8.w),
-        height: height,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected
-                ? AppColors.green.withValues(alpha: 0.5)
-                : AppColors.primary.withValues(alpha: 0.15),
-            width: isSelected ? 1.5 : 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            // Avatar
-            Container(
-              height: height,
-              width: width,
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(color: AppColors.greyColor2),
-              child: ImageWidget(type: ImageType.svg, path: AppAssets.userIcon),
-            ),
-            (context.isBrowserMobile)
-                ? 80.w.horizontalSpace
-                : 15.w.horizontalSpace,
-            // Username
-            Expanded(
-              child: Text(
-                user.name,
-                style: semiBold(fontSize: 16.sixteenSp(context)),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            // Right action: green tick when selected, add-member icon otherwise
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 180),
-              child: isSelected
-                  ? Container(
-                      key: const ValueKey('selected'),
-                      height: height,
-                      width: width,
-                      decoration: BoxDecoration(color: AppColors.green),
-                      child: Icon(
-                        Icons.check_rounded,
-                        color: AppColors.white,
-                        size: (context.isBrowserMobile) ? 36 : 22,
-                      ),
-                    )
-                  : Container(
-                      key: const ValueKey('unselected'),
-                      height: height,
-                      width: width,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 11.w,
-                        vertical: 11.w,
-                      ),
-                      decoration: BoxDecoration(color: AppColors.primary),
-                      child: ImageWidget(
-                        path: AppAssets.addMember,
-                        type: ImageType.asset,
-                        color: AppColors.white,
-                      ),
-                    ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-//* Notification sheet view
-class NotificationSheetView extends StatelessWidget {
-  const NotificationSheetView({super.key, required this.sheetContext});
-  final BuildContext sheetContext;
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<PuntClubProvider>(
-      builder: (context, provider, _) {
-        final notifications = provider.notificationList;
-        if (notifications == null) {
-          return PunterClubShimmers.notificationSheetShimmer(context: context);
-        }
-        if (notifications.isEmpty) {
-          return const Center(
-            child: Row(
-              spacing: 5,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.notifications_none_outlined, size: 24),
-                Text("No notifications found!"),
-              ],
-            ),
-          );
-        }
-
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25.w),
-          child: Column(
-            children: [
-              Text(
-                "Notifications",
-                style: regular(
-                  fontSize: 24.sp,
-                  fontFamily: AppFontFamily.secondary,
-                ),
-              ),
-              16.w.verticalSpace,
-              horizontalDivider(),
-              18.w.verticalSpace,
-              Expanded(
-                child: ListView.builder(
-                  itemCount: notifications.length,
-                  itemBuilder: (context, index) {
-                    final notification = notifications[index];
-                    Logger.info('notification id: ${notification.inviteId}');
-
-                    return notificationBox(
-                      context: context,
-                      notification: notification,
-                      onReject: () {
-                        final rootNav = Navigator.of(
-                          context,
-                          rootNavigator: true,
-                        );
-                        provider.rejectInvitation(
-                          rejectId: notification.inviteId!,
-                          onSuccess: () {
-                            AppToast.success(
-                              context: rootNav.context,
-                              message: "Invitation declined successfully",
-                            );
-                          },
-                        );
-                      },
-                      onAccept: () {
-                        // Capture root navigator before the async gap so it
-                        // remains valid after the notification sheet is popped.
-                        final rootNav = Navigator.of(
-                          context,
-                          rootNavigator: true,
-                        );
-                        rootNav.pop();
-
-                        provider.acceptInvitation(
-                          inviteId: notification.inviteId!,
-                          onSuccess: () {
-                            // Pop the notification sheet first.
-                            // Show toast and username sheet using the root
-                            // navigator's context, which is always mounted.
-                            AppToast.success(
-                              context: rootNav.context,
-                              message:
-                                  "Invite accepted. Please create a username.",
-                            );
-                            showModalBottomSheet(
-                              context: rootNav.context,
-                              isScrollControlled: true,
-                              enableDrag: false,
-                              backgroundColor: AppColors.white,
-                              showDragHandle: true,
-                              useRootNavigator: true,
-                              builder: (sheetContext) {
-                                return createUserNameSheet(
-                                  context: sheetContext,
-                                  provider: provider,
-                                  onSubmit: () {
-                                    sheetContext.pop();
-                                    provider.userNameSetup(
-                                      onSuccess: () {
-                                        
-                                        AppToast.success(
-                                          context: rootNav.context,
-                                          message:
-                                              "Username created successfully",
-                                        );
-                                      },
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        );
-                      },
-                      onDelete: () {
-                        provider.removeNotificationAt(index);
-                        provider.deleteSingleNotification(
-                          notificationId: notification.id.toString(),
-                          onSuccess: () {},
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-              SafeArea(
-                child: AppOutlinedButton(
-                  borderColor: AppColors.redButton,
-                  margin: EdgeInsets.fromLTRB(20.w, 10.w, 20.w, 15.w),
-                  textStyle: semiBold(
-                    fontSize: 16.sp,
-                    color: AppColors.redButton,
-                  ),
-                  text: "Clear all",
-                  onTap: () {
-                    provider.clearNotificationList();
-                    provider.deleteAllNotification();
-                    // AppToast.success(
-                    //   context: context,
-                    //   message: "All notifications deleted successfully",
-                    // );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-
-
-  Widget notificationBox({
-    required BuildContext context,
-    required NotificationModel notification,
-    required VoidCallback onReject,
-    required VoidCallback onAccept,
-    required VoidCallback onDelete,
-  }) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.w),
-      margin: EdgeInsets.only(bottom: 8.h),
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
-      ),
-      child: Stack(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: ImageWidget(
-                  type: ImageType.svg,
-                  path: AppAssets.groupIcon,
-                ),
-              ),
-              10.w.horizontalSpace,
-              Expanded(
-                child: Column(
-                  spacing: 10,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: notification
-                                .message, //"You’ve been invited to join Punter Club",
-                            style: medium(
-                              fontSize: 16.sp,
-                              fontFamily: AppFontFamily.primary,
-                            ),
-                          ),
-                          TextSpan(
-                            text: "PuntGPT Legends",
-                            style: semiBold(
-                              fontSize: 16.sp,
-                              fontFamily: AppFontFamily.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      DateFormatter.formatWithTime(
-                        DateTime.parse(notification.createdAt).toLocal(),
-                      ),
-                      style: regular(
-                        fontSize: 12.sp,
-                        fontFamily: AppFontFamily.primary,
-                      ),
-                    ),
-                    if (notification.inviteId != null)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          AppFilledButton(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 28.w,
-                              vertical: 9.h,
-                            ),
-                            isExpand: false,
-                            text: "Join",
-                            textStyle: semiBold(
-                              fontSize: 14.sp,
-                              color: AppColors.white,
-                            ),
-                            onTap: onAccept,
-                          ),
-                          AppOutlinedButton(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 28.w,
-                              vertical: 8.h,
-                            ),
-                            isExpand: false,
-                            textStyle: semiBold(
-                              fontSize: 14.sp,
-                              color: AppColors.black,
-                            ),
-
-                            text: "Decline",
-                            onTap: onReject,
-                            margin: EdgeInsets.only(left: 10.w),
-                          ),
-
-                          // Spacer(),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-              6.w.horizontalSpace,
-              Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: onDelete,
-                  child: Icon(Icons.close_rounded, size: 16),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-  

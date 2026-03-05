@@ -5,24 +5,24 @@ import '../../core/enum/app_enums.dart';
 
 class SubscriptionProvider extends ChangeNotifier {
   /// Store all active subscriptions
-  final Set<AppEnum> _activeSubscriptions = {
-    AppEnum.monthlyPlan,
+  final Set<SubscriptionEnum> _activeSubscriptions = {
+    SubscriptionEnum.monthlyPlan,
   };
 
   bool _isSubscriptionProcessing = false;
   
   bool get isSubscriptionProcessing => _isSubscriptionProcessing;
   bool get isMonthlyPlanSubscribed =>
-      _activeSubscriptions.contains(AppEnum.monthlyPlan);
+      _activeSubscriptions.contains(SubscriptionEnum.monthlyPlan);
   bool get isAnnualPlanSubscribed =>
-      _activeSubscriptions.contains(AppEnum.annualPlan);
+      _activeSubscriptions.contains(SubscriptionEnum.annualPlan);
   bool get isLifeTimePlanSubscribed =>
-      _activeSubscriptions.contains(AppEnum.lifeTimePlan);
+      _activeSubscriptions.contains(SubscriptionEnum.lifeTimePlan);
 
   bool get isSubscribed => _activeSubscriptions.isNotEmpty;
 
   //todo Expose active set read-only
-  Set<AppEnum> get activeSubscriptions => {..._activeSubscriptions};
+  Set<SubscriptionEnum> get activeSubscriptions => {..._activeSubscriptions};
 
   //todo set
   void setSubscriptionProcessStatus({required bool status}) {
@@ -31,20 +31,20 @@ class SubscriptionProvider extends ChangeNotifier {
   }
 
   //todo add subscription
-  void addSubscription(AppEnum tier) {
+  void addSubscription(SubscriptionEnum tier) {
     _activeSubscriptions.add(tier);
     notifyListeners();
   }
 
   //todo remove subscription
-  void removeSubscription(AppEnum tier) {
+  void removeSubscription(SubscriptionEnum tier) {
     _activeSubscriptions.remove(tier);
     notifyListeners();
   }
 
   //todo buy subscription
   Future<void> buy({
-    required AppEnum tier,
+    required SubscriptionEnum tier,
     required BuildContext context,
   }) async {
     await SubscriptionService.instance.buy(tier: tier, context: context);
@@ -52,7 +52,7 @@ class SubscriptionProvider extends ChangeNotifier {
   }
 
   //todo Mock Cancel
-  Future<void> cancel(AppEnum tier) async {
+  Future<void> cancel(SubscriptionEnum tier) async {
     // await Future.delayed(const Duration(milliseconds: 500));
 
     _activeSubscriptions.remove(tier);

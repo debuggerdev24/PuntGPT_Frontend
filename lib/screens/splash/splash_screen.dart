@@ -26,6 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Logger.info("Authorized Token : $authToken");
+    Logger.info("User Id : ${LocaleStorageService.userId.toString()}");
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       // context.pushNamed(AppRoutes.homeScreen.name);

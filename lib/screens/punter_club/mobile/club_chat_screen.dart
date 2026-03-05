@@ -2,12 +2,13 @@ import 'dart:async';
 
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/punt_club/club_chat_message_model.dart';
-import 'package:puntgpt_nick/services/punter_club/chat_service.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/punter_club_screen.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/club_chat_message_bubble.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/dialogue_sheets.dart';
+import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/invite_user_sheet.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/punter_club_shimmers.dart';
+import 'package:puntgpt_nick/services/punter_club/chat_socket_service.dart';
 
 /// Club chat screen: connects to WebSocket, shows messages, supports send/edit/delete and typing.
 class PuntClubChatScreen extends StatefulWidget {
@@ -57,8 +58,10 @@ class _PuntClubChatScreenState extends State<PuntClubChatScreen> {
   void onScroll() {
     final position = _scrollController.position;
     final isNotAtBottom = position.pixels <= position.maxScrollExtent - 35.w;
-    Logger.info('${position.pixels.toInt()} : ${position.maxScrollExtent.toInt()} : $isNotAtBottom');
-    
+    Logger.info(
+      '${position.pixels.toInt()} : ${position.maxScrollExtent.toInt()} : $isNotAtBottom',
+    );
+
     setState(() {
       _showGoToBottomButton = isNotAtBottom;
     });
@@ -111,48 +114,39 @@ class _PuntClubChatScreenState extends State<PuntClubChatScreen> {
                   children: [
                     _topBar(context: context, provider: provider),
                     Expanded(
-                      child: Stack(
-                        children: [
-                          //* Message list
-                          ListView.builder(
-                            controller: _scrollController,
-                            padding: EdgeInsets.only(bottom: 4.w),
-                            itemCount: provider.chatMessages!.length + 1,
-                            itemBuilder: (context, index) {
-                              if (index == 0 &&
-                                  provider.chatMessages!.isEmpty) {
-                                return _buildEmptyState(context);
-                              }
-                              if (index >= provider.chatMessages!.length) {
-                                return const SizedBox.shrink();
-                              }
-                              final msg = provider.chatMessages![index];
-                              return ClubChatMessageBubble(
-                                message: msg,
-                                isOwnMessage: provider.isMyMessage(msg),
-                                onEdit: () =>
-                                    _showEditDialog(context, provider, msg),
-                                onDelete: () =>
-                                    _showDeleteDialog(context, provider, msg),
-                              );
-                            },
-                          ),
-                          //* Typing indicator bar (above input) - only other users
-                          if (provider.otherUsersTyping.isNotEmpty)
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 60.w,
-                              child: _buildTypingIndicator(provider),
+                      child: (provider.chatMessages!.isEmpty)
+                          ? _buildEmptyState(context)
+                          :
+                            //* Message list
+                            ListView.builder(
+                              controller: _scrollController,
+                              padding: EdgeInsets.only(bottom: 4.w),
+                              itemCount: provider.chatMessages!.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index >= provider.chatMessages!.length) {
+                                  return const SizedBox.shrink();
+                                }
+                                final msg = provider.chatMessages![index];
+                                return ClubChatMessageBubble(
+                                  message: msg,
+                                  isOwnMessage: provider.isMyMessage(msg),
+                                  onEdit: () =>
+                                      _showEditDialog(context, provider, msg),
+                                  onDelete: () =>
+                                      _showDeleteDialog(context, provider, msg),
+                                );
+                              },
                             ),
-                        ],
-                      ),
                     ),
-                    // Input area
+                    //* Input area
                     _buildInputArea(context, provider),
                   ],
                 ),
-                if (_showGoToBottomButton) Align(alignment: Alignment.bottomRight,child: goToBottomButton()),
+                if (_showGoToBottomButton)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: goToBottomButton(),
+                  ),
                 if (provider.isLeavingGroup) const FullPageIndicator(),
               ],
             );
@@ -166,59 +160,64 @@ class _PuntClubChatScreenState extends State<PuntClubChatScreen> {
     return Padding(
       padding: EdgeInsets.all(40.w),
       child: Center(
-        child: Text(
-          "No messages yet. Say hello!",
-          style: medium(
-            fontSize: context.isBrowserMobile ? 28.sp : 16.sp,
-            color: AppColors.primary.withValues(alpha: 0.6),
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.chat,
+              size: context.isBrowserMobile ? 64.w : 48.w,
+              color: AppColors.primary.withValues(alpha: 0.4),
+            ),
+            8.w.verticalSpace,
+            Text(
+              "No messages yet. Say hello!",
+              style: medium(
+                fontSize: context.isBrowserMobile ? 28.sp : 16.sp,
+                color: AppColors.primary.withValues(alpha: 0.6),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
   }
 
-  /// Typing indicator: "User1, User2 are typing..." (excludes current user)
-  Widget _buildTypingIndicator(PuntClubProvider provider) {
-    final names = provider.otherUsersTyping.values.toList();
-    final text = names.length == 1
-        ? '${names.first} is typing...'
-        : names.length == 2
-        ? '${names[0]} and ${names[1]} are typing...'
-        : '${names[0]} and ${names.length - 1} others are typing...';
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 25.w),
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(8.r),
+  //* Subtitle in top bar: shows typing state or member count.
+  Widget _topBarSubtitle({
+    required BuildContext context,
+    required PuntClubProvider provider,
+  }) {
+    final typing = provider.typingUsers;
+    final names = typing.values.toList();
+    final hasTyping = names.isNotEmpty;
+
+    final String text = hasTyping
+        ? (names.length == 1
+              ? '${names.first} is typing...'
+              : names.length == 2
+              ? '${names[0]} and ${names[1]} are typing...'
+              : '${names[0]} and ${names.length - 1} others are typing...')
+        : '${provider.groupMembersList?.length ?? 11} Member';
+
+    return Text(
+      text,
+      style: semiBold(
+        height: 1.5,
+        fontSize: (context.isBrowserMobile) ? 30.sp : 14.sp,
+        color: hasTyping
+            ? AppColors.primary.withValues(alpha: 0.8)
+            : AppColors.primary.withValues(alpha: 0.6),
       ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 16.w,
-            height: 16.w,
-            child: const CircularProgressIndicator(strokeWidth: 2),
-          ),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: Text(
-              text,
-              style: medium(
-                fontSize: context.isBrowserMobile ? 24.sp : 13.sp,
-                color: AppColors.primary.withValues(alpha: 0.7),
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 
   Widget goToBottomButton() {
     return Padding(
-      padding: EdgeInsets.only(bottom: 65,right: 12),
+      padding: EdgeInsets.only(bottom: 65, right: 12),
       child: Material(
         color: AppColors.primary.withValues(alpha: 1),
         borderRadius: BorderRadius.circular(50.r),
@@ -248,6 +247,7 @@ class _PuntClubChatScreenState extends State<PuntClubChatScreen> {
           children: [
             Expanded(
               child: TextField(
+                textAlignVertical: TextAlignVertical.center,
                 style: regular(
                   fontSize: context.isBrowserMobile ? 32.sp : 18.sp,
                 ),
@@ -362,7 +362,7 @@ class _PuntClubChatScreenState extends State<PuntClubChatScreen> {
               provider.deleteChatMessage(msg.messageId);
               Navigator.pop(ctx);
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: const Text("Delete", style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -404,17 +404,11 @@ class _PuntClubChatScreenState extends State<PuntClubChatScreen> {
                       style: regular(
                         fontSize: (context.isBrowserMobile) ? 50.sp : 24.sp,
                         fontFamily: AppFontFamily.secondary,
-                        height: 1.35,
+                        height: 1,
                       ),
                     ),
                   ),
-                  Text(
-                    "11 Member",
-                    style: semiBold(
-                      fontSize: (context.isBrowserMobile) ? 30.sp : 14.sp,
-                      color: AppColors.primary.withValues(alpha: 0.6),
-                    ),
-                  ),
+                  _topBarSubtitle(context: context, provider: provider),
                 ],
               ),
               Spacer(),
@@ -526,14 +520,12 @@ class OptionsSheetView extends StatelessWidget {
                   showDragHandle: true,
                   backgroundColor: AppColors.white,
                   builder: (sheetContext) {
-                    return createUserNameSheet(
-                      context: sheetContext,
+                    return CreateUserNameSheet(
                       provider: provider,
                       onSubmit: () {
                         sheetContext.pop();
                         provider.userNameSetup(
                           onSuccess: () {
-                          
                             final currentCtx =
                                 AppRouter.rootNavigatorKey.currentContext;
                             AppToast.success(
@@ -551,33 +543,34 @@ class OptionsSheetView extends StatelessWidget {
             spacing,
             horizontalDivider(),
             const Spacer(),
-            AppOutlinedButton(
-              borderColor: AppColors.red,
-              textStyle: semiBold(fontSize: 18.sp, color: AppColors.red),
-              text: "Leave Group",
-              onTap: () {
-                context.pop();
-                final cuttentCtx = AppRouter.rootNavigatorKey.currentContext;
-                showLeaveGroupConfirmation(
-                  context: cuttentCtx!,
-                  onLeaveGroup: () {
-                    provider.leaveGroup(
-                      onSuccess: () {
-                        final cuttentCtx =
-                            AppRouter.rootNavigatorKey.currentContext;
-                        if (cuttentCtx != null && cuttentCtx.mounted) {
-                          AppToast.success(
-                            context: cuttentCtx,
-                            message: "Group left successfully",
-                          );
-                          cuttentCtx.pop();
-                        }
-                      },
-                    );
-                  },
-                );
-              },
-            ),
+            if (!provider.isAdmin)
+              AppOutlinedButton(
+                borderColor: AppColors.red,
+                textStyle: semiBold(fontSize: 18.sp, color: AppColors.red),
+                text: "Leave Group",
+                onTap: () {
+                  context.pop();
+                  final currentCtx = AppRouter.rootNavigatorKey.currentContext;
+                  showLeaveGroupConfirmation(
+                    context: currentCtx!,
+                    onLeaveGroup: () {
+                      provider.leaveGroup(
+                        onSuccess: () {
+                          final cuttentCtx =
+                              AppRouter.rootNavigatorKey.currentContext;
+                          if (cuttentCtx != null && cuttentCtx.mounted) {
+                            AppToast.success(
+                              context: cuttentCtx,
+                              message: "Group left successfully",
+                            );
+                            cuttentCtx.pop();
+                          }
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
           ],
         ),
       ),

@@ -1,5 +1,20 @@
-enum AppEnum { monthlyPlan, annualPlan, lifeTimePlan }
+enum SubscriptionEnum { monthlyPlan, annualPlan, lifeTimePlan, }
 
+// enum MembershipStatus {
+//   invited("Invited"),
+//   accepted("Accepted"),
+//   rejected("Rejected"),
+//   declined("Declined"),
+//   left("Left"),
+//   expired("Expired"),
+//   reinvited("Reinvited");
+
+//   final String value;
+//   // ignore: sort_constructors_first
+//   const MembershipStatus(this.value);
+// }
+
+enum ChatMessageType { message, edit, delete, typing, stop_typing }
 enum JumpType {
   jumps_within_10mins("Jumps within 10mins"),
   jumps_within_an_hour("Jumps within an hour"),

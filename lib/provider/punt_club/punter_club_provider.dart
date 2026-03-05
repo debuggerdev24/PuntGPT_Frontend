@@ -5,7 +5,7 @@ import 'package:puntgpt_nick/models/punt_club/chat_group_model.dart';
 import 'package:puntgpt_nick/models/punt_club/club_chat_message_model.dart';
 import 'package:puntgpt_nick/models/punt_club/notification_model.dart';
 import 'package:puntgpt_nick/models/punt_club/user_invites_list.dart';
-import 'package:puntgpt_nick/services/punter_club/chat_service.dart';
+import 'package:puntgpt_nick/services/punter_club/chat_socket_service.dart';
 import 'package:puntgpt_nick/services/punter_club/punter_club_api_service.dart';
 import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 
@@ -18,6 +18,7 @@ class PuntClubProvider extends ChangeNotifier {
   /// Subscription to ChatService events. Cancel in dispose.
   StreamSubscription<Map<String, dynamic>>? _chatEventSubscription;
   int selectedGroup = 0, notificationCount = 0;
+  bool _isAdmin = false;
   String groupId = "";
   late final TextEditingController searchNameCtr;
   final TextEditingController clubNameCtr = TextEditingController();
@@ -55,6 +56,7 @@ class PuntClubProvider extends ChangeNotifier {
 
   /// Current user id for "is mine" check. From LocaleStorageService.
   int get _currentUserId => LocaleStorageService.userId;
+  bool get isAdmin => _isAdmin;
 
   /// True if a message was sent by the current user.
   bool isMyMessage(ClubChatMessageModel m) => m.senderId == _currentUserId;
@@ -116,7 +118,6 @@ class PuntClubProvider extends ChangeNotifier {
     final type = (e['type'] ?? '').toString();
     switch (type) {
       case 'message':
-        // New message: add to list
         chatMessages!.add(ClubChatMessageModel.fromJson(e));
         break;
       case 'message_edited':
@@ -164,36 +165,33 @@ class PuntClubProvider extends ChangeNotifier {
   void _handleTyping(Map<String, dynamic> e) {
     Logger.info('[PuntClubProvider] typing: ${e.toString()}}');
     final senderId = _intFrom(e['sender_id']);
-    Logger.info('[PuntClubProvider] typing: ${senderId.toString()}}');
 
     final username = (e['sender_username'] ?? '').toString().trim();
-    final isMe =
-        senderId == _currentUserId ||
-        (_myDisplayName != null &&
-            _myDisplayName!.isNotEmpty &&
-            username.toLowerCase() == _myDisplayName!.toLowerCase());
-    if (!isMe && username.isNotEmpty) typingUsers[senderId] = username;
-    Logger.info('[PuntClubProvider] typing users: ${typingUsers.toString()}}');
+    final isMe = senderId == _currentUserId;
+    if (!isMe) typingUsers[senderId] = username;
+    // Logger.info('[PuntClubProvider] typing users: ${typingUsers.toString()}}');
+    // Logger.info(
+    //   '[PuntClubProvider] other users typing: ${otherUsersTyping.toString()}}',
+    // );
     Logger.info(
-      '[PuntClubProvider] other users typing: ${otherUsersTyping.toString()}}',
+      '[PuntClubProvider] user Id from storage: ${_currentUserId.toString()}}',
     );
-    Logger.info('[PuntClubProvider] user Id: ${_currentUserId.toString()}}');
   }
 
-  Map<int, String> get otherUsersTyping {
-    //* typingUsers data:
-    //* typing users: {126: Meera}}
-    final result = <int, String>{};
-    for (final e in typingUsers.entries) {
-      final isMe =
-          e.key == _currentUserId ||
-          (_myDisplayName != null &&
-              _myDisplayName!.isNotEmpty &&
-              e.value.trim().toLowerCase() == _myDisplayName!.toLowerCase());
-      if (!isMe) result[e.key] = e.value;
-    }
-    return result;
-  }
+  // Map<int, String> get otherUsersTyping {
+  //   //* typingUsers data:
+  //   //* typing users: {126: Meera}}
+  //   final result = <int, String>{};
+  //   for (final e in typingUsers.entries) {
+  //     final isMe =
+  //         e.key == _currentUserId ||
+  //         (_myDisplayName != null &&
+  //             _myDisplayName!.isNotEmpty &&
+  //             e.value.trim().toLowerCase() == _myDisplayName!.toLowerCase());
+  //     if (!isMe) result[e.key] = e.value;
+  //   }
+  //   return result;
+  // }
 
   void _handleStopTyping(Map<String, dynamic> e) {
     final senderId = _intFrom(e['sender_id']);
@@ -259,6 +257,7 @@ class PuntClubProvider extends ChangeNotifier {
   set setSelectedChatGroupIndex(int value) {
     selectedGroup = value;
     selectedGroupId = chatGroupsList![selectedGroup].id.toString();
+    _isAdmin = chatGroupsList![selectedGroup].isAdmin;
     Logger.info("selectedGroupId: $selectedGroupId");
   }
 
@@ -363,7 +362,7 @@ class PuntClubProvider extends ChangeNotifier {
   //* get users invite list
   Future<void> getUsersInviteList({required String groupId}) async {
     // if (userInvitesList != null) return;
-    // userInvitesList = null;
+    userInvitesList = null;
     notifyListeners();
     final response = await PuntClubApiService.instance.getUsersInviteList(
       groupId: groupId,
@@ -454,6 +453,7 @@ class PuntClubProvider extends ChangeNotifier {
           );
         }
         clearSelectedIds();
+        getUsersInviteList(groupId: groupId);
       },
     );
     isInvitingUser = false;

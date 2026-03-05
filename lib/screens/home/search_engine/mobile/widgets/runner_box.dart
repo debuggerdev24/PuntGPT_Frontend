@@ -18,7 +18,7 @@ class RunnerBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final padding = EdgeInsets.fromLTRB(8.w, 3, 8.w, 0);
+    final padding = EdgeInsets.fromLTRB(8.w, 0, 8.w, 3);
     return Container(
       margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 16),
       decoration: BoxDecoration(
@@ -52,7 +52,7 @@ class RunnerBox extends StatelessWidget {
                 //
                 // ),
                 Text(
-                  " ${runner.barrier?.toString() ?? '-'}. ",
+                  runner.barrier != null ? "${runner.barrier}. " : '-',
                   style: bold(fontSize: 18.sp),
                 ),
                 if ((runner.silksImage ?? '').isNotEmpty)
@@ -64,7 +64,10 @@ class RunnerBox extends StatelessWidget {
                 if ((runner.silksImage ?? '').isNotEmpty) 4.horizontalSpace,
                 Text(runner.horseName ?? '-', style: semiBold(fontSize: 18.sp)),
                 Spacer(),
-                Text("\$${runner.odds ?? '-'} ", style: bold(fontSize: 18.sp)),
+                Text(
+                  runner.odds != null ? "\$${runner.odds} " : '-',
+                  style: bold(fontSize: 18.sp),
+                ),
                 // if (context.read<SearchEngineProvider>().saveSearches?.any(
                 //       (element) => element.id == runner.selectionId,
                 //     ) ??

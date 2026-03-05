@@ -391,7 +391,7 @@ class PunterClubShimmers {
         children: [
           // Header: back arrow, group name, member count, add icon, info icon
           Padding(
-            padding: EdgeInsets.fromLTRB(horizontalPadding, 12.w, horizontalPadding, 7.w),
+            padding: EdgeInsets.fromLTRB(horizontalPadding, 16.w, horizontalPadding, 7.w),
             child: Row(
               children: [
                 Container(

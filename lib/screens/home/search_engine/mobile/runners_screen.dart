@@ -60,65 +60,63 @@ class RunnersListScreen extends StatelessWidget {
                 Expanded(
                   child: (runners!.isEmpty)
                       ? _buildNoRunnersEmptyState(context)
-                      : Expanded(
-                          child: Stack(
-                            children: [
-                              ListView.builder(
-                                padding: EdgeInsets.only(bottom: 95.w),
-                                itemCount: runners.length,
-                                itemBuilder: (context, index) {
-                                  final runner = runners[index];
-                                  return RunnerBox(
-                                    runner: runner,
-                                    onAddToSaveSearch: (name, dialogContext) {
-                                      context.pop(dialogContext);
-                                      provider.createSaveSearch(
-                                        name: name,
-                                        onError: (error) {
-                                          AppToast.error(
-                                            context: context,
-                                            message: error,
-                                          );
-                                        },
-                                        onSuccess: () {
-                                          AppToast.success(
-                                            context: context,
-                                            message:
-                                                "Search saved successfully",
-                                          );
-                                        },
-                                      );
-                                    },
-                                    onAddToTipSlip: () {
-                                      provider.createTipSlip(
-                                        selectionId:
-                                            runner.selectionId?.toString() ??
-                                            '',
-                                        context: context,
-                                      );
-                                    },
-                                    onCompareToField: () {
-                                      provider.compareHorses(
-                                        selectionId:
-                                            runner.selectionId?.toString() ??
-                                            '',
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 25.w,
-                                    bottom: 30.h,
-                                  ),
-                                  child: askPuntGPTButton(context),
+                      : Stack(
+                          children: [
+                            ListView.builder(
+                              padding: EdgeInsets.only(bottom: 95.w),
+                              itemCount: runners.length,
+                              itemBuilder: (context, index) {
+                                final runner = runners[index];
+                                return RunnerBox(
+                                  runner: runner,
+                                  onAddToSaveSearch: (name, dialogContext) {
+                                    context.pop(dialogContext);
+                                    provider.createSaveSearch(
+                                      name: name,
+                                      onError: (error) {
+                                        AppToast.error(
+                                          context: context,
+                                          message: error,
+                                        );
+                                      },
+                                      onSuccess: () {
+                                        AppToast.success(
+                                          context: context,
+                                          message:
+                                              "Search saved successfully",
+                                        );
+                                      },
+                                    );
+                                  },
+                                  onAddToTipSlip: () {
+                                    provider.createTipSlip(
+                                      selectionId:
+                                          runner.selectionId?.toString() ??
+                                          '',
+                                      context: context,
+                                    );
+                                  },
+                                  onCompareToField: () {
+                                    provider.compareHorses(
+                                      selectionId:
+                                          runner.selectionId?.toString() ??
+                                          '',
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  right: 25.w,
+                                  bottom: 30.h,
                                 ),
+                                child: askPuntGPTButton(context),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                 ),
                 // Align(

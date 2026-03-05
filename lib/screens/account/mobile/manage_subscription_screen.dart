@@ -2,22 +2,6 @@ import 'package:puntgpt_nick/provider/account/account_provider.dart';
 import 'package:puntgpt_nick/screens/account/mobile/widgets/subscription_plan.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
 
-List activePlan = [
-  {"icon": AppAssets.done, "point": "Chat function with PuntGPT"},
-  {"icon": AppAssets.done, "point": "Access to PuntGPT Punters Club"},
-  {"icon": AppAssets.done, "point": "Full use of PuntGPT Search Engine"},
-  {"icon": AppAssets.done, "point": "Access to Classic Form Guide"},
-];
-
-List freePlan = [
-  {"icon": AppAssets.close, "point": "No chat function with PuntGPT"},
-  {"icon": AppAssets.close, "point": "No chat function with PuntGPT"},
-  {"icon": AppAssets.done, "point": "Limited PuntGPT Search Engine Filters"},
-  {"icon": AppAssets.done, "point": "Limited AI analysis of horses"},
-  {"icon": AppAssets.done, "point": "Access to Classic Form Guide"},
-];
-
-bool isSubscribe = true;
 
 class ManageSubscriptionScreen extends StatelessWidget {
   const ManageSubscriptionScreen({super.key});
