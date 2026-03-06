@@ -217,6 +217,8 @@ void callInitAPIs({required BuildContext context}) {
   final searchEngineProvider = context.read<SearchEngineProvider>();
   final classicFormGuideProvider = context.read<ClassicFormProvider>();
   final puntClubProvider = context.read<PuntClubProvider>();
+  final subsProvider = context.read<SubscriptionProvider>();
+  
   Future.wait([
     accountProvider.getProfile(),
     accountProvider.getSubscriptionPlans(
@@ -231,11 +233,7 @@ void callInitAPIs({required BuildContext context}) {
     classicFormGuideProvider.getNextToGo(),
     puntClubProvider.getNotifications(),
     searchEngineProvider.getAllTipSlips(),
-
-    // classicFormGuideProvider.getPunterClub(),
-    SubscriptionService.instance.initialize(
-      provider: context.read<SubscriptionProvider>(),
-      context: context,
-    ),
+    subsProvider.initialize(context: context),
+    // subsProvider.startPurchaseListener(),
   ]);
 }

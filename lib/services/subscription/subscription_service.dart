@@ -1,10 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
-import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 
 class SubscriptionService {
   SubscriptionService._();
@@ -20,15 +15,14 @@ class SubscriptionService {
   };
 
   List<ProductDetails> _products = [];
-  StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
+
+  /// Purchase stream for the provider to listen to.
+  Stream<List<PurchaseDetails>> get purchaseStream => _iap.purchaseStream;
 
   // ---------------------------------------------------------------------------
   // INITIALIZE
   // ---------------------------------------------------------------------------
-  Future<void> initialize({
-    required SubscriptionProvider provider,
-    required BuildContext context,
-  }) async {
+  Future<void> initialize({required BuildContext context}) async {
     Logger.info("initializing subscription");
     final available = await _iap.isAvailable();
     Logger.info(available.toString());
@@ -38,16 +32,24 @@ class SubscriptionService {
     }
     if (!context.mounted) return;
 
-    await _loadProducts(context: context);
-
-    //* Adding listener to the purchase stream
-    _purchaseSub = _iap.purchaseStream.listen(
-      (purchases) => _handlePurchases(purchases, provider),
-      onError: (e) => Logger.error("Error inside the listener ${e.toString()}"),
-    );
+    await loadProducts(context: context);
   }
 
-  Future<void> _loadProducts({required BuildContext context}) async {
+  /// Maps a store product ID to [SubscriptionEnum]. Used by the provider when handling purchases.
+  SubscriptionEnum? getTierFromProductId(String productId) {
+    try {
+      return productIds.entries.firstWhere((e) => e.value == productId).key;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Completes a purchase on the store. Call from provider after handling the purchase.
+  void completePurchase(PurchaseDetails purchase) {
+    _iap.completePurchase(purchase);
+  }
+
+  Future<void> loadProducts({required BuildContext context}) async {
     final response = await _iap.queryProductDetails(productIds.values.toSet());
 
     Logger.info("load products");
@@ -95,64 +97,10 @@ class SubscriptionService {
   }
 
   // ---------------------------------------------------------------------------
-  // HANDLE STORE CALLBACKS (NOTIFY PROVIDER)
-  // ---------------------------------------------------------------------------
-  Future<void> _handlePurchases(
-    List<PurchaseDetails> purchases,
-    SubscriptionProvider provider,
-  ) async {
-    for (final purchase in purchases) {
-      if (purchase.status == PurchaseStatus.purchased ||
-          purchase.status == PurchaseStatus.restored) {
-        final tier = _mapProductToTier(purchase.productID);
-        if (tier != null) {
-          String serverVerificationData = "";
-          final localData = purchase.verificationData.localVerificationData;
-          final serverData = purchase.verificationData.serverVerificationData;
-          final localDecodedData = jsonDecode(localData);
-          Logger.info("Decode data : $localDecodedData");
-          Logger.info("serverVerificationData : $serverData");
-          if (Platform.isAndroid) {
-            serverVerificationData = localDecodedData["purchaseToken"];
-            Logger.info(
-              "Purchase Token For Android: \n$serverVerificationData",
-            );
-          } else if (Platform.isIOS) {
-            serverVerificationData = localDecodedData["transactionId"];
-            Logger.info("Transaction Id For iOS: \n$serverVerificationData");
-          }
-          // provider.addSubscription(tier);
-        }
-        _iap.completePurchase(purchase);
-      }
-
-      if (purchase.status == PurchaseStatus.canceled) {
-        provider.setSubscriptionProcessStatus(status: false);
-      }
-
-      if (purchase.status == PurchaseStatus.error) {
-        Logger.error("Purchase error: ${purchase.error}");
-      }
-    }
-  }
-
-  SubscriptionEnum? _mapProductToTier(String id) {
-    try {
-      return productIds.entries.firstWhere((e) => e.value == id).key;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  // ---------------------------------------------------------------------------
   // CANCEL (CALLED BY PROVIDER)
   // ---------------------------------------------------------------------------
   Future<bool> cancel({required SubscriptionEnum tier}) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return true;
-  }
-
-  void dispose() {
-    _purchaseSub?.cancel();
   }
 }
