@@ -93,7 +93,7 @@ class SubscriptionProvider extends ChangeNotifier {
             transactionId ??= purchase.purchaseID;
             Logger.info("Transaction Id For iOS: \n$transactionId");
           }
-          // addSubscription(tier); // uncomment when ready to persist
+          addSubscription(tier);
         }
         if (purchase.pendingCompletePurchase) {
           SubscriptionService.instance.completePurchase(purchase);

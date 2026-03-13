@@ -22,7 +22,7 @@ class PuntGPTApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    checkConnectivity(context: context);
+    NetworkService.instance.init();
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: MultiProvider(

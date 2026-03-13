@@ -7,11 +7,13 @@ class WebSignUpBottomSection extends StatelessWidget {
     required this.onLoginTap,
     required this.onSignUpTap,
     required this.provider,
+    this.onContinueAsGuestTap,
   });
 
   final VoidCallback onLoginTap;
   final VoidCallback onSignUpTap;
   final AuthProvider provider;
+  final VoidCallback? onContinueAsGuestTap;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,28 @@ class WebSignUpBottomSection extends StatelessWidget {
               color: AppColors.white,
             ),
           ),
+          if (onContinueAsGuestTap != null) ...[
+            12.h.verticalSpace,
+            OnMouseTap(
+              onTap: onContinueAsGuestTap!,
+              child: Center(
+                child: Text(
+                  "Continue as guest",
+                  style: medium(
+                    fontSize: (context.isDesktop)
+                        ? 14.sp
+                        : (context.isTablet)
+                        ? 20.sp
+                        : (context.isBrowserMobile)
+                        ? 22.sp
+                        : 14.sp,
+                    color: AppColors.primary.setOpacity(.85),
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ),
+          ],
           20.h.verticalSpace,
           Row(
             mainAxisSize: MainAxisSize.min,

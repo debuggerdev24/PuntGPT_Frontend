@@ -99,6 +99,26 @@ class LoginScreen extends StatelessWidget {
                           }
                         },
                       ),
+                      12.w.verticalSpace,
+                      OnMouseTap(
+                        onTap: () {
+                          context.goNamed(
+                            kIsWeb
+                                ? WebRoutes.homeScreen.name
+                                : AppRoutes.homeScreen.name,
+                          );
+                        },
+                        child: Center(
+                          child: Text(
+                            "Continue as guest",
+                            style: medium(
+                              fontSize: 14.sp,
+                              color: AppColors.primary.setOpacity(.85),
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ),
                       15.h.verticalSpace,
                       Row(
                         mainAxisSize: MainAxisSize.min,

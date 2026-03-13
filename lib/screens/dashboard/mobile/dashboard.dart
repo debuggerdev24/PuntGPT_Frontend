@@ -7,7 +7,6 @@ import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.
 import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 import 'package:puntgpt_nick/screens/dashboard/mobile/widgets/dashboard_app_bar.dart';
 import 'package:puntgpt_nick/core/widgets/offline/widget/offline_view.dart';
-import 'package:puntgpt_nick/services/subscription/subscription_service.dart';
 
 final GlobalKey<_DashboardState> dashboardKey = GlobalKey<_DashboardState>();
 ValueNotifier<int> indexOfTab = ValueNotifier(0);

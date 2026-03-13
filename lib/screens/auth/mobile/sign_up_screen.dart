@@ -72,6 +72,13 @@ class SignUpScreen extends StatelessWidget {
                             );
                           });
                         },
+                        onContinueAsGuestTap: () {
+                          context.goNamed(
+                            kIsWeb
+                                ? WebRoutes.homeScreen.name
+                                : AppRoutes.homeScreen.name,
+                          );
+                        },
                       ),
                     ],
                   ),

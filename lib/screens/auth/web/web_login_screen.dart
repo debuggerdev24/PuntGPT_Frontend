@@ -153,11 +153,9 @@ class WebLoginScreen extends StatelessWidget {
                             AppFilledButton(
                               text: "Login",
                               onTap: () {
-                                context.pushNamed(WebRoutes.homeScreen.name);
-                                // if (formKey.currentState!.validate()) {
-                                //   provider.loginUser(context: context);
-                                //   return;
-                                // }
+                                if (formKey.currentState!.validate()) {
+                                  provider.loginUser(context: context);
+                                }
                               },
                               textStyle: semiBold(
                                 fontSize: context.isDesktop
@@ -174,6 +172,22 @@ class WebLoginScreen extends StatelessWidget {
                                       !context.isBrowserMobile)
                                   ? webProgressIndicator(context)
                                   : null,
+                            ),
+                            12.h.verticalSpace,
+                            OnMouseTap(
+                              onTap: () {
+                                context.goNamed(WebRoutes.homeScreen.name);
+                              },
+                              child: Center(
+                                child: Text(
+                                  "Continue as guest",
+                                  style: medium(
+                                    fontSize: fourteenResponsive,
+                                    color: AppColors.primary.setOpacity(.85),
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
                             ),
                             18.h.verticalSpace,
                             Row(

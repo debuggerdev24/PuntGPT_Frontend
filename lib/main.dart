@@ -14,7 +14,6 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
   ]);
   await Future.wait([LocaleStorageService.init()]);
   SystemChrome.setSystemUIOverlayStyle(
@@ -33,10 +32,6 @@ Future<void> main() async {
 todo Joseph
 
 todo Nick
-
-
-
-
 
 name: "Custom Name 3",
 filters: {

@@ -61,7 +61,6 @@ class WebSignUpScreen extends StatelessWidget {
                     20.h.verticalSpace,
                     WebSignUpBottomSection(
                       onLoginTap: () {
-                        // LogHelper.info(Responsive.isDesktop(context))
                         provider.clearLoginControllers();
                         context.pushNamed(WebRoutes.logInScreen.name);
                       },
@@ -77,8 +76,10 @@ class WebSignUpScreen extends StatelessWidget {
                           );
                         });
                       },
-
                       provider: provider,
+                      onContinueAsGuestTap: () {
+                        context.goNamed(WebRoutes.homeScreen.name);
+                      },
                     ),
                   ],
                 ),
