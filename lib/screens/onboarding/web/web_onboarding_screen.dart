@@ -259,9 +259,7 @@ class WebOnboardingScreen extends StatelessWidget {
 
                             context.pushNamed(
                               WebRoutes.signUpScreen.name,
-                              extra: planData[index]['price']
-                                  .toString()
-                                  .isEmpty,
+                           
                             );
                           },
                         ),
@@ -270,7 +268,7 @@ class WebOnboardingScreen extends StatelessWidget {
                   );
                 }),
               ),
-              50.h.verticalSpace,
+              50.w.verticalSpace,
             ],
           ),
         ),

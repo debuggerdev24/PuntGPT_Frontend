@@ -1,4 +1,8 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/core/constants/app_strings.dart';
+import 'package:puntgpt_nick/core/widgets/guest_create_account_sheet.dart';
+import 'package:puntgpt_nick/main.dart';
+
 import 'package:puntgpt_nick/provider/account/account_provider.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
 import 'package:puntgpt_nick/screens/account/web/change_password_section_web.dart';
@@ -106,6 +110,13 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
                                   ? AppColors.primary
                                   : null,
                               onTap: () {
+                                if (isGuest) {
+                                  showGuestCreateAccountSheet(
+                                    context,
+                                    message: AppStrings.guestPersonalDetailsMessage,
+                                  );
+                                  return;
+                                }
                                 provider.setAccountTabIndex = 0;
                               },
                               context: context,
@@ -125,19 +136,19 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
                             horizontalDivider(),
                             Spacer(),
                             horizontalDivider(),
-                            accountTabs(
-                              title: "Log Out",
-                              fourteenResponsive: sixteenResponsive,
-                              onTap: () {
-                                showLogOutConfirmationDialog(
-                                  context: context,
-                                  responsiveTitle: twentyTwoResponsive,
-                                  responsiveButton: twentyResponsive,
-                                );
-                              },
-
-                              context: context,
-                            ),
+                            if (!isGuest)
+                              accountTabs(
+                                title: "Log Out",
+                                fourteenResponsive: sixteenResponsive,
+                                onTap: () {
+                                  showLogOutConfirmationDialog(
+                                    context: context,
+                                    responsiveTitle: twentyTwoResponsive,
+                                    responsiveButton: twentyResponsive,
+                                  );
+                                },
+                                context: context,
+                              ),
                           ],
                         ),
                       ),

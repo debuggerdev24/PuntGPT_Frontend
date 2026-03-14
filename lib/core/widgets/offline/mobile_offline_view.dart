@@ -17,7 +17,7 @@ class MobileOfflineView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _icon(context),
-              32.h.verticalSpace,
+              32.w.verticalSpace,
               Text(
                 "No internet connection",
                 textAlign: TextAlign.center,

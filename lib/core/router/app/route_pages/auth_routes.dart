@@ -11,15 +11,12 @@ class AuthRoutes {
     GoRoute(
         path: AppRoutes.loginScreen.path,
         name: AppRoutes.loginScreen.name,
-        builder: (context, state) =>
-            LoginScreen(isFreeSignUp: (state.extra as Map)['is_free_sign_up']),
+        builder: (context, state) => LoginScreen(),
       ),
-
       GoRoute(
         path: AppRoutes.signUpScreen.path,
         name: AppRoutes.signUpScreen.name,
-        builder: (context, state) =>
-            SignUpScreen(isFreeSignUp: (state.extra as Map)['is_free_sign_up']),
+        builder: (context, state) => SignUpScreen(),
       ),
 
       // GoRoute(

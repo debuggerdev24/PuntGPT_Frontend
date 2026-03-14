@@ -8,22 +8,18 @@ import 'package:puntgpt_nick/services/subscription/subscription_service.dart';
 
 
 class SubscriptionProvider extends ChangeNotifier {
-  /// Store all active subscriptions
+  
   final Set<SubscriptionEnum> _activeSubscriptions = {
-    SubscriptionEnum.monthlyPlan,
+    // SubscriptionEnum.monthlyPlan,
   };
 
   bool _isSubscriptionProcessing = false;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 
   bool get isSubscriptionProcessing => _isSubscriptionProcessing;
-  bool get isMonthlyPlanSubscribed =>
-      _activeSubscriptions.contains(SubscriptionEnum.monthlyPlan);
-  bool get isAnnualPlanSubscribed =>
-      _activeSubscriptions.contains(SubscriptionEnum.annualPlan);
-  bool get isLifeTimePlanSubscribed =>
-      _activeSubscriptions.contains(SubscriptionEnum.lifeTimePlan);
-
+  bool get isMonthlyPlanSubscribed => _activeSubscriptions.contains(SubscriptionEnum.monthlyPlan);
+  bool get isAnnualPlanSubscribed => _activeSubscriptions.contains(SubscriptionEnum.annualPlan);
+  bool get isLifeTimePlanSubscribed => _activeSubscriptions.contains(SubscriptionEnum.lifeTimePlan);
   bool get isSubscribed => _activeSubscriptions.isNotEmpty;
 
   Set<SubscriptionEnum> get activeSubscriptions => {..._activeSubscriptions};

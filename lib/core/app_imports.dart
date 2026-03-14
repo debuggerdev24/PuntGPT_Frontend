@@ -13,7 +13,6 @@ export 'package:provider/provider.dart';
 export 'package:shimmer/shimmer.dart';
 
 // App - Constants
-export 'package:puntgpt_nick/core/constants/constants.dart';
 export 'package:puntgpt_nick/core/theme/text_style.dart';
 export 'package:puntgpt_nick/core/enum/app_enums.dart';
 

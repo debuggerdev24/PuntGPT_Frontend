@@ -5,6 +5,7 @@ import 'package:puntgpt_nick/models/home/search_engine/search_model.dart';
 import 'package:puntgpt_nick/models/home/search_engine/tip_slip_model.dart';
 import 'package:puntgpt_nick/models/home/search_engine/track_item_model.dart';
 import 'package:puntgpt_nick/services/search_engine/search_engine_api_service.dart';
+import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 
 class SearchEngineProvider extends ChangeNotifier {
   bool isSearched = false, _isMenuOpen = false, _isEditSavedSearch = false;
@@ -630,8 +631,8 @@ class SearchEngineProvider extends ChangeNotifier {
 
   //* get tip slips
   Future<void> getAllTipSlips() async {
-    // tipSlips = null;
-    // notifyListeners();
+    if (LocaleStorageService.acccessToken.isEmpty) return;
+
     final result = await SearchEngineAPISearvice.instance.getTipSlips();
     result.fold(
       (l) {

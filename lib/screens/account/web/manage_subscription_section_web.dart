@@ -1,4 +1,7 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/core/constants/app_strings.dart';
+import 'package:puntgpt_nick/core/widgets/guest_create_account_sheet.dart';
+import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/account/account_provider.dart';
 import 'package:puntgpt_nick/screens/account/web/widgets/subscription_plan_web.dart';
 
@@ -45,6 +48,13 @@ class ManageSubscriptionSectionWeb extends StatelessWidget {
                         children: List.generate(plans.length, (index) {
                           return OnMouseTap(
                             onTap: () {
+                              if (isGuest) {
+                                showGuestCreateAccountSheet(
+                                  context,
+                                  message: AppStrings.guestManageSubscriptionMessage,
+                                );
+                                return;
+                              }
                               provider.setIsShowSelectedPlan(
                                 showSelectedPlan: true,
                                 planIndex: plans[index].id,
@@ -65,14 +75,14 @@ class ManageSubscriptionSectionWeb extends StatelessWidget {
                   ),
                 ),
               ),
-              AppFilledButton(
-                margin: EdgeInsets.only(
-                  // top: 20.w,
-                  left: 60.w,
-                  right: 60.w,
-                  bottom: 25.w,
-                ),
-                text: "See Current Plan",
+              if (!isGuest)
+                AppFilledButton(
+                  margin: EdgeInsets.only(
+                    left: 60.w,
+                    right: 60.w,
+                    bottom: 25.w,
+                  ),
+                  text: "See Current Plan",
                 textStyle: semiBold(
                   fontSize: context.isDesktop ? 17.sp : 22.sp,
                   color: AppColors.white,
@@ -80,10 +90,10 @@ class ManageSubscriptionSectionWeb extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                   vertical: context.isDesktop ? 12.w : 16.5.w,
                 ),
-                onTap: () {
-                  provider.setIsShowCurrentPlan = !provider.showCurrentPlan;
-                },
-              ),
+                  onTap: () {
+                    provider.setIsShowCurrentPlan = !provider.showCurrentPlan;
+                  },
+                ),
             ],
           ),
         );

@@ -25,7 +25,7 @@ class LocaleStorageService {
       await _pref.setBool(_isUserLoggedInKey, value);
 
   // save and get the user auth token
-  static String get userToken => _pref.getString(_accessTokenKey) ?? "";
+  static String get acccessToken => _pref.getString(_accessTokenKey) ?? "";
   static Future<void> saveUserToken(String value) async =>
       await _pref.setString(_accessTokenKey, value);
   static Future<void> removeAccessToken() async {

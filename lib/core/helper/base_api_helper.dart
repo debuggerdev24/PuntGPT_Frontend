@@ -15,7 +15,7 @@ class DioClient {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final token = LocaleStorageService.userToken;
+          final token = LocaleStorageService.acccessToken;
           if (token.isNotEmpty) {
             options.headers['Authorization'] = "Bearer $token";
           }

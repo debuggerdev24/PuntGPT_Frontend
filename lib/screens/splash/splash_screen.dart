@@ -17,7 +17,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  String authToken = LocaleStorageService.userToken;
+  String authToken = LocaleStorageService.acccessToken;
 
   Timer? _timer;
   int currentIndex = -1;
@@ -34,23 +34,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
       _startTimer();
       Future.delayed(3.seconds).then((value) async {
-        Logger.info(
-          "is Physical Mobile ${context.isPhysicalMobile} ${context.screenWidth}",
-        );
-        Logger.info(
-          "is Browser Mobile  ${context.isBrowserMobile} ${context.screenWidth}",
-        );
-        Logger.info("is Tablet ${context.isTablet} ${context.screenWidth}");
-        Logger.info("is Desktop ${context.isDesktop} ${context.screenWidth}");
+        // Logger.info(
+        //   "is Physical Mobile ${context.isPhysicalMobile} ${context.screenWidth}",
+        // );
+        // Logger.info(
+        //   "is Browser Mobile  ${context.isBrowserMobile} ${context.screenWidth}",
+        // );
+        // Logger.info("is Tablet ${context.isTablet} ${context.screenWidth}");
+        // Logger.info("is Desktop ${context.isDesktop} ${context.screenWidth}");
 
         if (isNetworkConnected.value) {
           if (LocaleStorageService.isFirstTime && authToken.isEmpty) {
-            Logger.info("Inside if part");
-            Logger.info(AppConfig.apiBaseurl);
             context.goNamed(AppRoutes.ageConfirmationScreen.name);
             return;
           }
-          //todo checking token is expire or not.
+          //* checking token is expire or not.
 
           final result = await AccountApiService.instance.getProfile();
           result.fold(

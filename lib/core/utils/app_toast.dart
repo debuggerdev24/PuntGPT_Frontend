@@ -28,6 +28,8 @@ class AppToast {
       icon: icon,
       title: Text(
         message,
+        maxLines: 6,
+        overflow: TextOverflow.ellipsis,
         style: medium(
           color: textColor ?? AppColors.white,
           fontSize: context.isDesktop
@@ -37,14 +39,6 @@ class AppToast {
               : context.isBrowserMobile
               ? 30.sp
               : 16.6.sp,
-
-          // context.isBrowserMobile
-          //     ? (context.isBrowserMobile)
-          //           ? 30.sp
-          //           : 16.5.sp
-          //     : context.isTablet
-          //     ? 32.sp
-          //     : 22.sp,
         ),
       ),
     );

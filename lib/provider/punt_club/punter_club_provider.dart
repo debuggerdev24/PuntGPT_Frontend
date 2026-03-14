@@ -392,7 +392,8 @@ class PuntClubProvider extends ChangeNotifier {
   }
 
   //* get notification list
-  Future<void> getNotifications({required}) async {
+  Future<void> getNotifications() async {
+    if (LocaleStorageService.acccessToken.isEmpty) return;
     notificationList = null;
     notifyListeners();
     final response = await PuntClubApiService.instance.getNotificationList();

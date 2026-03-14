@@ -18,7 +18,7 @@ class WebSplashScreen extends StatefulWidget {
 }
 
 class _WebSplashScreenState extends State<WebSplashScreen> {
-  String authToken = LocaleStorageService.userToken;
+  String authToken = LocaleStorageService.acccessToken;
 
   Timer? _timer;
   int currentIndex = -1;

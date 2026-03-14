@@ -3,8 +3,7 @@ import 'package:puntgpt_nick/core/widgets/web_top_section.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key, required this.isFreeSignUp});
-  final bool isFreeSignUp;
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -99,27 +98,7 @@ class LoginScreen extends StatelessWidget {
                           }
                         },
                       ),
-                      12.w.verticalSpace,
-                      OnMouseTap(
-                        onTap: () {
-                          context.goNamed(
-                            kIsWeb
-                                ? WebRoutes.homeScreen.name
-                                : AppRoutes.homeScreen.name,
-                          );
-                        },
-                        child: Center(
-                          child: Text(
-                            "Continue as guest",
-                            style: medium(
-                              fontSize: 14.sp,
-                              color: AppColors.primary.setOpacity(.85),
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
-                      ),
-                      15.h.verticalSpace,
+                      15.w.verticalSpace,
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -134,7 +113,6 @@ class LoginScreen extends StatelessWidget {
                             onTap: () {
                               context.pushReplacementNamed(
                                 AppRoutes.signUpScreen.name,
-                                extra: {'is_free_sign_up': isFreeSignUp},
                               );
                             },
                             child: Text(

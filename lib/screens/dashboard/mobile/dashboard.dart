@@ -1,4 +1,5 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/account/account_provider.dart';
 import 'package:puntgpt_nick/provider/home/classic_form/classic_form_provider.dart';
@@ -217,8 +218,9 @@ void callInitAPIs({required BuildContext context}) {
   final classicFormGuideProvider = context.read<ClassicFormProvider>();
   final puntClubProvider = context.read<PuntClubProvider>();
   final subsProvider = context.read<SubscriptionProvider>();
-  
-  Future.wait([
+
+  // final isGuest = LocaleStorageService.acccessToken.isEmpty;
+  final futures = <Future>[
     accountProvider.getProfile(),
     accountProvider.getSubscriptionPlans(
       onFailed: (error) {
@@ -233,6 +235,6 @@ void callInitAPIs({required BuildContext context}) {
     puntClubProvider.getNotifications(),
     searchEngineProvider.getAllTipSlips(),
     subsProvider.initialize(context: context),
-    // subsProvider.startPurchaseListener(),
-  ]);
+  ];
+  Future.wait(futures);
 }

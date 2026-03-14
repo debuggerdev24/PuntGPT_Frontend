@@ -1,7 +1,6 @@
 
 import 'package:puntgpt_nick/core/app_imports.dart';
 
-
 class SubscriptionGateView extends StatelessWidget {
   const SubscriptionGateView({
     super.key,
@@ -15,6 +14,7 @@ class SubscriptionGateView extends StatelessWidget {
   final IconData icon;
 
   void _openManageSubscription(BuildContext context) {
+    
     context.pushNamed(
       (kIsWeb && context.isMobileView)
           ? WebRoutes.manageSubscriptionScreen.name
@@ -66,7 +66,7 @@ class SubscriptionGateView extends StatelessWidget {
             28.h.verticalSpace,
             AppFilledButton(
               onTap: () => _openManageSubscription(context),
-              text: "View plans",
+              text: "Subscribe to Pro",
               textStyle: semiBold(
                 fontSize: (context.isBrowserMobile) ? 26.sp : 16.sp,
                 color: AppColors.white,

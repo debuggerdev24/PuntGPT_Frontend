@@ -49,6 +49,7 @@ class AuthApiService {
         "agreed_to_terms": agreedToTerms,
         "address_line_1": addressLine1,
         "address_line_2": addressLine2,
+        //
         "suburb": suburb,
         "post_code": postCode,
         "country": country,

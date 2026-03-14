@@ -1,4 +1,5 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/screens/onboarding/mobile/widgets/plan.dart';
 import 'package:puntgpt_nick/screens/onboarding/mobile/widgets/video_widget.dart';
 
@@ -10,51 +11,13 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  List<Map> planData = [
-    {
-      "title": "Free 'Mug Punter' Account",
-      "price": "",
-      "points": [
-        "Message PuntGPT and talk horse racing",
-        "Save PuntGPT customised searches",
-        "PuntGPT Punters Club group chats with AI",
-        "Limited use of PuntGPT Search Engine",
-        "Limited AI analysis of Horse Selections",
-        "Classic Form Guide",
-      ],
-    },
-    {
-      "title": "Monthly",
-      "price": "9.99",
-      "points": [
-        {"icon": AppAssets.done, "text": "Chat function with PuntGPT"},
-        {"icon": AppAssets.done, "text": "Access to PuntGPT Punters Club"},
-        {"icon": AppAssets.done, "text": "Full use of PuntGPT Search Engine"},
-        {"icon": AppAssets.done, "text": "Access to Classic Form Guide"},
-      ],
-    },
-    {
-      "title": "Yearly",
-      "price": "59.99",
-      "points": [
-        {"icon": AppAssets.done, "text": "Chat function with PuntGPT"},
-        {"icon": AppAssets.done, "text": "Access to PuntGPT Punters Club"},
-        {"icon": AppAssets.done, "text": "Full use of PuntGPT Search Engine"},
-        {"icon": AppAssets.done, "text": "Access to Classic Form Guide"},
-      ],
-    },
-    {
-      "title": "Lifetime",
-      "price": "159.99",
-      "points": [
-        {"icon": AppAssets.done, "text": "Chat function with PuntGPT"},
-        {"icon": AppAssets.done, "text": "Access to PuntGPT Punters Club"},
-        {"icon": AppAssets.done, "text": "Full use of PuntGPT Search Engine"},
-        {"icon": AppAssets.done, "text": "Access to Classic Form Guide"},
-      ],
-    },
-  ];
 
+  @override
+  void initState() {
+    super.initState();
+    isGuest = false;
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,9 +26,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: Column(
           children: [
             // Video area fills remaining height
-            40.h.verticalSpace,
+            40.w.verticalSpace,
             VideoWidget(),
-            24.h.verticalSpace,
+            24.w.verticalSpace,
             Plans(),
           ],
         ),

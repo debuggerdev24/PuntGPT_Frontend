@@ -1,5 +1,8 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/core/constants/app_strings.dart';
+import 'package:puntgpt_nick/core/widgets/guest_create_account_sheet.dart';
 import 'package:puntgpt_nick/models/home/search_engine/runner_model.dart';
+import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_section_shimmers.dart';
 
@@ -18,6 +21,7 @@ class RunnerBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isGuest = !LocaleStorageService.isUserLoggedIn;
     final padding = EdgeInsets.fromLTRB(8.w, 0, 8.w, 3);
     return Container(
       margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 16),
@@ -77,6 +81,13 @@ class RunnerBox extends StatelessWidget {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
+                    if (isGuest) {
+                      showGuestCreateAccountSheet(
+                        context,
+                        message: AppStrings.guestSaveSearchMessage,
+                      );
+                      return;
+                    }
                     _showSaveSearchDialog(
                       context: context,
                       onSave: onAddToSaveSearch,

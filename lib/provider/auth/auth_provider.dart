@@ -82,14 +82,11 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //todo register user
+  //* register user
 
   bool isSignUpLoading = false;
-  Future<void> registerUser({
-    required BuildContext context,
-    required bool isFreeSignUp,
-  }) async {
-    //todo agreed to terms and conditions or not?
+  Future<void> registerUser({required BuildContext context}) async {
+    //* agreed to terms and conditions or not?
 
     if (!isReadTermsAndConditions) {
       AppToast.warning(
@@ -134,7 +131,6 @@ class AuthProvider extends ChangeNotifier {
         AppToast.success(context: context, message: "Register Successfully.");
         context.pushNamed(
           (kIsWeb) ? WebRoutes.logInScreen.name : AppRoutes.loginScreen.name,
-          extra: {"is_free_sign_up": isFreeSignUp},
         );
 
         clearSignUpControllers();

@@ -1,7 +1,9 @@
+import 'package:puntgpt_nick/core/constants/app_strings.dart';
+import 'package:puntgpt_nick/core/widgets/guest_create_account_sheet.dart';
+import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/account/account_provider.dart';
 import 'package:puntgpt_nick/screens/account/mobile/widgets/subscription_plan.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
-
 
 class ManageSubscriptionScreen extends StatelessWidget {
   const ManageSubscriptionScreen({super.key});
@@ -29,17 +31,27 @@ class ManageSubscriptionScreen extends StatelessWidget {
                       final plan = provider.plans[index];
                       return GestureDetector(
                         onTap: () {
-                          context.pushNamed(
-                            (kIsWeb && context.isMobileView)
-                                ? WebRoutes.selectedPlanScreen.name
-                                : AppRoutes.selectedPlanScreen.name,
-                            extra: plan,
-                          );
+                          deBouncer.run(() {
+                            if (isGuest) {
+                              showGuestCreateAccountSheet(
+                                context,
+                                message: AppStrings.guestManageSubscriptionMessage,
+                              );
+                              return;
+                            }
+                            context.pushNamed(
+                              (kIsWeb && context.isMobileView)
+                                  ? WebRoutes.selectedPlanScreen.name
+                                  : AppRoutes.selectedPlanScreen.name,
+                              extra: plan,
+                            );
+                          });
                         },
                         child: SubscriptionPlanMobile(plan: plan),
                       );
                     }),
                     Spacer(),
+                    if (!isGuest)
                     AppFilledButton(
                       margin: EdgeInsets.fromLTRB(25.w, 20.h, 25.w, 20.h),
                       text: "See Current Plan",

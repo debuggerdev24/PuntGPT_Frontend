@@ -398,7 +398,7 @@ class SearchFields extends StatelessWidget {
                       : AppRoutes.manageSubscriptionScreen.name,
                 );
               },
-              text: "View plans",
+              text: "Subscribe to Pro",
               textStyle: semiBold(
                 fontSize: (context.isBrowserMobile) ? 24.sp : 14.sp,
                 color: AppColors.white,

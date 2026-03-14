@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart' as badge;
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/widgets/subscription_gate_view.dart';
+import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
 import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/create_chat_group_sheet.dart';
@@ -19,7 +20,7 @@ class PunterClubScreen extends StatelessWidget {
       },
       child: Consumer2<PuntClubProvider, SubscriptionProvider>(
         builder: (context, provider, subProvider, child) {
-          if (!subProvider.isSubscribed) {
+          if (!subProvider.isSubscribed || isGuest) {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [

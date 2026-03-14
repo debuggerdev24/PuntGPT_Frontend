@@ -1,4 +1,6 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/core/constants/app_strings.dart';
+import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/models/punt_club/notification_model.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/widgets/dialogue_sheets.dart';
@@ -12,10 +14,14 @@ class NotificationSheetView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (isGuest) {
+      return _GuestNotificationView(sheetContext: sheetContext);
+    }
     return Consumer<PuntClubProvider>(
       builder: (context, provider, _) {
         final notifications = provider.notificationList;
         if (notifications == null) {
+
           return PunterClubShimmers.notificationSheetShimmer(context: context);
         }
         if (notifications.isEmpty) {
@@ -178,8 +184,6 @@ class NotificationSheetView extends StatelessWidget {
     );
   }
 
-
-
   Widget notificationBox({
     required BuildContext context,
     required NotificationModel notification,
@@ -292,6 +296,81 @@ class NotificationSheetView extends StatelessWidget {
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GuestNotificationView extends StatelessWidget {
+  const _GuestNotificationView({required this.sheetContext});
+  final BuildContext sheetContext;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 48.w),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(28.w),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+            ),
+            child: ImageWidget(
+              type: ImageType.svg,
+              path: AppAssets.groupIcon,
+              width: 40.w,
+            ),
+          ),
+          24.w.verticalSpace,
+          Text(
+            "Unlock your notifications",
+            style: semiBold(
+              fontSize: 20.sp,
+              fontFamily: AppFontFamily.secondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          12.w.verticalSpace,
+          Text(
+            AppStrings.guestNotificationsMessage,
+            style: regular(
+              fontSize: 15.sp,
+              color: AppColors.primary.withValues(alpha: 0.7),
+              height: 1.4,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          32.w.verticalSpace,
+          AppFilledButton(
+            text: "Subscribe to Pro",
+            onTap: () {
+              sheetContext.pop();
+              context.pushNamed(
+                kIsWeb ? WebRoutes.manageSubscriptionScreen.name : AppRoutes.manageSubscriptionScreen.name,
+              );
+            },
+          ),
+          // 16.w.verticalSpace,
+          // OnMouseTap(
+          //   onTap: () {
+          //     sheetContext.pop();
+          //     context.pushNamed(
+          //       kIsWeb ? WebRoutes.logInScreen.name : AppRoutes.loginScreen.name,
+          //     );
+          //   },
+          //   child: Text(
+          //     "Already have an account? Sign in",
+          //     style: medium(
+          //       fontSize: 14.sp,
+          //       color: AppColors.primary,
+          //       decoration: TextDecoration.underline,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

@@ -59,8 +59,7 @@ class WebRouter {
       GoRoute(
         path: WebRoutes.signUpScreen.path,
         name: WebRoutes.signUpScreen.name,
-        builder: (context, state) =>
-            WebSignUpScreen(isFreeSignUp: state.extra as bool),
+        builder: (context, state) => WebSignUpScreen(),
       ),
       GoRoute(
         path: WebRoutes.logInScreen.path,

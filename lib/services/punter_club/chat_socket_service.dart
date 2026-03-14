@@ -59,7 +59,7 @@ class ChatService {
     final port = uri.port != 0 && uri.port != 80 && uri.port != 443
         ? ':${uri.port}'
         : '';
-    final token = LocaleStorageService.userToken;
+    final token = LocaleStorageService.acccessToken;
     return Uri.parse(
       '$scheme://$host$port/ws/chat/group/$groupId/?token=$token',
     );
@@ -71,7 +71,7 @@ class ChatService {
       Logger.error('[ChatService] groupId is empty');
       return;
     }
-    final token = LocaleStorageService.userToken;
+    final token = LocaleStorageService.acccessToken;
     if (token.isEmpty) {
       Logger.error('[ChatService] No JWT token available');
       _setState(ChatConnectionState.error);

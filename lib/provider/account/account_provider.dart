@@ -3,6 +3,7 @@ import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/account/profile_model.dart';
 import 'package:puntgpt_nick/models/account/subscription_plan_model.dart';
 import 'package:puntgpt_nick/services/account/account_api_service.dart';
+import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 
 class AccountProvider extends ChangeNotifier {
   TextEditingController nameCtr = TextEditingController();
@@ -96,6 +97,7 @@ class AccountProvider extends ChangeNotifier {
   }
 
   Future<void> getProfile() async {
+    if (LocaleStorageService.acccessToken.isEmpty) return;
     final result = await AccountApiService.instance.getProfile();
     result.fold(
       (l) {

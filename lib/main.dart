@@ -8,6 +8,7 @@ import 'package:toastification/toastification.dart';
 
 
 ValueNotifier<bool> isNetworkConnected = ValueNotifier(true);
+bool isGuest = false;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +62,7 @@ pro -3 parth
 */
 
 Meera a id:
+  
 
 */ 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwMzQyNjI0LCJpYXQiOjE3NzAyNzA2MjQsImp0aSI6IjZiZTNjZDk4MWJmZTQ1ZmNiOWYzNzFjYzFjZWI4NTg2IiwidXNlcl9pZCI6IjEyIn0.tGc7GDTFWzOYOOf_osADeFAC3oN0bYbay9fFPi7a3P4

@@ -6,15 +6,15 @@ import 'package:puntgpt_nick/screens/auth/mobile/widgets/sign_up_form.dart';
 import 'package:puntgpt_nick/screens/auth/mobile/widgets/sign_up_title.dart';
 
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({super.key, required this.isFreeSignUp});
-  final bool isFreeSignUp;
+  const SignUpScreen({super.key, });
+
 
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return Scaffold(
-      appBar: !kIsWeb ? null : WebTopSection(),
+      appBar: kIsWeb ? WebTopSection() : null,
       body: SafeArea(
         child: Consumer<AuthProvider>(
           builder: (context, provider, child) {
@@ -27,11 +27,11 @@ class SignUpScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       //todo title
-                      SignUpTitle(isFreeSignUp: isFreeSignUp),
-                      20.h.verticalSpace,
+                      SignUpTitle(),
+                      20.w.verticalSpace,
                       //todo main body
                       SignUpForm(formKey: formKey),
-                      12.h.verticalSpace,
+                      12.w.verticalSpace,
                       //todo bottom section
                       SizedBox(
                         width: context.isMobileView
@@ -57,7 +57,6 @@ class SignUpScreen extends StatelessWidget {
                         onLoginTap: () {
                           context.pushReplacementNamed(
                             AppRoutes.loginScreen.name,
-                            extra: {"is_free_sign_up": isFreeSignUp},
                           );
                         },
                         onSignUpTap: () {
@@ -65,19 +64,8 @@ class SignUpScreen extends StatelessWidget {
                             if (!formKey.currentState!.validate()) {
                               return;
                             }
-
-                            provider.registerUser(
-                              context: context,
-                              isFreeSignUp: isFreeSignUp,
-                            );
+                            provider.registerUser(context: context);
                           });
-                        },
-                        onContinueAsGuestTap: () {
-                          context.goNamed(
-                            kIsWeb
-                                ? WebRoutes.homeScreen.name
-                                : AppRoutes.homeScreen.name,
-                          );
                         },
                       ),
                     ],

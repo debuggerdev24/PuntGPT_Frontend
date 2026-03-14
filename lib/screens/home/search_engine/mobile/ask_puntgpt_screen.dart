@@ -280,7 +280,7 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(5.w, 12.h, 25.w, 12.h),
+          padding: EdgeInsets.fromLTRB(5.w, 7.w, 25.w, 7.w),
           child: Row(
             children: [
               IconButton(
@@ -298,7 +298,7 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
                     style: regular(
                       fontFamily: AppFontFamily.secondary,
                       fontSize: context.isBrowserMobile ? 40.sp : 20,
-                      height: 1.35,
+                      height: 1.1,
                     ),
                   ),
                   Text(

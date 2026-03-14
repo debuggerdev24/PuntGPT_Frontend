@@ -173,23 +173,7 @@ class WebLoginScreen extends StatelessWidget {
                                   ? webProgressIndicator(context)
                                   : null,
                             ),
-                            12.h.verticalSpace,
-                            OnMouseTap(
-                              onTap: () {
-                                context.goNamed(WebRoutes.homeScreen.name);
-                              },
-                              child: Center(
-                                child: Text(
-                                  "Continue as guest",
-                                  style: medium(
-                                    fontSize: fourteenResponsive,
-                                    color: AppColors.primary.setOpacity(.85),
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            18.h.verticalSpace,
+                            18.w.verticalSpace,
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [

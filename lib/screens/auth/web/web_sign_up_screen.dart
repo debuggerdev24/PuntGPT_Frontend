@@ -6,8 +6,7 @@ import 'package:puntgpt_nick/screens/auth/web/widgets/web_sign_up_form.dart';
 import 'package:puntgpt_nick/screens/auth/web/widgets/web_signup_bottom.dart';
 
 class WebSignUpScreen extends StatelessWidget {
-  const WebSignUpScreen({super.key, required this.isFreeSignUp});
-  final bool isFreeSignUp;
+  const WebSignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +31,7 @@ class WebSignUpScreen extends StatelessWidget {
                         Center(
                           child: OnMouseTap(
                             onTap: () {},
-                            child: SignUpTitle(isFreeSignUp: isFreeSignUp),
+                            child: SignUpTitle(),
                           ),
                         ),
                         Padding(
@@ -69,17 +68,10 @@ class WebSignUpScreen extends StatelessWidget {
                           if (!formKey.currentState!.validate()) {
                             return;
                           }
-
-                          provider.registerUser(
-                            context: context,
-                            isFreeSignUp: isFreeSignUp,
-                          );
+                          provider.registerUser(context: context);
                         });
                       },
                       provider: provider,
-                      onContinueAsGuestTap: () {
-                        context.goNamed(WebRoutes.homeScreen.name);
-                      },
                     ),
                   ],
                 ),

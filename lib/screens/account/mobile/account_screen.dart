@@ -1,4 +1,7 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/core/constants/app_strings.dart';
+import 'package:puntgpt_nick/core/widgets/guest_create_account_sheet.dart';
+import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -20,6 +23,13 @@ class AccountScreen extends StatelessWidget {
                 context: context,
                 title: "Personal Details",
                 onTap: () {
+                  if (isGuest) {
+                    showGuestCreateAccountSheet(
+                      context,
+                      message: AppStrings.guestPersonalDetailsMessage,
+                    );
+                    return;
+                  }
                   if (context.isMobileView && kIsWeb) {
                     context.pushNamed(WebRoutes.personalDetailsScreen.name);
                     return;
@@ -40,13 +50,14 @@ class AccountScreen extends StatelessWidget {
                 },
               ),
               horizontalDivider(),
-              accountItem(
-                context: context,
-                title: "Log Out",
-                onTap: () {
-                  showLogOutConfirmationDialog(context: context);
-                },
-              ),
+              if (!isGuest)
+                accountItem(
+                  context: context,
+                  title: "Log Out",
+                  onTap: () {
+                    showLogOutConfirmationDialog(context: context);
+                  },
+                ),
               Spacer(),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -197,7 +208,7 @@ class AccountScreen extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(5.w, 12.h, 25.w, 16.h),
+          padding: EdgeInsets.fromLTRB(5.w, 8.w, 25.w, 10.w),
           child: Row(
             children: [
               IconButton(
@@ -226,7 +237,7 @@ class AccountScreen extends StatelessWidget {
                     style: regular(
                       fontSize: (context.isBrowserMobile) ? 40.sp : 24.sp,
                       fontFamily: AppFontFamily.secondary,
-                      height: 1.35,
+                      height: 1.15,
                     ),
                   ),
                   Text(
