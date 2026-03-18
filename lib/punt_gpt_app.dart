@@ -14,7 +14,7 @@ import 'package:puntgpt_nick/provider/home/classic_form/classic_form_provider.da
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/core/responsive/responsive_builder.dart';
 import 'package:puntgpt_nick/services/network/network_service.dart';
 
 class PuntGPTApp extends StatelessWidget {

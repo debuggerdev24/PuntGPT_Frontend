@@ -8,7 +8,7 @@ import 'package:puntgpt_nick/screens/home/classic_form_guide/mobile/selected_mee
 import 'package:puntgpt_nick/screens/home/classic_form_guide/mobile/tips_and_analysis_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/runners_screen.dart';
 
-class DashBoardRoutes {
+class HomeRoutes {
   static final List<RouteBase> routes = <RouteBase>[
     GoRoute(
       name: AppRoutes.homeScreen.name,

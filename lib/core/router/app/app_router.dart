@@ -60,16 +60,16 @@ class AppRouter {
           );
         },
         branches: <StatefulShellBranch>[
-          //todo ----------> Customer Home Tab
+          //* ----------> Customer Home Tab
           StatefulShellBranch(
             // navigatorKey: _shellNavigatorCustomerHome,
-            routes: DashBoardRoutes.routes,
+            routes: HomeRoutes.routes,
           ),
-          //todo ----------> PuntGPT Punter Club Tab
+          //* ----------> PuntGPT Punter Club Tab
           StatefulShellBranch(routes: PuntClubRoutes.routes),
-          //todo ----------> Bookies Tab
+          //* ----------> Bookies Tab
           StatefulShellBranch(routes: BookiesRoutes.routes),
-          //todo ---------->  Account Tab
+          //* ---------->  Account Tab
           StatefulShellBranch(routes: AccountRoutes.routes),
         ],
       ),
@@ -83,11 +83,11 @@ class AppRouter {
           children: [
             Text(
               '404',
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 48.sp, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            15.w.verticalSpace,
             Text('Page not found: ${state.matchedLocation}'),
-            SizedBox(height: 24),
+            24.w.verticalSpace,
             ElevatedButton(
               onPressed: () => context.go(AppRoutes.homeScreen.path),
               child: Text('Go Home'),

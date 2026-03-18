@@ -154,13 +154,11 @@ class AuthProvider extends ChangeNotifier {
 
     result.fold(
       (l) {
-        Logger.error(l.apiErrorMsg!);
-        if (l.errorMsg.contains("Invalid email or password")) {
-          AppToast.error(
-            context: context,
-            message: "Account not found with this email!",
-          );
-        }
+        Logger.error(l.apiErrorMsg ?? l.errorMsg);
+        AppToast.error(
+          context: context,
+          message: l.errorMsg.isNotEmpty ? l.errorMsg : "Login failed. Please try again.",
+        );
       },
       (r) async {
         final data = r["data"];

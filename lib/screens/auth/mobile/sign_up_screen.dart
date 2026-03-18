@@ -26,13 +26,13 @@ class SignUpScreen extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(25.w, 0, 25.w, 30.h),
                   child: Column(
                     children: [
-                      //todo title
+                      //* title
                       SignUpTitle(),
                       20.w.verticalSpace,
-                      //todo main body
+                      //* main body
                       SignUpForm(formKey: formKey),
                       12.w.verticalSpace,
-                      //todo bottom section
+                      //* bottom section
                       SizedBox(
                         width: context.isMobileView
                             ? double.maxFinite

@@ -69,6 +69,12 @@ class LoginScreen extends StatelessWidget {
                                   : AppAssets.show,
                               onTrailingIconTap: () => provider.showLoginPass =
                                   !provider.showLoginPass,
+                              onSubmit: () async {
+                                if (formKey.currentState!.validate()) {
+                                  // context.go(AppRoutes.home);
+                                   provider.loginUser(context: context);
+                                }
+                              },
                             ),
                           ],
                         ),
@@ -122,7 +128,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      20.h.verticalSpace,
+                      20.w.verticalSpace,
                     ],
                   ),
                 ),

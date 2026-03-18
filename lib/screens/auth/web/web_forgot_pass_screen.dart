@@ -8,7 +8,7 @@ import 'package:puntgpt_nick/core/utils/field_validators.dart';
 import 'package:puntgpt_nick/core/widgets/app_filed_button.dart';
 import 'package:puntgpt_nick/core/widgets/app_text_field.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/core/responsive/responsive_builder.dart';
 
 import '../../../core/utils/custom_loader.dart';
 import '../../../core/widgets/web_top_section.dart';

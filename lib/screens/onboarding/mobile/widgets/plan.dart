@@ -1,5 +1,6 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/main.dart';
+
 import '../../../../provider/auth/auth_provider.dart';
 import '../../../../services/storage/locale_storage_service.dart';
 
@@ -139,7 +140,7 @@ class _PlansState extends State<Plans> {
             context.read<AuthProvider>().clearSignUpControllers();
             LocaleStorageService.setIsFirstTime(false);
             context.pushNamed(
-              kIsWeb ? WebRoutes.manageSubscriptionScreen.name : AppRoutes.manageSubscriptionScreen.name,
+              kIsWeb ? WebRoutes.signUpScreen.name : AppRoutes.signUpScreen.name,
             );
           },
         ),
@@ -164,7 +165,6 @@ class _PlansState extends State<Plans> {
           ),
         ),
         40.w.verticalSpace,
-       
       ],
     );
   }

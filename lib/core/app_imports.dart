@@ -50,4 +50,4 @@ export 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
 export 'package:puntgpt_nick/core/widgets/phone_country_field.dart';
 
 // Responsive
-export 'package:puntgpt_nick/responsive/responsive_builder.dart';
+export 'package:puntgpt_nick/core/responsive/responsive_builder.dart';

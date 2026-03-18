@@ -22,7 +22,8 @@ enum JumpType {
   jumps_tomorrow("Jumps tomorrow");
 
   final String value;
-  // ignore: sort_constructors_first
+  
+  //ignore: sort_constructors_first
   const JumpType(this.value);
 }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/core/responsive/responsive_builder.dart';
 
 extension ResponsiveTextSize on int {
   double responsiveTextSize([double? min, double? max]) {

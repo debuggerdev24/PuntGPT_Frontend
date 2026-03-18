@@ -1,7 +1,7 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/router/web/web_routes.dart';
 import 'package:puntgpt_nick/models/account/subscription_plan_model.dart';
-import 'package:puntgpt_nick/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/core/responsive/responsive_builder.dart';
 import 'package:puntgpt_nick/screens/account/mobile/account_screen.dart';
 import 'package:puntgpt_nick/screens/account/mobile/current_plan_screen.dart';
 import 'package:puntgpt_nick/screens/account/mobile/manage_subscription_screen.dart';
