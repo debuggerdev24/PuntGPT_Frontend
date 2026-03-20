@@ -12,7 +12,7 @@ class SubscriptionService {
     SubscriptionEnum.monthlyPlan: "com.puntgpt.propunter.monthly",
     SubscriptionEnum.annualPlan: "com.puntgpt.propunter.yearly",
     // AppEnum.yearlyPlan: "mock.tier3.monthly",
-  };
+  };  
 
   List<ProductDetails> _products = [];
 

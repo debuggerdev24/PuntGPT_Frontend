@@ -16,14 +16,12 @@ class SubscriptionPlanModel {
         price: json["price"],
         features: List<String>.from(json["features"].map((x) => x)),
         durationLabel: json["duration_label"],
-        productIdIos: json["product_id_ios"],
-        productIdAndroid: json["product_id_android"],
+        productIdIos: json["product_id_ios"] ?? "",
+        productIdAndroid: json["product_id_android"] ?? "",
       );
   int id;
   String plan;
   String price;
   List<String> features;
-  String durationLabel;
-  dynamic productIdIos;
-  dynamic productIdAndroid;
+  String durationLabel,productIdAndroid,productIdIos;
 }

@@ -454,16 +454,18 @@ class TipSlipScreen extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 25.w),
+          padding: EdgeInsets.fromLTRB(5.w, 6.w, 25.w, 8.w),
+
+          // padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 25.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 14.w,
+            // spacing: 14.w,
             children: [
-              GestureDetector(
-                onTap: () {
+              IconButton(
+                onPressed: () {
                   context.pop();
                 },
-                child: Icon(Icons.arrow_back_ios_rounded, size: 16.h),
+                icon: Icon(Icons.arrow_back_ios_rounded, size: 16.h),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

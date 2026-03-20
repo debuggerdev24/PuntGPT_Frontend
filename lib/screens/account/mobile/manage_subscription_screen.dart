@@ -50,7 +50,7 @@ class ManageSubscriptionScreen extends StatelessWidget {
                         child: SubscriptionPlanMobile(plan: plan),
                       );
                     }),
-                    Spacer(),
+                    8.w.verticalSpace,
                     if (!isGuest)
                     AppFilledButton(
                       margin: EdgeInsets.fromLTRB(25.w, 20.h, 25.w, 20.h),

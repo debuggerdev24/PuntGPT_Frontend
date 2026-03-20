@@ -2,6 +2,7 @@ import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/account/subscription_plan_model.dart';
 import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 import 'package:puntgpt_nick/screens/account/mobile/widgets/subscription_plan.dart';
+import 'package:puntgpt_nick/services/subscription/subscription_platform_service.dart';
 
 class SelectedPlanScreen extends StatelessWidget {
   const SelectedPlanScreen({super.key, required this.plan});
@@ -9,35 +10,28 @@ class SelectedPlanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        topBar(context: context, planName: plan.plan),
-        14.h.verticalSpace,
-        SubscriptionPlanMobile(plan: plan),
-        Spacer(),
-        AppOutlinedButton(
-          margin: EdgeInsets.symmetric(horizontal: 25.w),
-          text: "Cancel",
-          onTap: () {
-            context.pop();
-          },
+        Column(
+          children: [
+            topBar(context: context, planName: plan.plan),
+            14.w.verticalSpace,
+            SubscriptionPlanMobile(plan: plan),
+            Spacer(),
+            AppFilledButton(
+              text: "Pay & Subscribe",
+              onTap: () => _onPayAndSubscribe(context: context, plan: plan),
+              margin: EdgeInsets.symmetric(horizontal: 25.w, vertical: 12.w),
+            ),
+          ],
         ),
-        AppFilledButton(
-          text: "Pay & Subscribe",
-          onTap: () async {
-            var selectedPlan = SubscriptionEnum.monthlyPlan;
-            if (plan.id == 3) {
-              selectedPlan = SubscriptionEnum.annualPlan;
-            } else if (plan.id == 4) {
-              selectedPlan = SubscriptionEnum.lifeTimePlan;
+        Consumer<SubscriptionProvider>(
+          builder: (context, provider, child) {
+            if (!provider.isSubscriptionProcessing) {
+              return SizedBox.shrink();
             }
-            Logger.info(selectedPlan.name);
-            final subscriptionProvider = context.read<SubscriptionProvider>();
-            await subscriptionProvider.initiateSubscription(planId: plan.id);
-
-            subscriptionProvider.buy(tier: selectedPlan, context: context);
+            return FullPageIndicator();
           },
-          margin: EdgeInsets.symmetric(horizontal: 25.w, vertical: 12.h),
         ),
       ],
     );
@@ -47,7 +41,7 @@ class SelectedPlanScreen extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(23.w, 12.h, 25.w, 14.h),
+          padding: EdgeInsets.fromLTRB(23.w, 12.w, 25.w, 14.w),
           child: Row(
             spacing: 8.w,
             children: [
@@ -55,7 +49,7 @@ class SelectedPlanScreen extends StatelessWidget {
                 onTap: () {
                   context.pop();
                 },
-                child: Icon(Icons.arrow_back_ios_rounded, size: 18.h),
+                child: Icon(Icons.arrow_back_ios_rounded, size: 18.w),
               ),
               Expanded(
                 child: Text(
@@ -71,6 +65,29 @@ class SelectedPlanScreen extends StatelessWidget {
         ),
         horizontalDivider(),
       ],
+    );
+  }
+
+  Future<void> _onPayAndSubscribe({
+    required BuildContext context,
+    required SubscriptionPlanModel plan,
+  }) async {
+    Logger.info(plan.productIdAndroid.toString());
+    final tier = SubscriptionService.instance.getTierFromProductId(
+      plan.productIdAndroid.toString(),
+    ); //_subscriptionTierForPlanId(plan.id);
+    Logger.info(tier!.name);
+
+    final subscriptionProvider = context.read<SubscriptionProvider>();
+    await subscriptionProvider.initiateSubscription(
+      planId: plan.id,
+      onSuccess: () {
+        if (!context.mounted) return;
+        subscriptionProvider.buy(tier: tier, context: context);
+      },
+      onFailed: (error) {
+        AppToast.info(context: context, message: error);
+      },
     );
   }
 }

@@ -1,12 +1,9 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/main.dart';
-import 'package:puntgpt_nick/provider/account/account_provider.dart';
-import 'package:puntgpt_nick/provider/home/classic_form/classic_form_provider.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
-import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
-import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 import 'package:puntgpt_nick/screens/dashboard/mobile/widgets/dashboard_app_bar.dart';
 import 'package:puntgpt_nick/core/widgets/offline/widget/offline_view.dart';
+import 'package:puntgpt_nick/services/app_startup/app_startup_coordinator.dart';
 
 final GlobalKey<_DashboardState> dashboardKey = GlobalKey<_DashboardState>();
 ValueNotifier<int> indexOfTab = ValueNotifier(0);
@@ -24,7 +21,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      callInitAPIs(context: context);
+      AppStartupCoordinator.run(context: context);
     });
     super.initState();
   }
@@ -209,31 +206,4 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-}
-
-void callInitAPIs({required BuildContext context}) {
-  final accountProvider = context.read<AccountProvider>();
-  final searchEngineProvider = context.read<SearchEngineProvider>();
-  final classicFormGuideProvider = context.read<ClassicFormProvider>();
-  final puntClubProvider = context.read<PuntClubProvider>();
-  final subsProvider = context.read<SubscriptionProvider>();
-
-  // final isGuest = LocaleStorageService.acccessToken.isEmpty;
-  final futures = <Future>[
-    accountProvider.getProfile(),
-    subsProvider.getSubscriptionPlans(
-      onFailed: (error) {
-        AppToast.error(context: context, message: error);
-      },
-    ),
-    searchEngineProvider.getTrackDetails(),
-    searchEngineProvider.getDistanceDetails(),
-    searchEngineProvider.getBarrierDetails(),
-    classicFormGuideProvider.getClassicFormGuide(),
-    classicFormGuideProvider.getNextToGo(),
-    puntClubProvider.getNotifications(),
-    searchEngineProvider.getAllTipSlips(),
-    subsProvider.initialize(context: context),
-  ];
-  Future.wait(futures);
 }

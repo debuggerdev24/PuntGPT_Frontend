@@ -3,8 +3,8 @@ import 'package:puntgpt_nick/core/widgets/offline/widget/offline_view.dart';
 import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/account/account_provider.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
-import 'package:puntgpt_nick/screens/dashboard/mobile/dashboard.dart';
 import 'package:puntgpt_nick/screens/dashboard/web/widgets/web_dashboard_app_bar.dart';
+import 'package:puntgpt_nick/services/app_startup/app_startup_coordinator.dart';
 
 ValueNotifier<int> indexOfWebTab = ValueNotifier<int>(2);
 
@@ -20,7 +20,7 @@ class _WebDashboardState extends State<WebDashboard> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      callInitAPIs(context: context);
+      AppStartupCoordinator.run(context: context);
     });
 
     super.initState();

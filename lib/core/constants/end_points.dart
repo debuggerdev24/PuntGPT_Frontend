@@ -118,5 +118,6 @@ class EndPoints {
   //* subscription
   static const String initiateSubscription = "/subscription/initiate-subscription/";
   static const String validateSubscription= "/subscription/validate-subscription/";
+  static const String currentSubscription= "/subscription/current-subscription/";
 
 }

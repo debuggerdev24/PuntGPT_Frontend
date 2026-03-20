@@ -15,6 +15,12 @@ class SubscriptionApiService {
     );
   }
 
+  Future<Either<ApiException, Map<String, dynamic>>> getCurrentSubscription() async {
+    return await BaseApiHelper.instance.get<Map<String, dynamic>>(
+      EndPoints.currentSubscription,
+    );
+  }
+
   Future<Either<ApiException, Map<String, dynamic>>> initiateSubscription({required Map<String, dynamic> data}) async {
     return await BaseApiHelper.instance.post<Map<String, dynamic>>(
       EndPoints.initiateSubscription,
