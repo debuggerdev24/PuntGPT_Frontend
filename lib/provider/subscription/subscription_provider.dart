@@ -17,17 +17,13 @@ import 'package:url_launcher/url_launcher.dart';
 class SubscriptionProvider extends ChangeNotifier {
   SubscriptionPlanModel? currentPlan;
   SubscriptionEnum? tier;
-  final Set<SubscriptionEnum> _activeSubscriptions = {};
+  final Set<SubscriptionEnum> activeSubscriptions = {};
 
   bool _isSubscriptionProcessing = false;
   bool get isSubscriptionProcessing => _isSubscriptionProcessing;
 
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
   String _appAccountToken = "";
-
-  //* Fires if [restorePurchases] emits nothing on the purchase stream (no prior purchase, or store delay).
-  Timer? _restoreIdleTimer;
-  bool _restoreStreamEmitted = false;
 
   //* When true, [initiateSubscription] does not toggle [isSubscriptionProcessing] (used during startup restore).
   bool _silentSubscriptionFlow = false;
@@ -60,9 +56,9 @@ class SubscriptionProvider extends ChangeNotifier {
   bool get isLifeTimePlanSubscribed =>
       _activeSubscriptions.contains(SubscriptionEnum.lifeTimePlan);
   */
-  bool get isSubscribed => _activeSubscriptions.isNotEmpty;
+  bool get isSubscribed => activeSubscriptions.isNotEmpty;
 
-  Set<SubscriptionEnum> get activeSubscriptions => {..._activeSubscriptions};
+  // Set<SubscriptionEnum> get activeSubscriptions => {..._activeSubscriptions};
 
   void setSubscriptionProcessStatus({required bool status}) {
     _isSubscriptionProcessing = status;
@@ -70,12 +66,12 @@ class SubscriptionProvider extends ChangeNotifier {
   }
 
   void addSubscription(SubscriptionEnum tier) {
-    _activeSubscriptions.add(tier);
+    activeSubscriptions.add(tier);
     notifyListeners();
   }
 
   void removeSubscription(SubscriptionEnum tier) {
-    _activeSubscriptions.remove(tier);
+    activeSubscriptions.remove(tier);
     notifyListeners();
   }
 
@@ -99,9 +95,6 @@ class SubscriptionProvider extends ChangeNotifier {
   //* Handles the purchase statuses.
   void _handlePurchases(List<PurchaseDetails> purchases) {
     if (purchases.isNotEmpty) {
-      _restoreStreamEmitted = true;
-      _restoreIdleTimer?.cancel();
-      _restoreIdleTimer = null;
       Logger.info(
         "Purchase stream: ${purchases.length} update(s), "
         "ids=${purchases.map((p) => '${p.productID}:${p.status.name}').join(', ')}",
@@ -130,19 +123,29 @@ class SubscriptionProvider extends ChangeNotifier {
 
   //* Restored purchase
   void _handlePurchaseStatusRestored(PurchaseDetails purchase) {
-    Logger.info("Purchase restored: ${purchase.productID}");
+    Logger.info(
+      "_handlePurchaseStatusRestored: Purchase restored: ${purchase.productID}",
+    );
+
     final planId = planIdFromProductId(purchase.productID);
-    if (planId != null) {
-      _showPurchaseSuccessToast = false;
-      initiateSubscription(
-        planId: planId,
-        silent: _silentSubscriptionFlow,
-        onSuccess: (appAccountToken) => _processSuccessfulPurchase(purchase),
-        onFailed: (error) {
-          Logger.error("initiateSubscription on restore failed: $error");
-        },
+    if (planId == null) {
+      Logger.error(
+        "Restore: planId missing for ${purchase.productID}; check plans loaded.",
       );
+      return;
     }
+
+    _showPurchaseSuccessToast = false;
+    initiateSubscription(
+      planId: planId,
+      silent: _silentSubscriptionFlow,
+      onSuccess: (appAccountToken) => _processSuccessfulPurchase(purchase),
+      onFailed: (error) {
+        Logger.error("initiateSubscription on restore failed: $error");
+
+        // removeSubscription(tier);
+      },
+    );
   }
 
   //* Called after getSubscriptionPlans so [planByProductId] works. No loading overlay / toasts.
@@ -152,8 +155,7 @@ class SubscriptionProvider extends ChangeNotifier {
     if (isGuest) return;
     try {
       _silentSubscriptionFlow = true;
-      // _showPurchaseSuccessToast = false;
-      Logger.info("restorePurchasesAtStartup: querying store");
+      Logger.info("Start up restore: querying store");
       await SubscriptionService.instance.restorePurchases();
     } catch (e, st) {
       Logger.error("restorePurchasesAtStartup : $e\n$st");
@@ -179,34 +181,13 @@ class SubscriptionProvider extends ChangeNotifier {
 
   //* Triggers store restore; purchases arrive on [purchaseStream] and are handled like new purchases.
   Future<void> restore({required BuildContext context}) async {
-    _restoreIdleTimer?.cancel();
-    _restoreStreamEmitted = false;
     setSubscriptionProcessStatus(status: true);
     notifyListeners();
-
-    _restoreIdleTimer = Timer(const Duration(seconds: 3), () {
-      if (!_restoreStreamEmitted) {
-        final ctx = AppRouter.rootNavigatorKey.currentContext;
-        if (ctx != null && ctx.mounted) {
-          AppToast.info(
-            context: ctx,
-            message:
-                "No purchases found to restore. Use the same store account that bought the subscription, or subscribe below.",
-            durationSecond: 5,
-          );
-        }
-        setSubscriptionProcessStatus(status: false);
-        notifyListeners();
-      }
-      _restoreIdleTimer = null;
-    });
 
     try {
       await SubscriptionService.instance.restorePurchases();
     } catch (e, st) {
       Logger.error("restorePurchases failed: $e\n$st");
-      _restoreIdleTimer?.cancel();
-      _restoreIdleTimer = null;
       setSubscriptionProcessStatus(status: false);
       notifyListeners();
       if (context.mounted) {
@@ -227,15 +208,17 @@ class SubscriptionProvider extends ChangeNotifier {
       final localData = purchase.verificationData.localVerificationData;
       final serverData = purchase.verificationData.serverVerificationData;
       final decoded = jsonDecode(localData);
+      // final decodedServer = jsonDecode(serverData);
 
       Logger.info("serverVerificationData : $serverData");
+      Logger.info("Decode data : $decoded");
+
       String? backendValidationToken;
       //* Process the verification data based on the platform.
       switch (Platform.operatingSystem) {
         case "android":
           //* Android localVerificationData is a JSON string.
           try {
-            Logger.info("Decode data : $decoded");
             backendValidationToken = decoded["purchaseToken"] as String?;
             Logger.info(
               "\nPurchase Token For Android: ${backendValidationToken.toString()}\n",
@@ -274,14 +257,6 @@ class SubscriptionProvider extends ChangeNotifier {
         "Subscription tier not found for productID=${purchase.productID}",
       );
       setSubscriptionProcessStatus(status: false);
-      _restoreIdleTimer?.cancel();
-      _restoreIdleTimer = null;
-      // final ctx = AppRouter.rootNavigatorKey.currentContext;
-      // if (ctx != null && ctx.mounted) {
-      //   Logger.error(
-      //         "This purchase doesn’t match the app’s product IDs (${purchase.productID}). Check Play Console / App Store Connect.",
-      //   );
-      // }
       notifyListeners();
     }
   }
@@ -306,6 +281,7 @@ class SubscriptionProvider extends ChangeNotifier {
 
   //*------------- Subscriptions APIs functions --------------------------------
   Future<void> getSubscriptionPlans() async {
+    plans = [];
     final result = await SubscriptionApiService.instance.getSubscriptionPlans();
     result.fold(
       (l) {
@@ -323,6 +299,7 @@ class SubscriptionProvider extends ChangeNotifier {
 
   Future<bool> getCurrentSubscription() async {
     currentPlan = null;
+    activeSubscriptions.clear();
     bool hasActiveSubscription = false;
     final result = await SubscriptionApiService.instance
         .getCurrentSubscription();
@@ -429,7 +406,11 @@ class SubscriptionProvider extends ChangeNotifier {
       final ctx = _shellContextForStartup();
       if (ctx == null || !ctx.mounted) return;
 
-      await AppStartupCoordinator.run(context: ctx, callRestore: false);
+      await AppStartupCoordinator.run(
+        context: ctx,
+        callRestore: false,
+        shouldCallAllContent: !_silentSubscriptionFlow,
+      );
 
       if (!ctx.mounted) return;
 
@@ -483,19 +464,19 @@ class SubscriptionProvider extends ChangeNotifier {
   }
 
   //* Validate the subscription
-  Future<void> validateSubscription({required String token}) async {
+  Future<void> validateSubscription({
+    required String token,
+    SubscriptionEnum? rollbackTierOnFailure,
+  }) async {
+    void rollbackIfNeeded() {
+      final t = rollbackTierOnFailure;
+      if (t != null) removeSubscription(t);
+    }
+
     if (token.isEmpty) {
       Logger.error("validateSubscription: empty token");
       setSubscriptionProcessStatus(status: false);
-      _restoreIdleTimer?.cancel();
-      _restoreIdleTimer = null;
-      // final ctx = AppRouter.rootNavigatorKey.currentContext;
-      // if (ctx != null && ctx.mounted) {
-      //   AppToast.error(
-      //     context: ctx,
-      //     message:"Could not read a valid purchase token from the store. Try again or use Pay & Subscribe.",
-      //   );
-      // }
+      rollbackIfNeeded();
       notifyListeners();
       return;
     }
@@ -517,8 +498,7 @@ class SubscriptionProvider extends ChangeNotifier {
       (l) async {
         Logger.error(l.errorMsg);
         setSubscriptionProcessStatus(status: false);
-        _restoreIdleTimer?.cancel();
-        _restoreIdleTimer = null;
+        rollbackIfNeeded();
         notifyListeners();
       },
       (r) async {
@@ -526,8 +506,7 @@ class SubscriptionProvider extends ChangeNotifier {
         if (!ok) {
           Logger.error('validateSubscription: success flag is false');
           setSubscriptionProcessStatus(status: false);
-          _restoreIdleTimer?.cancel();
-          _restoreIdleTimer = null;
+          rollbackIfNeeded();
           final ctx = AppRouter.rootNavigatorKey.currentContext;
           if (ctx != null && ctx.mounted) {
             AppToast.error(
@@ -538,8 +517,6 @@ class SubscriptionProvider extends ChangeNotifier {
           notifyListeners();
           return;
         }
-        _restoreIdleTimer?.cancel();
-        _restoreIdleTimer = null;
         await _afterSubscriptionValidatedSuccess(response: r);
       },
     );
@@ -605,7 +582,6 @@ class SubscriptionProvider extends ChangeNotifier {
 
   @override
   void dispose() {
-    _restoreIdleTimer?.cancel();
     _purchaseSub?.cancel();
     super.dispose();
   }

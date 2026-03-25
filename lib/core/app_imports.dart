@@ -48,6 +48,7 @@ export 'package:puntgpt_nick/core/widgets/app_check_box.dart';
 export 'package:puntgpt_nick/core/widgets/app_text_field_drop_down.dart';
 export 'package:puntgpt_nick/core/widgets/on_button_tap.dart';
 export 'package:puntgpt_nick/core/widgets/phone_country_field.dart';
+export 'package:puntgpt_nick/core/widgets/app_screen_top_bar.dart';
 
 // Responsive
 export 'package:puntgpt_nick/core/responsive/responsive_builder.dart';

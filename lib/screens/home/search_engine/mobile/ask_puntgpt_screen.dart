@@ -277,44 +277,10 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
   }
 
   Widget topBar(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(5.w, 7.w, 25.w, 7.w),
-          child: Row(
-            children: [
-              IconButton(
-                padding: EdgeInsets.zero,
-                onPressed: () {
-                  context.pop();
-                },
-                icon: Icon(Icons.arrow_back_ios_rounded, size: 16.h),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Ask @PuntGPT",
-                    style: regular(
-                      fontFamily: AppFontFamily.secondary,
-                      fontSize: context.isBrowserMobile ? 40.sp : 20,
-                      height: 1.1,
-                    ),
-                  ),
-                  Text(
-                    "Chat with AI",
-                    style: medium(
-                      fontSize: (context.isBrowserMobile) ? 28.sp : 14.sp,
-                      color: AppColors.primary.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        horizontalDivider(),
-      ],
+    return AppScreenTopBar(
+      title: "Ask @PuntGPT",
+      slogan: "Tips, form guides & race analysis",
+      onBack: () => context.pop(),
     );
   }
 }

@@ -227,7 +227,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       children: List.generate(provider.classicFormGuide!.length, (
                         index,
                       ) {
-                        
                         final classicForm = provider.classicFormGuide![index];
                         return _buildRow(
                           col1: classicForm.meetingName,
@@ -330,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return Column(
       spacing: 16,
       children: [
-        //todo timing buttons
+        //* timing buttons
         Expanded(
           child: SingleChildScrollView(
             padding: EdgeInsets.only(bottom: 100.w),

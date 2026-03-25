@@ -48,6 +48,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             controller: provider.currentPassCtr,
                             obscureText: provider.currentPassObscure,
                             hintText: "Enter Current Password",
+                            textInputAction: TextInputAction.next,
                             trailingIcon: provider.currentPassObscure
                                 ? AppAssets.hide
                                 : AppAssets.show,
@@ -69,6 +70,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             controller: provider.newPassCtr,
                             obscureText: provider.newPassObscure,
                             hintText: "Enter New Password",
+                            textInputAction: TextInputAction.next,
                             trailingIcon: provider.newPassObscure
                                 ? AppAssets.hide
                                 : AppAssets.show,
@@ -92,6 +94,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             controller: provider.confirmPassCtr,
                             obscureText: provider.confirmPassObscure,
                             hintText: "Re-enter New Password",
+                            textInputAction: TextInputAction.done,
                             trailingIcon: provider.confirmPassObscure
                                 ? AppAssets.hide
                                 : AppAssets.show,
@@ -155,45 +158,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   }
 
   Widget topBar(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(5.w, 12.h, 25.w, 16.h),
-          child: Row(
-            children: [
-              IconButton(
-                padding: EdgeInsets.zero,
-
-                onPressed: () {
-                  context.pop();
-                },
-                icon: Icon(Icons.arrow_back_ios_rounded, size: 16.h),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Change Password",
-                    style: regular(
-                      fontSize: 24.sp,
-                      fontFamily: AppFontFamily.secondary,
-                      height: 1.35,
-                    ),
-                  ),
-                  Text(
-                    "Change Password for your account.",
-                    style: semiBold(
-                      fontSize: 14.sp,
-                      color: AppColors.primary.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        horizontalDivider(),
-      ],
+    return AppScreenTopBar(
+      title: "Change Password",
+      slogan: "Change Password for your account.",
+      onBack: () => context.pop(),
     );
   }
 }

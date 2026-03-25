@@ -25,7 +25,16 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Tab Selector
-            _buildTabSelector(),
+            Row(
+
+              children: [
+                16.w.horizontalSpace,
+                GestureDetector(
+                  onTap: () => context.pop(),
+                  child: Icon(Icons.arrow_back_ios_rounded, size: 16.w)),
+                Expanded(child: _buildTabSelector()),
+              ],
+            ),
 
             if (speedMaps.speedMapsList.isEmpty)
               Expanded(
@@ -72,7 +81,7 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
 
   Widget _buildTabSelector() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      margin: EdgeInsets.fromLTRB(10.w, 12.w, 16.w, 12.w),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
         borderRadius: BorderRadius.circular(8.r),

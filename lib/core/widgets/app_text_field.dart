@@ -25,6 +25,7 @@ class AppTextField extends StatelessWidget {
     this.onSubmit,
     this.margin,
     this.onChanged,
+    this.textInputAction,
   });
 
   final TextEditingController controller;
@@ -41,6 +42,7 @@ class AppTextField extends StatelessWidget {
   final bool? enabled, readOnly;
   final List<TextInputFormatter>? inputFormatter;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   final EdgeInsetsGeometry? margin;
 
 
@@ -61,6 +63,7 @@ class AppTextField extends StatelessWidget {
         enabled: enabled,
         inputFormatters: inputFormatter,
         keyboardType: keyboardType,
+        textInputAction: textInputAction,
         validator: (value) {
           final error = validator?.call(value);
           // if (mounted && _currentError != error) {

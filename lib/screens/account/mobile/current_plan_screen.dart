@@ -88,15 +88,15 @@ class CurrentPlanScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Manage Subscription",
+                    "Current Plan",
                     style: regular(
                       fontSize: (context.isBrowserMobile) ? 36.sp : 24.sp,
                       fontFamily: AppFontFamily.secondary,
-                      height: 1.35,
+                      height: 1,
                     ),
                   ),
                   Text(
-                    "Manage your Subscription Plan",
+                    "Review your active plan and billing status",
                     style: semiBold(
                       fontSize: (context.isBrowserMobile) ? 28.sp : 14.sp,
                       color: AppColors.primary.withValues(alpha: 0.6),

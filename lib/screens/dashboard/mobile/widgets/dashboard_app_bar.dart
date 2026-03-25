@@ -55,29 +55,46 @@ class _DashboardAppBarState extends State<DashboardAppBar> {
             color: AppColors.white,
           ),
         ),
-        if (context.read<SubscriptionProvider>().isSubscribed) ...[
+        if (context.read<SubscriptionProvider>().isSubscribed)
           Text(
             textAlign: TextAlign.center,
-            "Pro",
+            "Pro", // : "Upgrade to\nPro Punter",
             style: regular(
               height: 1,
-              fontSize: context.isTablet
-                  ? 32.sp
-                  : (context.isBrowserMobile)
-                  ? 48.sp
-                  : 14.sp,
+              fontSize: 14.sp,
+              // context.isTablet
+              //     ? 32.sp
+              //     : (context.isBrowserMobile)
+              //     ? 48.sp
+              //     : 14.sp,
+              fontFamily: AppFontFamily.secondary,
+              color: AppColors.premiumYellow,
+            ),
+          )
+        else
+          Text(
+            textAlign: TextAlign.center,
+            "Upgrade to\nPro Punter",
+            style: regular(
+              height: 1,
+              fontSize: 12.sp,
+              // context.isTablet
+              //     ? 32.sp
+              //     : (context.isBrowserMobile)
+              //     ? 48.sp
+              //     : 14.sp,
+
               fontFamily: AppFontFamily.secondary,
               color: AppColors.premiumYellow,
             ),
           ),
-        ],
       ],
     );
   }
 
   Widget _tipSlip() {
     return Consumer<SearchEngineProvider>(
-      builder: (context, provider, child){
+      builder: (context, provider, child) {
         return SizedBox(
           height: (12.w.flexClamp(18, 22) * 1.2) + 20,
           child: GestureDetector(

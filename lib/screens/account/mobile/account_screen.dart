@@ -143,10 +143,9 @@ class AccountScreen extends StatelessWidget {
                         context: context,
                         message: "Log Out Successfully",
                       );
-                      context
-                          .read<SubscriptionProvider>()
-                          .activeSubscriptions
-                          .clear();
+                      final subscriptionProvider = context
+                          .read<SubscriptionProvider>();
+                      subscriptionProvider.activeSubscriptions.clear();
                       context.goNamed(AppRoutes.onboardingScreen.name);
                     },
                     onFailed: (error) {
@@ -219,57 +218,67 @@ class AccountScreen extends StatelessWidget {
   }
 
   Widget topBar(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(4.w, 5.w, 25.w, 6.w),
-
-
-          //padding: EdgeInsets.fromLTRB(5.w, 8.w, 25.w, 10.w),
-          child: Row(
-            children: [
-              IconButton(
-                padding: EdgeInsets.zero,
-                onPressed: () {
-                  if (context.isMobileView && kIsWeb) {
-                    WebRouter.indexedStackNavigationShell!.goBranch(2);
-                    return;
-                  }
-                  AppRouter.indexedStackNavigationShell!.goBranch(0);
-                },
-                icon: Icon(Icons.arrow_back_ios_rounded, size: 16.w),
-              ),
-              // GestureDetector(
-              //   onTap: () {
-              //     context.pop();
-              //   },
-              //   child: Icon(Icons.arrow_back_ios_rounded, size: 16.h),
-              // ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Account",
-                    style: regular(
-                      fontSize: (context.isBrowserMobile) ? 40.sp : 24.sp,
-                      fontFamily: AppFontFamily.secondary,
-                      height: 1.15,
-                    ),
-                  ),
-                  Text(
-                    "Manage your PuntGPT Account",
-                    style: semiBold(
-                      fontSize: (context.isBrowserMobile) ? 26.sp : 14.sp,
-                      color: AppColors.primary.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        horizontalDivider(),
-      ],
+    return AppScreenTopBar(
+      title: "Account",
+      slogan: "Manage your PuntGPT Account",
+      onBack: () {
+        if (context.isMobileView && kIsWeb) {
+          WebRouter.indexedStackNavigationShell!.goBranch(2);
+          return;
+        }
+        AppRouter.indexedStackNavigationShell!.goBranch(0);
+      },
     );
+    // return Column(
+    //   children: [
+    //     Padding(
+    //       padding: EdgeInsets.fromLTRB(4.w, 5.w, 25.w, 6.w),
+
+    //       //padding: EdgeInsets.fromLTRB(5.w, 8.w, 25.w, 10.w),
+    //       child: Row(
+    //         children: [
+    //           IconButton(
+    //             padding: EdgeInsets.zero,
+    //             onPressed: () {
+    //               if (context.isMobileView && kIsWeb) {
+    //                 WebRouter.indexedStackNavigationShell!.goBranch(2);
+    //                 return;
+    //               }
+    //               AppRouter.indexedStackNavigationShell!.goBranch(0);
+    //             },
+    //             icon: Icon(Icons.arrow_back_ios_rounded, size: 16.w),
+    //           ),
+    //           // GestureDetector(
+    //           //   onTap: () {
+    //           //     context.pop();
+    //           //   },
+    //           //   child: Icon(Icons.arrow_back_ios_rounded, size: 16.h),
+    //           // ),
+    //           Column(
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             children: [
+    //               Text(
+    //                 "Account",
+    //                 style: regular(
+    //                   fontSize: (context.isBrowserMobile) ? 40.sp : 24.sp,
+    //                   fontFamily: AppFontFamily.secondary,
+    //                   height: 1.15,
+    //                 ),
+    //               ),
+    //               Text(
+    //                 "Manage your PuntGPT Account",
+    //                 style: semiBold(
+    //                   fontSize: (context.isBrowserMobile) ? 26.sp : 14.sp,
+    //                   color: AppColors.primary.withValues(alpha: 0.6),
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //     horizontalDivider(),
+    //   ],
+    // );
   }
 }

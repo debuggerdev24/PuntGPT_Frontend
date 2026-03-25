@@ -3,7 +3,10 @@ class RaceDetailsModel {
       RaceDetailsModel(
         race: Race.fromJson(json["race"] as Map<String, dynamic>? ?? {}),
         selections: List<Selection>.from(
-          (json["selections"] as List?)?.map(
+          ((json["selections"] as List?) ??
+                  ((json["race"] as Map<String, dynamic>?)?["selections"]
+                      as List?))
+              ?.map(
                 (x) => Selection.fromJson((x ?? {}) as Map<String, dynamic>),
               ) ??
               [],

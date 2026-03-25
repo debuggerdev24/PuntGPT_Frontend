@@ -8,37 +8,37 @@ import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 class AppStartupCoordinator {
   AppStartupCoordinator._();
 
-  static Future<void> run({
-    required BuildContext context,
-    bool? callRestore,
-  }) async {
+  static Future<void> loadContent({required BuildContext context}) async {
     final accountProvider = context.read<AccountProvider>();
     final searchEngineProvider = context.read<SearchEngineProvider>();
     final puntClubProvider = context.read<PuntClubProvider>();
-    final subsProvider = context.read<SubscriptionProvider>();
 
-    //* IAP listener must run before restore; plans must load before productId → planId mapping.
-    await subsProvider.initialize(context: context);
-    await subsProvider.getSubscriptionPlans();
-    final hasActiveSubscription = await subsProvider.getCurrentSubscription();
-
-
-    if (!isGuest && (callRestore ?? true)) {
-
-      if (!hasActiveSubscription) {
-        await subsProvider.restorePurchasesAtStartup(context: context);
-      }
-    }
-
-    final futures = <Future<dynamic>>[
+    await Future.wait(<Future<dynamic>>[
       if (!isGuest) accountProvider.getProfile(),
       searchEngineProvider.getTrackDetails(),
       searchEngineProvider.getDistanceDetails(),
       searchEngineProvider.getBarrierDetails(),
       puntClubProvider.getNotifications(),
       searchEngineProvider.getAllTipSlips(),
-    ];
+    ]);
+  }
 
-    await Future.wait(futures);
+  static Future<void> run({
+    required BuildContext context,
+    bool? callRestore,
+    bool? shouldCallAllContent,
+  }) async {
+    if (shouldCallAllContent ?? true) {
+      final subsProvider = context.read<SubscriptionProvider>();
+
+      //* Get the current subscription
+      final hasActiveSubscription = await subsProvider.getCurrentSubscription();
+
+      if (!isGuest && (callRestore ?? true)) {
+        if (!hasActiveSubscription) {
+          await subsProvider.restorePurchasesAtStartup(context: context);
+        }
+      }
+    }
   }
 }

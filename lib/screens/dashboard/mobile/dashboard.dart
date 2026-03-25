@@ -1,6 +1,7 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
+import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 import 'package:puntgpt_nick/screens/dashboard/mobile/widgets/dashboard_app_bar.dart';
 import 'package:puntgpt_nick/core/widgets/offline/widget/offline_view.dart';
 import 'package:puntgpt_nick/services/app_startup/app_startup_coordinator.dart';
@@ -21,8 +22,15 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      AppStartupCoordinator.run(context: context);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final subsProvider = context.read<SubscriptionProvider>();
+
+      //* IAP listener must run before restore; plans must load before productId → planId mapping.
+      await subsProvider.initialize(context: context);
+      await subsProvider.getSubscriptionPlans();
+
+      await AppStartupCoordinator.run(context: context);
+      await AppStartupCoordinator.loadContent(context: context);
     });
     super.initState();
   }
@@ -60,70 +68,72 @@ class _DashboardState extends State<Dashboard> {
           ],
         ),
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: context.screenWidth,
-            color: AppColors.primary,
-            padding: EdgeInsets.fromLTRB(
-              15,
-              15,
-              15,
-              context.bottomPadding + 15,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 15.w,
-              children: [
-                _navItem(
-                  onTap: () {
-                    indexOfTab.value = 0;
-                    AppRouter.indexedStackNavigationShell?.goBranch(0);
-                  },
-                  text: "Upgrade to\nPro Punter",
-                  icon: AppAssets.trophy,
-                  color: AppColors.premiumYellow,
-                  index: 0,
-                ),
-                _navItem(
-                  onTap: () {
-                    indexOfTab.value = 1;
-                    AppRouter.indexedStackNavigationShell?.goBranch(1);
-                    final provider = context.read<PuntClubProvider>();
-                    provider.getChatGroups();
-                    provider.getNotifications();
-                  },
+      bottomNavigationBar: SafeArea(
 
-                  text: "PuntGPT Punter Club",
-                  icon: AppAssets.group,
-
-                  hasLock: false,
-                  index: 1,
-                ),
-                _navItem(
-                  onTap: () {
-                    indexOfTab.value = 2;
-                    AppRouter.indexedStackNavigationShell?.goBranch(2);
-                  },
-                  text: "Bookies",
-                  icon: AppAssets.bookings,
-                  color: AppColors.green,
-                  index: 2,
-                ),
-                _navItem(
-                  onTap: () {
-                    indexOfTab.value = 3;
-                    AppRouter.indexedStackNavigationShell?.goBranch(3);
-                  },
-                  text: "Account",
-                  icon: AppAssets.profile,
-                  index: 3,
-                ),
-              ],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: context.screenWidth,
+              color: AppColors.primary,
+              padding: EdgeInsets.symmetric(vertical: 14.w, horizontal: 10.w),
+        
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 15.w,
+                children: [
+                  _navItem(
+                    onTap: () {
+                      indexOfTab.value = 0;
+                      AppRouter.indexedStackNavigationShell?.goBranch(0);
+                    },
+                    text: context.read<SubscriptionProvider>().isSubscribed
+                        ? "Home"
+                        : "Upgrade to\nPro Punter",
+                    icon: AppAssets.trophy,
+                    color: AppColors.premiumYellow,
+                    index: 0,
+                  ),
+                  _navItem(
+                    onTap: () {
+                      indexOfTab.value = 1;
+                      AppRouter.indexedStackNavigationShell?.goBranch(1);
+                      final provider = context.read<PuntClubProvider>();
+                      provider.getChatGroups();
+                      provider.getNotifications();
+                    },
+        
+                    text: "PuntGPT Punter Club",
+                    icon: AppAssets.group,
+        
+                    hasLock: false,
+                    index: 1,
+                  ),
+                  _navItem(
+                    onTap: () {
+                      indexOfTab.value = 2;
+                      AppRouter.indexedStackNavigationShell?.goBranch(2);
+                    },
+                    text: "Bookies",
+                    icon: AppAssets.bookings,
+                    color: AppColors.green,
+                    index: 2,
+                  ),
+                  _navItem(
+                    onTap: () {
+                      indexOfTab.value = 3;
+                      AppRouter.indexedStackNavigationShell?.goBranch(3);
+                    },
+                    text: "Account",
+                    icon: AppAssets.profile,
+                    index: 3,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

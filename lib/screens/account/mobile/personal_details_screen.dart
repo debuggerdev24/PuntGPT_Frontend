@@ -47,6 +47,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                           AppTextField(
                             controller: provider.nameCtr,
                             hintText: "Enter Your Name",
+                            textInputAction: TextInputAction.next,
                             textStyle: medium(
                               fontSize: (context.isBrowserMobile)
                                   ? 32.sp
@@ -75,6 +76,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                           AppTextField(
                             controller: provider.emailCtr,
                             hintText: "Enter Your Email",
+                            textInputAction: TextInputAction.next,
                             textStyle: medium(
                               fontSize: (context.isBrowserMobile)
                                   ? 32.sp
@@ -105,6 +107,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                               controller: provider.phoneCtr,
                               hintText: "Enter Phone",
                               readOnly: true,
+                              textInputAction: TextInputAction.next,
                               textStyle: medium(
                                 fontSize: (context.isBrowserMobile)
                                     ? 32.sp
@@ -136,6 +139,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                             controller: provider.addressLine1Ctr,
                             hintText: "Enter Address Line 1",
                             readOnly: readOnly,
+                            textInputAction: TextInputAction.next,
                             textStyle: medium(
                               fontSize: (context.isBrowserMobile)
                                   ? 32.sp
@@ -165,6 +169,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                             controller: provider.addressLine2Ctr,
                             hintText: "Enter Address Line 2",
                             readOnly: readOnly,
+                            textInputAction: TextInputAction.next,
                             textStyle: medium(
                               fontSize: (context.isBrowserMobile)
                                   ? 32.sp
@@ -194,6 +199,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                             controller: provider.stateCtr,
                             hintText: "Enter State",
                             readOnly: readOnly,
+                            textInputAction: TextInputAction.next,
                             textStyle: medium(
                               fontSize: (context.isBrowserMobile)
                                   ? 32.sp
@@ -221,10 +227,12 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                             controller: provider.suburbCtr,
                             hintText: "Enter Suburb",
                             readOnly: readOnly,
+                            textInputAction: TextInputAction.next,
                             textStyle: medium(
                               fontSize: (context.isBrowserMobile)
                                   ? 32.sp
                                   : 16.sp,
+
                             ),
                             hintStyle: medium(
                               fontSize: (context.isBrowserMobile)
@@ -248,6 +256,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                             controller: provider.postCodeCtr,
                             hintText: "Enter Post Code",
                             readOnly: readOnly,
+                            textInputAction: TextInputAction.done,
                             keyboardType: TextInputType.number,
                             inputFormatter: [
                               FilteringTextInputFormatter.digitsOnly,
@@ -326,8 +335,8 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                                   : 18.sp,
                             ),
                             margin: EdgeInsets.only(
-                              bottom: 22.w,
-                              top: 18.w, //220
+                              bottom: 16.w,
+                              top: 16.w, //220
                             ), //
                           ),
                         ],
@@ -336,7 +345,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                   ),
                 ],
               ),
-              //todo progress indicator
+              //* progress indicator
               if (provider.isUpdateProfileLoading) FullPageIndicator(),
             ],
           );
@@ -349,12 +358,8 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(
-            4.w,
-            4.w,
-            (!provider.isEdit) ? 25.w : 8.w,
-            6.w,
-          ),
+          padding: EdgeInsets.fromLTRB(4.w, 7.w, 25.w, 7.w),
+
           child: Row(
             children: [
               IconButton(
@@ -372,7 +377,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                     style: regular(
                       fontSize: (context.isBrowserMobile) ? 40.sp : 24.sp,
                       fontFamily: AppFontFamily.secondary,
-                      height: 1.35,
+                      height: 1.11,
                     ),
                   ),
                   Text(

@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
         if (isNetworkConnected.value) {
           if (LocaleStorageService.isFirstTime && authToken.isEmpty) {
-            context.goNamed(AppRoutes.ageConfirmationScreen.name);
+            context.goNamed(AppRoutes.onboardingScreen.name);
             return;
           }
           //* checking token is expire or not.
@@ -68,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       Logger.info("Refresh token is expired");
                       await LocaleStorageService.removeRefreshToken();
                       await LocaleStorageService.removeAccessToken();
-                      context.goNamed(AppRoutes.ageConfirmationScreen.name);
+                      context.goNamed(AppRoutes.onboardingScreen.name);
                       return;
                     }
                   },

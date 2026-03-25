@@ -14,7 +14,9 @@ class SelectedMeetingScreen extends StatelessWidget {
     return Consumer<ClassicFormProvider>(
       builder: (context, provider, child) {
         if (provider.meetingRace == null || provider.raceFieldDetail == null) {
-          return HomeSectionShimmers.selectedRaceScreenShimmer(context: context);
+          return HomeSectionShimmers.selectedRaceScreenShimmer(
+            context: context,
+          );
         }
         return Stack(
           children: [
@@ -128,7 +130,17 @@ class SelectedMeetingScreen extends StatelessWidget {
                                   context.pushNamed(AppRoutes.speedMaps.name);
                                 },
                               ),
-                              _raceSubNavBar(title: 'Sectionals', onTap: () {}),
+                              _raceSubNavBar(
+                                title: 'Barrier Map',
+                                onTap: () {
+                                  deBouncer.run(() {
+                                    AppToast.info(
+                                      context: context,
+                                      message: 'Coming soon',
+                                    );
+                                  });
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -140,18 +152,17 @@ class SelectedMeetingScreen extends StatelessWidget {
                 ),
               ],
             ),
-            //todo ask punt gpt button
+            //* ask punt gpt button
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
-                padding: EdgeInsets.only(bottom: 25.h, right: 25.w),
+                padding: EdgeInsets.only(bottom: 25.w, right: 25.w),
                 child: askPuntGPTButton(context: context),
               ),
             ),
             Consumer<SearchEngineProvider>(
               builder: (context, provider, child) {
-                
-                if(provider.isCreatingTipSlip) {
+                if (provider.isCreatingTipSlip) {
                   return FullPageIndicator();
                 }
                 return Container();
@@ -181,7 +192,7 @@ class SelectedMeetingScreen extends StatelessWidget {
       return Column(
         children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(6.w, 8, 25.w, 20.w),
+            padding: EdgeInsets.fromLTRB(6.w, 6.w, 10.w, 6.w),
             child: Row(
               children: [
                 IconButton(
@@ -195,7 +206,7 @@ class SelectedMeetingScreen extends StatelessWidget {
                     style: regular(
                       fontSize: 24.sp,
                       fontFamily: AppFontFamily.secondary,
-                      height: 1.35,
+                      height: 1,
                     ),
                   ),
                 ),
@@ -211,7 +222,7 @@ class SelectedMeetingScreen extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(6.w, 8, 25.w, 20.w),
+          padding: EdgeInsets.fromLTRB(6.w, 7.w, 25.w, 7.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -220,7 +231,7 @@ class SelectedMeetingScreen extends StatelessWidget {
                 onPressed: () {
                   context.pop();
                 },
-                icon: Icon(Icons.arrow_back_ios_rounded, size: 16.h),
+                icon: Icon(Icons.arrow_back_ios_rounded, size: 16.w),
               ),
               Expanded(
                 child: Column(
@@ -231,7 +242,7 @@ class SelectedMeetingScreen extends StatelessWidget {
                       style: regular(
                         fontSize: 24.sp,
                         fontFamily: AppFontFamily.secondary,
-                        height: 1.35,
+                        height: 1.2,
                       ),
                     ),
                     Text(
@@ -288,6 +299,7 @@ class _SelectedRaceTableState extends State<SelectedRaceTable> {
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
         ),
+        margin: EdgeInsets.symmetric(horizontal: 24.w),
         child: Table(
           border: TableBorder.symmetric(
             inside: BorderSide(color: AppColors.primary.withValues(alpha: 0.2)),
@@ -356,7 +368,6 @@ class _SelectedRaceTableState extends State<SelectedRaceTable> {
                                           context: context,
                                           selectionId: selection.selectionId
                                               .toString(),
-
                                         );
                                   },
                                 ),
