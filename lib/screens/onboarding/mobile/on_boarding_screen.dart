@@ -11,26 +11,32 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-
   @override
   void initState() {
     super.initState();
     isGuest = false;
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Video area fills remaining height
-            40.w.verticalSpace,
-            VideoWidget(),
-            24.w.verticalSpace,
-            Plans(),
-          ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light,
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          body: SingleChildScrollView(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              children: [
+                // Video area fills remaining height
+                40.w.verticalSpace,
+                VideoWidget(),
+                24.w.verticalSpace,
+                Plans(),
+              ],
+            ),
+          ),
         ),
       ),
       // bottomNavigationBar: Padding(

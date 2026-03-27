@@ -14,8 +14,7 @@ class AuthProvider extends ChangeNotifier {
       phoneCtr = TextEditingController(),
       passwordCtr = TextEditingController(),
       confirmPasswordCtr = TextEditingController(),
-      dobCtr = TextEditingController(),
-      forgotPasswordCtr = TextEditingController(text: "test@gmail.com"),
+      forgotPasswordCtr = TextEditingController(),
       newPasswordCtr = TextEditingController(),
       resetConfirmPasswordCtr = TextEditingController(),
       otpCtr = TextEditingController(),
@@ -25,7 +24,8 @@ class AuthProvider extends ChangeNotifier {
       postCodeCtr = TextEditingController();
 
   /// Selected country for phone (from country_picker). Used for country name in API and phone validation.
-  Country? _selectedCountry;
+  /// Defaults to Australia — must match the fallback in [PhoneCountryField] when this was null.
+  Country? _selectedCountry = CountryService().findByCode('au');
   Country? get selectedPhoneCountry => _selectedCountry;
   set selectedPhoneCountry(Country? value) {
     _selectedCountry = value;
@@ -94,7 +94,8 @@ class AuthProvider extends ChangeNotifier {
       );
       return;
     }
-    if (_selectedCountry == null) {
+    final country = _selectedCountry ?? CountryService().findByCode('au');
+    if (country == null) {
       AppToast.warning(
         context: context,
         message: "Please select a country for your mobile number.",
@@ -107,11 +108,10 @@ class AuthProvider extends ChangeNotifier {
     final result = await AuthApiService.instance.registerUser(
       firstName: firstNameCtr.text.trim(),
       lastName: lastNameCtr.text.trim(),
-      dob: dobCtr.text.trim(),
       state: selectedState!,
       email: emailCtr.text.trim(),
       phone:
-          '+${_selectedCountry!.phoneCode}${phoneCtr.text.replaceAll(RegExp(r'[^0-9]'), '')}',
+          '+${country.phoneCode}${phoneCtr.text.replaceAll(RegExp(r'[^0-9]'), '')}',
       password: passwordCtr.text.trim(),
       confirmPassword: confirmPasswordCtr.text.trim(),
       agreedToTerms: isReadTermsAndConditions.toString(),
@@ -119,7 +119,7 @@ class AuthProvider extends ChangeNotifier {
       addressLine2: addressLine2Ctr.text.trim(),
       suburb: suburbCtr.text.trim(),
       postCode: postCodeCtr.text.trim(),
-      country: _selectedCountry!.name,
+      country: country.name,
     );
 
     result.fold(
@@ -197,7 +197,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //todo -----------------> send OTP
+  //* -----------------> send OTP
   bool isForgotPassLoading = false;
   Future<void> sendOTP({required BuildContext context}) async {
     isForgotPassLoading = true;
@@ -363,7 +363,6 @@ class AuthProvider extends ChangeNotifier {
       (r) {
         LocaleStorageService.removeAccessToken();
         LocaleStorageService.removeRefreshToken();
-
         onSuccess.call();
       },
     );
@@ -378,13 +377,12 @@ class AuthProvider extends ChangeNotifier {
     emailCtr.clear();
     phoneCtr.clear();
     passwordCtr.clear();
-    dobCtr.clear();
     confirmPasswordCtr.clear();
     addressLine1Ctr.clear();
     addressLine2Ctr.clear();
     suburbCtr.clear();
     postCodeCtr.clear();
-    selectedPhoneCountry = null;
+    selectedPhoneCountry = CountryService().findByCode('au');
     selectedState = "";
     _isReadTermsAndConditions = false;
   }

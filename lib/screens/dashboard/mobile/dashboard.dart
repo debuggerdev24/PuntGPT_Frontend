@@ -41,32 +41,30 @@ class _DashboardState extends State<Dashboard> {
       // resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.white,
       // extendBody: false,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            DashboardAppBar(navigationShell: widget.navigationShell),
-            Expanded(
-              child: ValueListenableBuilder<bool>(
-                valueListenable: isNetworkConnected,
-                builder: (context, value, child) {
-                  if (value) {
-                    return ValueListenableBuilder<int>(
-                      valueListenable: indexOfTab,
-                      builder: (context, value, child) => FadeInUp(
-                        from: 2,
-                        duration: Duration(milliseconds: 450),
-                        key: ValueKey(value),
-                        child: widget.navigationShell,
-                      ),
-                    );
-                  }
-                  return offlineView();
-                },
-              ),
+      body: Column(
+        children: [
+          // 30.w.verticalSpace,
+          DashboardAppBar(navigationShell: widget.navigationShell),
+          Expanded(
+            child: ValueListenableBuilder<bool>(
+              valueListenable: isNetworkConnected,
+              builder: (context, value, child) {
+                if (value) {
+                  return ValueListenableBuilder<int>(
+                    valueListenable: indexOfTab,
+                    builder: (context, value, child) => FadeInUp(
+                      from: 2,
+                      duration: Duration(milliseconds: 450),
+                      key: ValueKey(value),
+                      child: widget.navigationShell,
+                    ),
+                  );
+                }
+                return offlineView();
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: SafeArea(
 

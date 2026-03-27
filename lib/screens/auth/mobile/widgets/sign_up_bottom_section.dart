@@ -1,4 +1,6 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/screens/auth/auth_constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SignUpBottomSection extends StatelessWidget {
   const SignUpBottomSection({
@@ -31,28 +33,49 @@ class SignUpBottomSection extends StatelessWidget {
             ),
           ],
         ),
-        10.h.verticalSpace,
+        10.w.verticalSpace,
         AppFilledButton(text: "Create Account", onTap: onSignUpTap),
-        10.h.verticalSpace,
+        10.w.verticalSpace,
         Wrap(
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Text("Terms & Conditions", style: bold(fontSize: 14.sp)),
+            Text(
+              "Terms & Conditions",
+              style: bold(
+                fontSize: 14.sp,
+                decoration: TextDecoration.underline,
+              ),
+            ),
             Container(
               width: 1,
               height: 20,
               color: AppColors.primary,
               margin: EdgeInsets.symmetric(horizontal: 10),
             ),
-            Text("AI disclaimer", style: bold(fontSize: 14.sp)),
-            Container(
-              width: 1,
-              height: 20,
-              color: AppColors.primary,
-              margin: EdgeInsets.symmetric(horizontal: 10),
+            // Text("AI disclaimer", style: bold(fontSize: 14.sp)),
+            // Container(
+            //   width: 1,
+            //   height: 20,
+            //   color: AppColors.primary,
+            //   margin: EdgeInsets.symmetric(horizontal: 10),
+            // ),
+            // ),
+            OnMouseTap(
+              onTap: () {
+                launchUrl(
+                  Uri.parse(kPrivacyPolicyUrl),
+                  mode: LaunchMode.externalApplication,
+                );
+              },
+              child: Text(
+                "Privacy Policy",
+                style: bold(
+                  fontSize: 14.sp,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
             ),
-            Text("Privacy Policy", style: bold(fontSize: 14.sp)),
           ],
         ),
       ],

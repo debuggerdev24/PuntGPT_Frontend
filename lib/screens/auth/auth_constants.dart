@@ -1,31 +1,9 @@
-/// Shared constants for auth screens (sign up, etc.)
+// Shared constants for auth screens (sign up, etc.)
+
+/// Hosted privacy policy used from sign-up.
+const String kPrivacyPolicyUrl =
+    'https://www.freeprivacypolicy.com/live/566a0445-db74-44fc-9e83-c0778d01af28';
+
 const List<String> states = [
-  "Andhra Pradesh",
-  "Arunachal Pradesh",
-  "Assam",
-  "Bihar",
-  "Chhattisgarh",
-  "Goa",
-  "Gujarat",
-  "Haryana",
-  "Himachal Pradesh",
-  "Jharkhand",
-  "Karnataka",
-  "Kerala",
-  "Madhya Pradesh",
-  "Maharashtra",
-  "Manipur",
-  "Meghalaya",
-  "Mizoram",
-  "Nagaland",
-  "Odisha",
-  "Punjab",
-  "Rajasthan",
-  "Sikkim",
-  "Tamil Nadu",
-  "Telangana",
-  "Tripura",
-  "Uttar Pradesh",
-  "Uttarakhand",
-  "West Bengal",
+  "ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"
 ];

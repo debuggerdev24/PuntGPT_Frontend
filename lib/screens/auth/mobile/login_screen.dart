@@ -8,135 +8,145 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    return Scaffold(
-      appBar: !kIsWeb ? null : WebTopSection(),
-      body: Consumer<AuthProvider>(
-        builder: (context, provider, _) {
-          return Stack(
-            children: [
-              SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 25.w),
-                child: SizedBox(
-                  width: Responsive.isMobileWeb(context)
-                      ? double.maxFinite
-                      : 500.w.flexClamp(null, 500),
-                  child: Column(
-                    children: [
-                      120.h.verticalSpace,
-                      ImageWidget(path: AppAssets.splashAppLogo),
-                      16.h.verticalSpace,
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "'@PuntGPT'",
-                              style: regular(
-                                fontSize: 20.sp,
-                                fontFamily: AppFontFamily.secondary,
-                              ),
-                            ),
-                            TextSpan(
-                              text: " the talking from guide",
-                              style: regular(
-                                fontSize: 20.sp,
-                                fontFamily: AppFontFamily.secondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      80.h.verticalSpace,
-                      //todo login fields amil and pass
-                      Form(
-                        key: formKey,
-                        child: Column(
-                          spacing: 8.w,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AppTextField(
-                              controller: provider.emailCtr,
-                              hintText: "Email",
-                              validator: FieldValidators().email,
-                            ),
-                            AppTextField(
-                              controller: provider.passwordCtr,
-                              hintText: "Password",
-                              obscureText: provider.showLoginPass,
-                              validator: FieldValidators().password,
-                              trailingIcon: provider.showLoginPass
-                                  ? AppAssets.hide
-                                  : AppAssets.show,
-                              onTrailingIconTap: () => provider.showLoginPass =
-                                  !provider.showLoginPass,
-                              onSubmit: () async {
-                                if (formKey.currentState!.validate()) {
-                                  // context.go(AppRoutes.home);
-                                   provider.login(context: context);
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      10.h.verticalSpace,
-                      GestureDetector(
-                        onTap: () {
-                          context.pushNamed(
-                            AppRoutes.forgotPasswordScreen.name,
-                          );
-                        },
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            "Forget Password?",
-                            style: bold(fontSize: 14.sp),
-                          ),
-                        ),
-                      ),
-                      100.verticalSpace,
-                      AppFilledButton(
-                        text: "Login",
-                        onTap: () async {
-                          if (formKey.currentState!.validate()) {
-                            // context.go(AppRoutes.home);
-                            await provider.login(context: context);
-                          }
-                        },
-                      ),
-                      15.w.verticalSpace,
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      
+      value: const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light,
+
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: !kIsWeb ? null : WebTopSection(),
+          body: Consumer<AuthProvider>(
+            builder: (context, provider, _) {
+              return Stack(
+                children: [
+                  SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 25.w),
+                    child: SizedBox(
+                      width: Responsive.isMobileWeb(context)
+                          ? double.maxFinite
+                          : 500.w.flexClamp(null, 500),
+                      child: Column(
                         children: [
-                          Text(
-                            "New to PuntGPT? ",
-                            style: medium(
-                              fontSize: 14.sp,
-                              color: AppColors.primary.setOpacity(.8),
+                          100.w.verticalSpace,
+                          ImageWidget(path: AppAssets.splashAppLogo),
+                          16.w.verticalSpace,
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "'@PuntGPT'",
+                                  style: regular(
+                                    fontSize: 20.sp,
+                                    fontFamily: AppFontFamily.secondary,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: " the talking from guide",
+                                  style: regular(
+                                    fontSize: 20.sp,
+                                    fontFamily: AppFontFamily.secondary,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          OnMouseTap(
+                          80.h.verticalSpace,
+                          //todo login fields amil and pass
+                          Form(
+                            key: formKey,
+                            child: Column(
+                              spacing: 8.w,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                AppTextField(
+                                  controller: provider.emailCtr,
+                                  hintText: "Email",
+                                  validator: FieldValidators().email,
+                                ),
+                                AppTextField(
+                                  controller: provider.passwordCtr,
+                                  hintText: "Password",
+                                  obscureText: provider.showLoginPass,
+                                  validator: FieldValidators().password,
+                                  trailingIcon: provider.showLoginPass
+                                      ? AppAssets.hide
+                                      : AppAssets.show,
+                                  onTrailingIconTap: () =>
+                                      provider.showLoginPass =
+                                          !provider.showLoginPass,
+                                  onSubmit: () async {
+                                    if (formKey.currentState!.validate()) {
+                                      // context.go(AppRoutes.home);
+                                      provider.login(context: context);
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          10.h.verticalSpace,
+                          GestureDetector(
                             onTap: () {
-                              context.pushReplacementNamed(
-                                AppRoutes.signUpScreen.name,
+                              context.pushNamed(
+                                AppRoutes.forgotPasswordScreen.name,
                               );
                             },
-                            child: Text(
-                              " Sign up",
-                              style: bold(fontSize: 14.sp),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                "Forget Password?",
+                                style: bold(fontSize: 14.sp),
+                              ),
                             ),
                           ),
+                          100.verticalSpace,
+                          AppFilledButton(
+                            text: "Login",
+                            onTap: () async {
+                              if (formKey.currentState!.validate()) {
+                                // context.go(AppRoutes.home);
+                                await provider.login(context: context);
+                              }
+                            },
+                          ),
+                          15.w.verticalSpace,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "New to PuntGPT? ",
+                                style: medium(
+                                  fontSize: 14.sp,
+                                  color: AppColors.primary.setOpacity(.8),
+                                ),
+                              ),
+                              OnMouseTap(
+                                onTap: () {
+                                  context.pushReplacementNamed(
+                                    AppRoutes.signUpScreen.name,
+                                  );
+                                },
+                                child: Text(
+                                  " Sign up",
+                                  style: bold(fontSize: 14.sp),
+                                ),
+                              ),
+                            ],
+                          ),
+                          20.w.verticalSpace,
                         ],
                       ),
-                      20.w.verticalSpace,
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              if (provider.isLoginLoading) FullPageIndicator(),
-            ],
-          );
-        },
+                  if (provider.isLoginLoading) FullPageIndicator(),
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }

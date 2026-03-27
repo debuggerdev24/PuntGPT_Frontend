@@ -18,8 +18,8 @@ class AppTheme {
       scrolledUnderElevation: 0,
       centerTitle: true,
       backgroundColor: AppColors.transparent,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarIconBrightness: Brightness.light,
+      
+      systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: AppColors.primary,
       ),
     ),

@@ -22,7 +22,6 @@ class AuthApiService {
   Future<Either<ApiException, Map<String, dynamic>>> registerUser({
     required String firstName,
     required String lastName,
-    required String dob,
     required String state,
     required String email,
     required String phone,
@@ -40,7 +39,6 @@ class AuthApiService {
       data: {
         "first_name": firstName,
         "last_name": lastName,
-        "date_of_birth": dob,
         "state": state,
         "email": email,
         "phone": phone,

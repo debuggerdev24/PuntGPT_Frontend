@@ -9,24 +9,6 @@ class WebSignUpForm extends StatelessWidget {
 
   final GlobalKey<FormState> formKey;
 
-  void _pickBob(BuildContext context, AuthProvider provider) async {
-    final DateTime today = DateTime.now();
-    final DateTime maxDob = DateTime(today.year - 18, today.month, today.day);
-    final DateTime firstDate = DateTime(1900);
-    final DateTime initialDate = maxDob;
-
-    DateTime? selectedDate = await showAppDatePicker(
-      context,
-      initialDate: initialDate,
-      firstDate: firstDate,
-      lastDate: maxDob,
-    );
-
-    if (selectedDate != null) {
-      provider.dobCtr.text = DateFormatter.registerApiFormate(selectedDate);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     log("is Mobile ${Responsive.isMobileWeb(context)}");
@@ -66,22 +48,6 @@ class WebSignUpForm extends StatelessWidget {
                           fontSize: (context.isBrowserMobile) ? 28.sp : 16.sp,
                           color: AppColors.primary.setOpacity(0.4),
                         ),
-                      ),
-                      AppTextField(
-                        controller: provider.dobCtr,
-                        hintText: "Date of birth",
-                        readOnly: true,
-                        trailingIcon: AppAssets.arrowDown,
-                        trailingIconWidth: 15,
-                        validator: (value) =>
-                            FieldValidators().required(value, "Date of birth"),
-                        hintStyle: medium(
-                          fontSize: (context.isBrowserMobile) ? 28.sp : 16.sp,
-                          color: AppColors.primary.setOpacity(0.4),
-                        ),
-                        onTap: () {
-                          _pickBob(context, provider);
-                        },
                       ),
                       AppTextFieldDropdown(
                         items: List.generate(
@@ -242,49 +208,19 @@ class WebSignUpForm extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Row(
-                          spacing: 24.w.flexClamp(20, 24),
-                          children: [
-                            Expanded(
-                              child: MouseRegion(
-                                cursor: SystemMouseCursors.click,
-
-                                child: AppTextField(
-                                  controller: provider.dobCtr,
-                                  hintText: "Date of birth",
-                                  readOnly: true,
-                                  hintStyle: medium(
-                                    fontSize: (context.isTablet)
-                                        ? 22.sp
-                                        : 16.sp,
-                                    color: AppColors.primary.setOpacity(0.4),
-                                  ),
-                                  trailingIcon: AppAssets.arrowDown,
-                                  validator: (value) => FieldValidators()
-                                      .required(value, "Date of birth"),
-                                  onTap: () => _pickBob(context, provider),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: AppTextFieldDropdown(
-                                items: states,
-                                hintText: 'State',
-                                hintStyle: medium(
-                                  fontSize: (Responsive.isTablet(context))
-                                      ? 22.sp
-                                      : 16.sp,
-
-                                  color: AppColors.primary.setOpacity(0.4),
-                                ),
-                                onChange: (value) =>
-                                    provider.selectedState = value,
-                                selectedValue: provider.selectedState,
-                                validator: (value) =>
-                                    FieldValidators().required(value, "State"),
-                              ),
-                            ),
-                          ],
+                        AppTextFieldDropdown(
+                          items: states,
+                          hintText: 'State',
+                          hintStyle: medium(
+                            fontSize: (Responsive.isTablet(context))
+                                ? 22.sp
+                                : 16.sp,
+                            color: AppColors.primary.setOpacity(0.4),
+                          ),
+                          onChange: (value) => provider.selectedState = value,
+                          selectedValue: provider.selectedState,
+                          validator: (value) =>
+                              FieldValidators().required(value, "State"),
                         ),
                         AppTextField(
                           controller: provider.addressLine1Ctr,

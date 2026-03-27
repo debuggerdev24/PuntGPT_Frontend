@@ -1,5 +1,7 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
+import 'package:puntgpt_nick/screens/auth/auth_constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WebSignUpBottomSection extends StatelessWidget {
   const WebSignUpBottomSection({
@@ -141,16 +143,25 @@ class WebSignUpBottomSection extends StatelessWidget {
                 color: AppColors.primary,
                 margin: EdgeInsets.symmetric(horizontal: 10),
               ),
-              Text(
-                "Privacy Policy",
-                style: bold(
-                  fontSize: (context.isDesktop)
-                      ? 12.sp
-                      : (context.isTablet)
-                      ? 20.sp
-                      : (context.isBrowserMobile)
-                      ? 22.sp
-                      : 14.sp,
+              OnMouseTap(
+                onTap: () {
+                  launchUrl(
+                    Uri.parse(kPrivacyPolicyUrl),
+                    mode: LaunchMode.externalApplication,
+                  );
+                },
+                child: Text(
+                  "Privacy Policy",
+                  style: bold(
+                    fontSize: (context.isDesktop)
+                        ? 12.sp
+                        : (context.isTablet)
+                        ? 20.sp
+                        : (context.isBrowserMobile)
+                        ? 22.sp
+                        : 14.sp,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               ),
             ],
