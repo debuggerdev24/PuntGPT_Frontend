@@ -66,9 +66,7 @@ class WebSignUpForm extends StatelessWidget {
                       ),
                       AppTextField(
                         controller: provider.addressLine1Ctr,
-                        hintText: "Address Line 1",
-                        validator: (value) =>
-                            FieldValidators().required(value, "Address Line 1"),
+                        hintText: "Address Line 1 (Optional)",
                         hintStyle: medium(
                           fontSize: (context.isBrowserMobile) ? 28.sp : 16.sp,
                           color: AppColors.primary.setOpacity(0.4),
@@ -76,9 +74,7 @@ class WebSignUpForm extends StatelessWidget {
                       ),
                       AppTextField(
                         controller: provider.addressLine2Ctr,
-                        hintText: "Address Line 2",
-                        validator: (value) =>
-                            FieldValidators().required(value, "Address Line 2"),
+                        hintText: "Address Line 2 (Optional)",
                         hintStyle: medium(
                           fontSize: (context.isBrowserMobile) ? 28.sp : 16.sp,
                           color: AppColors.primary.setOpacity(0.4),
@@ -86,9 +82,7 @@ class WebSignUpForm extends StatelessWidget {
                       ),
                       AppTextField(
                         controller: provider.suburbCtr,
-                        hintText: "Suburb",
-                        validator: (value) =>
-                            FieldValidators().required(value, "Suburb"),
+                        hintText: "Suburb (Optional)",
                         hintStyle: medium(
                           fontSize: (context.isBrowserMobile) ? 28.sp : 16.sp,
                           color: AppColors.primary.setOpacity(0.4),
@@ -96,16 +90,14 @@ class WebSignUpForm extends StatelessWidget {
                       ),
                       AppTextField(
                         controller: provider.postCodeCtr,
-                        hintText: "Post Code",
+                        hintText: "Post Code (Optional)",
                         keyboardType: TextInputType.number,
                         inputFormatter: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(4),
                         ],
                         validator: (value) {
-                          final r =
-                              FieldValidators().required(value, "Post Code");
-                          if (r != null) return r;
+                          if ((value ?? "").trim().isEmpty) return null;
                           return FieldValidators().lengthValidator(value, 4);
                         },
                         hintStyle: medium(
@@ -224,27 +216,23 @@ class WebSignUpForm extends StatelessWidget {
                         ),
                         AppTextField(
                           controller: provider.addressLine1Ctr,
-                          hintText: "Address Line 1",
+                          hintText: "Address Line 1 (Optional)",
                           hintStyle: medium(
                             fontSize: (Responsive.isTablet(context))
                                 ? 22.sp
                                 : 16.sp,
                             color: AppColors.primary.setOpacity(0.4),
                           ),
-                          validator: (value) => FieldValidators()
-                              .required(value, "Address Line 1"),
                         ),
                         AppTextField(
                           controller: provider.addressLine2Ctr,
-                          hintText: "Address Line 2",
+                          hintText: "Address Line 2 (Optional)",
                           hintStyle: medium(
                             fontSize: (Responsive.isTablet(context))
                                 ? 22.sp
                                 : 16.sp,
                             color: AppColors.primary.setOpacity(0.4),
                           ),
-                          validator: (value) => FieldValidators()
-                              .required(value, "Address Line 2"),
                         ),
                         Row(
                           spacing: 24.w.flexClamp(20, 24),
@@ -252,21 +240,19 @@ class WebSignUpForm extends StatelessWidget {
                             Expanded(
                               child: AppTextField(
                                 controller: provider.suburbCtr,
-                                hintText: "Suburb",
+                                hintText: "Suburb (Optional)",
                                 hintStyle: medium(
                                   fontSize: (Responsive.isTablet(context))
                                       ? 22.sp
                                       : 16.sp,
                                   color: AppColors.primary.setOpacity(0.4),
                                 ),
-                                validator: (value) =>
-                                    FieldValidators().required(value, "Suburb"),
                               ),
                             ),
                             Expanded(
                               child: AppTextField(
                                 controller: provider.postCodeCtr,
-                                hintText: "Post Code",
+                                hintText: "Post Code (Optional)",
                                 keyboardType: TextInputType.number,
                                 inputFormatter: [
                                   FilteringTextInputFormatter.digitsOnly,
@@ -279,9 +265,7 @@ class WebSignUpForm extends StatelessWidget {
                                   color: AppColors.primary.setOpacity(0.4),
                                 ),
                                 validator: (value) {
-                                  final r = FieldValidators()
-                                      .required(value, "Post Code");
-                                  if (r != null) return r;
+                                  if ((value ?? "").trim().isEmpty) return null;
                                   return FieldValidators().lengthValidator(
                                     value,
                                     4,

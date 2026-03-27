@@ -111,83 +111,92 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ImageWidget(
-              path: AppAssets.splashAppLogo,
-              height: 200.w.flexClamp(200, 250),
-            ).animate().fade(duration: 0.8.seconds, delay: 1.seconds),
-            SizedBox(height: 20.w.flexClamp(20, 25)),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: "'@PuntGPT'",
-                    style: regular(
-                      fontSize: 20.sp,
-                      fontFamily: AppFontFamily.secondary,
-                    ),
-                  ),
-                  TextSpan(
-                    text: " the talking from guide",
-                    style: regular(
-                      fontSize: 20.sp,
-                      fontFamily: AppFontFamily.secondary,
-                    ),
-                  ),
-                ],
-              ),
-            ).animate().fade(duration: 0.8.seconds, delay: 1.3.seconds),
-          ],
-        ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light,
+
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: context.bottomPadding > 0
-                  ? context.bottomPadding + 20
-                  : 30,
-            ),
-            child: Row(
+      child: SafeArea(
+      
+        child: Scaffold(
+          body: Center(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AnimatedContainer(
-                  duration: 280.ms,
-                  height: 15.w.flexClamp(15, 20),
-                  width: 15.w.flexClamp(15, 20),
-                  color: currentIndex >= 0
-                      ? AppColors.primary
-                      : AppColors.primary.setOpacity(0.1),
-                ),
-                SizedBox(width: 8.w.flexClamp(8, 12)),
-                AnimatedContainer(
-                  duration: 280.ms,
-                  height: 15.w.flexClamp(15, 20),
-                  width: 15.w.flexClamp(15, 20),
-                  color: currentIndex >= 1
-                      ? AppColors.primary
-                      : AppColors.primary.setOpacity(0.1),
-                ),
-                SizedBox(width: 8.w.flexClamp(8, 12)),
-                AnimatedContainer(
-                  duration: 280.ms,
-                  height: 15.w.flexClamp(15, 20),
-                  width: 15.w.flexClamp(15, 20),
-                  color: currentIndex == 2
-                      ? AppColors.primary
-                      : AppColors.primary.setOpacity(0.1),
-                ),
+                ImageWidget(
+                  path: AppAssets.splashAppLogo,
+                  height: 200.w.flexClamp(200, 250),
+                ).animate().fade(duration: 0.8.seconds, delay: 1.seconds),
+                SizedBox(height: 20.w.flexClamp(20, 25)),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "'@PuntGPT'",
+                        style: regular(
+                          fontSize: 20.sp,
+                          fontFamily: AppFontFamily.secondary,
+                        ),
+                      ),
+                      TextSpan(
+                        text: " the talking from guide",
+                        style: regular(
+                          fontSize: 20.sp,
+                          fontFamily: AppFontFamily.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ).animate().fade(duration: 0.8.seconds, delay: 1.3.seconds),
               ],
             ),
           ),
-        ],
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: context.bottomPadding > 0
+                      ? context.bottomPadding + 20
+                      : 30,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedContainer(
+                      duration: 280.ms,
+                      height: 15.w.flexClamp(15, 20),
+                      width: 15.w.flexClamp(15, 20),
+                      color: currentIndex >= 0
+                          ? AppColors.primary
+                          : AppColors.primary.setOpacity(0.1),
+                    ),
+                    SizedBox(width: 8.w.flexClamp(8, 12)),
+                    AnimatedContainer(
+                      duration: 280.ms,
+                      height: 15.w.flexClamp(15, 20),
+                      width: 15.w.flexClamp(15, 20),
+                      color: currentIndex >= 1
+                          ? AppColors.primary
+                          : AppColors.primary.setOpacity(0.1),
+                    ),
+                    SizedBox(width: 8.w.flexClamp(8, 12)),
+                    AnimatedContainer(
+                      duration: 280.ms,
+                      height: 15.w.flexClamp(15, 20),
+                      width: 15.w.flexClamp(15, 20),
+                      color: currentIndex == 2
+                          ? AppColors.primary
+                          : AppColors.primary.setOpacity(0.1),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

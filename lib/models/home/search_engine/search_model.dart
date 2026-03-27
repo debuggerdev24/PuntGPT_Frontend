@@ -33,39 +33,51 @@ class Filters {
     this.placedAtTrack,
     this.placedLastStart,
     this.placedAtDistance,
-    this.barrier,
+    this.barrierMin,
+    this.barrierMax,
+    this.oddsMin,
+    this.oddsMax,
     this.oddsRange,
     this.winsAtTrack,
     this.wonLastStart,
     this.winAtDistance,
-    this.jockeyHorseWins,
+    this.jockeyHorseWinsMin,
+    this.jockeyHorseWinsMax,
     this.wonLast12Months,
     this.jockeyStrikeRateLast12Months,
   });
 
   factory Filters.fromJson(Map<String, dynamic> json) => Filters(
     track: json["track"],
-    placedAtTrack: json["placed_at_track"]?.toString(),
+    placedAtTrack: _parseNullableBool(json["placed_at_track"]),
     placedLastStart: json["placed_last_start"] as bool? ?? false,
     placedAtDistance: json["placed_at_distance"] as bool? ?? false,
-    barrier: json["barrier"],
+    barrierMin: json["barrier_min"]?.toString(),
+    barrierMax: json["barrier_max"]?.toString(),
+    oddsMin: json["odds_min"]?.toString(),
+    oddsMax: json["odds_max"]?.toString(),
     oddsRange: json["odds_range"],
-    winsAtTrack: json["wins_at_track"],
+    winsAtTrack: _parseNullableBool(json["wins_at_track"]),
     wonLastStart: json["won_last_start"] as bool? ?? false,
     winAtDistance: json["win_at_distance"] as bool? ?? false,
-    jockeyHorseWins: json["jockey_horse_wins"],
+    jockeyHorseWinsMin: json["jockey_horse_wins_min"]?.toString(),
+    jockeyHorseWinsMax: json["jockey_horse_wins_max"]?.toString(),
     wonLast12Months: json["won_last_12_months"] as bool? ?? false,
     jockeyStrikeRateLast12Months: json["jockey_strike_rate_last_12_months"],
   );
   bool? placedLastStart,
       wonLastStart,
-      wonLast12Months;
-  String? track,
+      wonLast12Months,
       placedAtTrack,
-      barrier,
+      winsAtTrack;
+  String? track,
+      barrierMin,
+      barrierMax,
+      oddsMin,
+      oddsMax,
       oddsRange,
-      winsAtTrack,
-      jockeyHorseWins,
+      jockeyHorseWinsMin,
+      jockeyHorseWinsMax,
       jockeyStrikeRateLast12Months;
   bool? placedAtDistance, winAtDistance;
 
@@ -76,7 +88,7 @@ class Filters {
     if (track != null && track!.isNotEmpty) {
       map["track"] = track;
     }
-    if (placedAtTrack != null && placedAtTrack!.isNotEmpty) {
+    if (placedAtTrack != null) {
       map["placed_at_track"] = placedAtTrack;
     }
     if (placedLastStart != null) {
@@ -85,13 +97,19 @@ class Filters {
     if (placedAtDistance == true) {
       map["placed_at_distance"] = true;
     }
-    if (barrier != null && barrier!.isNotEmpty) {
-      map["barrier"] = barrier;
+    if (barrierMin != null && barrierMin!.isNotEmpty) {
+      map["barrier_min"] = barrierMin;
     }
-    if (oddsRange != null && oddsRange!.isNotEmpty) {
-      map["odds_range"] = oddsRange;
+    if (barrierMax != null && barrierMax!.isNotEmpty) {
+      map["barrier_max"] = barrierMax;
     }
-    if (winsAtTrack != null && winsAtTrack!.isNotEmpty) {
+    if (oddsMin != null && oddsMin!.isNotEmpty) {
+      map["odds_min"] = oddsMin;
+    }
+    if (oddsMax != null && oddsMax!.isNotEmpty) {
+      map["odds_max"] = oddsMax;
+    }
+    if (winsAtTrack != null) {
       map["wins_at_track"] = winsAtTrack;
     }
     if (wonLastStart != null) {
@@ -100,8 +118,11 @@ class Filters {
     if (winAtDistance == true) {
       map["win_at_distance"] = true;
     }
-    if (jockeyHorseWins != null && jockeyHorseWins!.isNotEmpty) {
-      map["jockey_horse_wins"] = jockeyHorseWins;
+    if (jockeyHorseWinsMin != null && jockeyHorseWinsMin!.isNotEmpty) {
+      map["jockey_horse_wins_min"] = jockeyHorseWinsMin;
+    }
+    if (jockeyHorseWinsMax != null && jockeyHorseWinsMax!.isNotEmpty) {
+      map["jockey_horse_wins_max"] = jockeyHorseWinsMax;
     }
     if (wonLast12Months != null) {
       map["won_last_12_months"] = wonLast12Months;
@@ -111,5 +132,18 @@ class Filters {
       map["jockey_strike_rate_last_12_months"] = jockeyStrikeRateLast12Months;
     }
     return map;
+  }
+
+  static bool? _parseNullableBool(dynamic value) {
+    if (value == null) return null;
+    if (value is String && value.trim().isEmpty) return null;
+    if (value is bool) return value;
+    if (value is num) return value == 1;
+    if (value is String) {
+      final v = value.trim().toLowerCase();
+      if (v == "true" || v == "1" || v == "yes") return true;
+      if (v == "false" || v == "0" || v == "no") return false;
+    }
+    return null;
   }
 }

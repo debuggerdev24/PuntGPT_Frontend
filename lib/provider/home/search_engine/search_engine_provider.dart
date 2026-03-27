@@ -8,6 +8,12 @@ import 'package:puntgpt_nick/services/search_engine/search_engine_api_service.da
 import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 
 class SearchEngineProvider extends ChangeNotifier {
+  // -------------------------------
+  // Search filter defaults (ranges)
+  // -------------------------------
+  static const RangeValues _defaultOddsRange = RangeValues(1, 1);
+  static const RangeValues _defaultJockeyWinsRange = RangeValues(1, 1);
+
   bool isSearched = false, _isMenuOpen = false, _isEditSavedSearch = false;
   int _selectedTab = 0;
   List<TipSlipModel>? tipSlips;
@@ -16,6 +22,12 @@ class SearchEngineProvider extends ChangeNotifier {
   JumpType get selectedRaceTimingEnum => _selectedRaceTimingEnum;
   TextEditingController oddsRangeCtr = TextEditingController(),
       jockeyHorseWinsCtr = TextEditingController();
+  RangeValues oddsRangeValues = _defaultOddsRange;
+  bool hasSelectedOddsRange = false,hasSelectedJockeyHorseWinsRange = false,hasSelectedBarrierRange = false;
+  RangeValues jockeyHorseWinsRangeValues = _defaultJockeyWinsRange;
+
+  RangeValues barrierRangeIndexValues = const RangeValues(0, 0);
+
   List<SaveSearchModel>? saveSearches;
   List<String>? trackDetails, distanceDetails, searchFilterDetails, barrierList;
   SaveSearchModel? selectedSaveSearch;
@@ -54,10 +66,8 @@ class SearchEngineProvider extends ChangeNotifier {
 
   String? selectedTrack,
       selectedPlaceAtDistance,
-      selectedWinsAtTrack,
-      selectedWinsAtDistance,
-      selectedPlaceAtTrack,
-      selectedBarrier;
+      selectedWinsAtDistance;
+  bool? selectedPlaceAtTrack, selectedWinsAtTrack;
 
   set setSelectedTrack(String value) {
     selectedTrack = value;
@@ -69,7 +79,7 @@ class SearchEngineProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setSelectedWinsAtTrack(String value) {
+  set setSelectedWinsAtTrack(bool? value) {
     selectedWinsAtTrack = value;
     notifyListeners();
   }
@@ -79,13 +89,8 @@ class SearchEngineProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setSelectedPlaceAtTrack(String value) {
+  set setSelectedPlaceAtTrack(bool? value) {
     selectedPlaceAtTrack = value;
-    notifyListeners();
-  }
-
-  set setSelectedBarrier(String value) {
-    selectedBarrier = value;
     notifyListeners();
   }
 
@@ -162,6 +167,34 @@ class SearchEngineProvider extends ChangeNotifier {
 
   void toggleWonLast12Months(bool value) {
     wonLast12Months = value;
+    notifyListeners();
+  }
+
+  void updateOddsRange(RangeValues values) {
+    // User changed odds slider => persist as selected range.
+    oddsRangeValues = values;
+    hasSelectedOddsRange = true;
+    oddsRangeCtr.text = _formatRange(values.start, values.end);
+    notifyListeners();
+  }
+
+  void updateJockeyHorseWinsRange(RangeValues values) {
+    // User changed jockey wins slider => persist as selected range.
+    jockeyHorseWinsRangeValues = values;
+    hasSelectedJockeyHorseWinsRange = true;
+    jockeyHorseWinsCtr.text = _formatJockeyWinsRange(values.start, values.end);
+    notifyListeners();
+  }
+
+  
+  /// 0: 1-3, 1: 4-6, 2: 7-10, 3: 11-13, 4: 14-16.
+  /// We store slider indexes (0..4), then convert to min/max for API.
+  void updateBarrierRange(RangeValues values) {
+    barrierRangeIndexValues = RangeValues(
+      values.start.roundToDouble(),
+      values.end.roundToDouble(),
+    );
+    hasSelectedBarrierRange = true;
     notifyListeners();
   }
 
@@ -247,7 +280,6 @@ class SearchEngineProvider extends ChangeNotifier {
   }
 
   Future<void> getUpcomingRunner({
-    required bool isSubscribed,
     required VoidCallback onSuccess,
   }) async {
     runnersList = null;
@@ -262,7 +294,7 @@ class SearchEngineProvider extends ChangeNotifier {
         // jumpFilter: selectedRaceTimingApiString,
 
       page: 1,
-      filters: _buildSaveSearchFilters(isSubscribed: isSubscribed),
+      filters: _buildSaveSearchFilters(),
     );
     result.fold(
       (l) {
@@ -286,7 +318,7 @@ class SearchEngineProvider extends ChangeNotifier {
   }
 
   //* Load next page of runners and append to [runnersList]. No-op if no more pages or already loading.
-  Future<void> loadNextRunners({required bool isSubscribed}) async {
+  Future<void> loadNextRunners() async {
     if (!hasMoreRunners || isLoadingMoreRunners || runnersList == null) return;
 
     isLoadingMoreRunners = true;
@@ -298,7 +330,7 @@ class SearchEngineProvider extends ChangeNotifier {
     final result = await SearchEngineAPISearvice.instance.getSearchEngine(
 
       page: nextPage,
-      filters: _buildSaveSearchFilters(isSubscribed: isSubscribed),
+      filters: _buildSaveSearchFilters(),
     );
 
     result.fold(
@@ -322,13 +354,18 @@ class SearchEngineProvider extends ChangeNotifier {
   }
 
   bool isCreatingSaveSearch = false;
-  Map<String, dynamic> _buildSaveSearchFilters({required bool isSubscribed}) {
+  Map<String, dynamic> _buildSaveSearchFilters() {
     final filters = <String, dynamic>{
       "jump": selectedRaceTimingApiString,
       "track": selectedTrack ?? "",
-      "placed_at_track": selectedPlaceAtTrack ?? "",
-      "odds_range": oddsRangeCtr.text.isNotEmpty ? oddsRangeCtr.text : "",
     };
+    if (hasSelectedOddsRange) {
+      filters["odds_min"] = _formatBound(oddsRangeValues.start);
+      filters["odds_max"] = _formatBound(oddsRangeValues.end, isUpper: true);
+    }
+    if (selectedPlaceAtTrack != null) {
+      filters["placed_at_track"] = selectedPlaceAtTrack;
+    }
 
     if (placedLastStart) {
       filters["placed_last_start"] = true;
@@ -337,23 +374,31 @@ class SearchEngineProvider extends ChangeNotifier {
       filters["placed_at_distance"] = true;
     }
 
-    if (isSubscribed) {
-      filters.addAll({
-        "wins_at_track": selectedWinsAtTrack ?? "",
-        "jockey_horse_wins": jockeyHorseWinsCtr.text.isNotEmpty
-            ? jockeyHorseWinsCtr.text
-            : "",
-        "barrier": selectedBarrier ?? "",
-      });
-      if (wonAtDistance) {
-        filters["win_at_distance"] = true;
-      }
-      if (wonLastStart) {
-        filters["won_last_start"] = true;
-      }
-      if (wonLast12Months) {
-        filters["won_last_12_months"] = true;
-      }
+    if (hasSelectedBarrierRange) {
+      final barrierRange = _barrierMinMaxFromIndexes(
+        barrierRangeIndexValues.start.round(),
+        barrierRangeIndexValues.end.round(),
+      );
+      filters["barrier_min"] = barrierRange.$1.toString();
+      filters["barrier_max"] = barrierRange.$2.toString();
+    }
+    if (hasSelectedJockeyHorseWinsRange) {
+      filters["jockey_horse_wins_min"] =
+          _formatJockeyWinsBound(jockeyHorseWinsRangeValues.start);
+      filters["jockey_horse_wins_max"] =
+          _formatJockeyWinsBound(jockeyHorseWinsRangeValues.end);
+    }
+    if (selectedWinsAtTrack != null) {
+      filters["wins_at_track"] = selectedWinsAtTrack;
+    }
+    if (wonAtDistance) {
+      filters["win_at_distance"] = true;
+    }
+    if (wonLastStart) {
+      filters["won_last_start"] = true;
+    }
+    if (wonLast12Months) {
+      filters["won_last_12_months"] = true;
     }
 
     filters["jockey_strike_rate_last_12_months"] = "";
@@ -362,7 +407,6 @@ class SearchEngineProvider extends ChangeNotifier {
 
   Future<void> createSaveSearch({
     required String name,
-    required bool isSubscribed,
     required Function(String error) onError,
     required VoidCallback onSuccess,
   }) async {
@@ -370,7 +414,7 @@ class SearchEngineProvider extends ChangeNotifier {
     notifyListeners();
     final data = {
       "name": name,
-      "filters": _buildSaveSearchFilters(isSubscribed: isSubscribed),
+      "filters": _buildSaveSearchFilters(),
       "comment": "Custom comment",
     };
     Logger.info(data.toString());
@@ -392,14 +436,14 @@ class SearchEngineProvider extends ChangeNotifier {
 
   /// Clear all search fields (used for new searches)
   clearSearchFields() {
-    oddsRangeCtr.clear();
-    jockeyHorseWinsCtr.clear();
+    _resetOddsRangeSelection();
+    _resetJockeyWinsSelection();
+    _resetBarrierSelection();
     selectedTrack = null;
     selectedPlaceAtDistance = null;
     selectedPlaceAtTrack = null;
     selectedWinsAtTrack = null;
     selectedWinsAtDistance = null;
-    selectedBarrier = null;
     placedLastStart = false;
     placedAtDistance = false;
     wonAtDistance = false;
@@ -410,15 +454,15 @@ class SearchEngineProvider extends ChangeNotifier {
 
   /// Clear saved search fields (used when navigating away from saved search details)
   clearSavedSearchFields() {
-    oddsRangeCtr.clear();
-    jockeyHorseWinsCtr.clear();
+    _resetOddsRangeSelection();
+    _resetJockeyWinsSelection();
+    _resetBarrierSelection();
 
     selectedTrack = null;
     selectedPlaceAtDistance = null;
     selectedPlaceAtTrack = null;
     selectedWinsAtTrack = null;
     selectedWinsAtDistance = null;
-    selectedBarrier = null;
     placedLastStart = false;
     placedAtDistance = false;
     wonAtDistance = false;
@@ -471,19 +515,31 @@ class SearchEngineProvider extends ChangeNotifier {
           selectedTrack = (filters.track != null && filters.track!.isNotEmpty)
               ? filters.track
               : null;
-          selectedPlaceAtTrack =
-              (filters.placedAtTrack != null &&
-                  filters.placedAtTrack!.isNotEmpty)
-              ? filters.placedAtTrack
-              : null;
-          selectedWinsAtTrack =
-              (filters.winsAtTrack != null && filters.winsAtTrack!.isNotEmpty)
-              ? filters.winsAtTrack
-              : null;
-          selectedBarrier =
-              (filters.barrier != null && filters.barrier!.isNotEmpty)
-              ? filters.barrier
-              : null;
+          selectedPlaceAtTrack = _parseFlexibleNullableBool(
+            filters.placedAtTrack,
+          );
+          selectedWinsAtTrack = _parseFlexibleNullableBool(
+            filters.winsAtTrack,
+          );
+          final hasBarrierMin =
+              filters.barrierMin != null && filters.barrierMin!.isNotEmpty;
+          final hasBarrierMax =
+              filters.barrierMax != null && filters.barrierMax!.isNotEmpty;
+          if (hasBarrierMin && hasBarrierMax) {
+            final min = int.tryParse(filters.barrierMin!.trim());
+            final max = int.tryParse(filters.barrierMax!.trim());
+            if (min != null && max != null) {
+              barrierRangeIndexValues = RangeValues(
+                _barrierNearestIndex(min).toDouble(),
+                _barrierNearestIndex(max).toDouble(),
+              );
+              hasSelectedBarrierRange = true;
+            } else {
+              _resetBarrierSelection();
+            }
+          } else {
+            _resetBarrierSelection();
+          }
 
           // Boolean fields - default to false if null
           placedLastStart = filters.placedLastStart ?? false;
@@ -493,15 +549,8 @@ class SearchEngineProvider extends ChangeNotifier {
           wonLast12Months = filters.wonLast12Months ?? false;
 
           // Text controllers - handle null/empty safely, use empty string to avoid null errors
-          oddsRangeCtr.text =
-              (filters.oddsRange != null && filters.oddsRange!.isNotEmpty)
-              ? filters.oddsRange!
-              : "";
-          jockeyHorseWinsCtr.text =
-              (filters.jockeyHorseWins != null &&
-                  filters.jockeyHorseWins!.isNotEmpty)
-              ? filters.jockeyHorseWins!
-              : "";
+          _setOddsRangeFromSavedFilters(filters);
+          _setJockeyWinsRangeFromSavedFilters(filters);
         }
       },
     );
@@ -526,12 +575,29 @@ class SearchEngineProvider extends ChangeNotifier {
     if (placedAtDistance != _parseFlexibleBool(filters.placedAtDistance)) {
       return true;
     }
-    if (!stringsEqual(selectedPlaceAtTrack, filters.placedAtTrack)) return true;
-    if (!stringsEqual(selectedWinsAtTrack, filters.winsAtTrack)) return true;
+    if (selectedPlaceAtTrack != _parseFlexibleNullableBool(filters.placedAtTrack)) {
+      return true;
+    }
+    if (selectedWinsAtTrack != _parseFlexibleNullableBool(filters.winsAtTrack)) {
+      return true;
+    }
     if (wonAtDistance != _parseFlexibleBool(filters.winAtDistance)) {
       return true;
     }
-    if (!stringsEqual(selectedBarrier, filters.barrier)) return true;
+    final hasSavedBarrierMin =
+        filters.barrierMin != null && filters.barrierMin!.isNotEmpty;
+    final hasSavedBarrierMax =
+        filters.barrierMax != null && filters.barrierMax!.isNotEmpty;
+    final currentBarrier = hasSelectedBarrierRange
+        ? _barrierStringFromIndexes(
+            barrierRangeIndexValues.start.round(),
+            barrierRangeIndexValues.end.round(),
+          )
+        : null;
+    final savedBarrier = (hasSavedBarrierMin && hasSavedBarrierMax)
+        ? _barrierStringFromValues(filters.barrierMin!, filters.barrierMax!)
+        : null;
+    if (!stringsEqual(currentBarrier, savedBarrier)) return true;
 
     // Compare boolean fields
     if (placedLastStart != (filters.placedLastStart ?? false)) return true;
@@ -539,17 +605,33 @@ class SearchEngineProvider extends ChangeNotifier {
     if (wonLast12Months != (filters.wonLast12Months ?? false)) return true;
 
     // Compare text controller values
-    final currentOddsRange = oddsRangeCtr.text.trim();
-    final savedOddsRange =
-        (filters.oddsRange != null && filters.oddsRange!.isNotEmpty)
-        ? filters.oddsRange!.trim()
+    final currentOddsRange = hasSelectedOddsRange
+        ? _formatRange(oddsRangeValues.start, oddsRangeValues.end)
         : "";
+    final hasSavedOddsMin = filters.oddsMin != null && filters.oddsMin!.isNotEmpty;
+    final hasSavedOddsMax = filters.oddsMax != null && filters.oddsMax!.isNotEmpty;
+    final savedOddsRange = (hasSavedOddsMin && hasSavedOddsMax)
+        ? _normalizeOddsRangeFromBounds(filters.oddsMin!, filters.oddsMax!)
+        : (filters.oddsRange != null && filters.oddsRange!.isNotEmpty)
+            ? filters.oddsRange!.trim()
+            : "";
     if (currentOddsRange != savedOddsRange) return true;
 
-    final currentJockeyWins = jockeyHorseWinsCtr.text.trim();
-    final savedJockeyWins =
-        (filters.jockeyHorseWins != null && filters.jockeyHorseWins!.isNotEmpty)
-        ? filters.jockeyHorseWins!.trim()
+    final currentJockeyWins = hasSelectedJockeyHorseWinsRange
+        ? _formatJockeyWinsRange(
+            jockeyHorseWinsRangeValues.start,
+            jockeyHorseWinsRangeValues.end,
+          )
+        : "";
+    final hasSavedJockeyMin = filters.jockeyHorseWinsMin != null &&
+        filters.jockeyHorseWinsMin!.isNotEmpty;
+    final hasSavedJockeyMax = filters.jockeyHorseWinsMax != null &&
+        filters.jockeyHorseWinsMax!.isNotEmpty;
+    final savedJockeyWins = (hasSavedJockeyMin && hasSavedJockeyMax)
+        ? _normalizeJockeyRangeFromBounds(
+            filters.jockeyHorseWinsMin!,
+            filters.jockeyHorseWinsMax!,
+          )
         : "";
     if (currentJockeyWins != savedJockeyWins) return true;
 
@@ -557,7 +639,6 @@ class SearchEngineProvider extends ChangeNotifier {
   }
 
   Future<void> editSaveSearch({
-    required bool isSubscribed,
     required VoidCallback onSuccess,
   }) async {
     final id = selectedSaveSearch!.id.toString();
@@ -565,7 +646,7 @@ class SearchEngineProvider extends ChangeNotifier {
       id: id,
       data: {
         "name": selectedSaveSearch?.name ?? "Custom edited Name",
-        "filters": _buildSaveSearchFilters(isSubscribed: isSubscribed),
+        "filters": _buildSaveSearchFilters(),
         "comment": selectedSaveSearch?.comment ?? "Custom edited comment",
       },
     );
@@ -609,6 +690,233 @@ class SearchEngineProvider extends ChangeNotifier {
       return v == "true" || v == "1" || v == "yes";
     }
     return false;
+  }
+
+  // -------------------------------
+  // Range helper methods
+  // -------------------------------
+  void _resetOddsRangeSelection() {
+    oddsRangeCtr.clear();
+    oddsRangeValues = _defaultOddsRange;
+    hasSelectedOddsRange = false;
+  }
+
+  void _resetJockeyWinsSelection() {
+    jockeyHorseWinsCtr.clear();
+    jockeyHorseWinsRangeValues = _defaultJockeyWinsRange;
+    hasSelectedJockeyHorseWinsRange = false;
+  }
+
+  void _resetBarrierSelection() {
+    barrierRangeIndexValues = const RangeValues(0, 0);
+    hasSelectedBarrierRange = false;
+  }
+
+  void _setOddsRangeFromSavedFilters(Filters filters) {
+    final hasOddsMin = filters.oddsMin != null && filters.oddsMin!.isNotEmpty;
+    final hasOddsMax = filters.oddsMax != null && filters.oddsMax!.isNotEmpty;
+
+    if (hasOddsMin && hasOddsMax) {
+      final combined = "${filters.oddsMin}-${filters.oddsMax}";
+      oddsRangeCtr.text = combined;
+      _applyOddsRangeFromString(combined);
+      return;
+    }
+
+    // Backward compatibility for older saved searches.
+    if (filters.oddsRange != null && filters.oddsRange!.isNotEmpty) {
+      oddsRangeCtr.text = filters.oddsRange!;
+      _applyOddsRangeFromString(filters.oddsRange!);
+      return;
+    }
+
+    _resetOddsRangeSelection();
+  }
+
+  void _setJockeyWinsRangeFromSavedFilters(Filters filters) {
+    final hasJockeyMin =
+        filters.jockeyHorseWinsMin != null && filters.jockeyHorseWinsMin!.isNotEmpty;
+    final hasJockeyMax =
+        filters.jockeyHorseWinsMax != null && filters.jockeyHorseWinsMax!.isNotEmpty;
+
+    if (hasJockeyMin && hasJockeyMax) {
+      final combined = "${filters.jockeyHorseWinsMin}-${filters.jockeyHorseWinsMax}";
+      jockeyHorseWinsCtr.text = combined;
+      _applyJockeyWinsRangeFromString(combined);
+      return;
+    }
+
+    _resetJockeyWinsSelection();
+  }
+
+  void _applyOddsRangeFromString(String rawValue) {
+    final cleaned = rawValue.trim();
+    if (cleaned.isEmpty) {
+      oddsRangeValues = const RangeValues(2.5, 10);
+      hasSelectedOddsRange = false;
+      return;
+    }
+    final parts = cleaned.split("-");
+    if (parts.length != 2) {
+      oddsRangeValues = const RangeValues(2.5, 10);
+      hasSelectedOddsRange = false;
+      return;
+    }
+    double? parseBound(String input) {
+      final cleaned = input.replaceAll("\$", "").replaceAll("+", "").trim();
+      return double.tryParse(cleaned);
+    }
+
+    final start = parseBound(parts[0]);
+    final end = parseBound(parts[1]);
+    if (start == null || end == null) {
+      oddsRangeValues = const RangeValues(2.5, 10);
+      hasSelectedOddsRange = false;
+      return;
+    }
+    final normalizedStart = start.clamp(1.0, 25.0);
+    final normalizedEnd = end.clamp(1.0, 25.0);
+    oddsRangeValues = RangeValues(
+      normalizedStart <= normalizedEnd ? normalizedStart : normalizedEnd,
+      normalizedStart <= normalizedEnd ? normalizedEnd : normalizedStart,
+    );
+    hasSelectedOddsRange = true;
+  }
+
+  String _formatRange(double start, double end) {
+    final String Function(double, {bool isUpper}) fmt = _formatBound;
+    if (start == end) {
+      return fmt(start, isUpper: true);
+    }
+    return "${fmt(start)}-${fmt(end, isUpper: true)}";
+  }
+
+  String _formatBound(double value, {bool isUpper = false}) {
+    if (isUpper && value >= 25) return "25+";
+    if (value == value.roundToDouble()) {
+      return value.toStringAsFixed(0);
+    }
+    return value.toStringAsFixed(1);
+  }
+
+  String _normalizeOddsRangeFromBounds(String minRaw, String maxRaw) {
+    final min = minRaw.trim().replaceAll("\$", "");
+    final max = maxRaw.trim().replaceAll("\$", "");
+    if (min.isEmpty && max.isEmpty) return "";
+    if (min == max) return max;
+    return "$min-$max";
+  }
+
+  void _applyJockeyWinsRangeFromString(String rawValue) {
+    final cleaned = rawValue.trim();
+    if (cleaned.isEmpty) {
+      jockeyHorseWinsRangeValues = const RangeValues(1, 5);
+      hasSelectedJockeyHorseWinsRange = false;
+      return;
+    }
+    final parts = cleaned.split("-");
+    if (parts.length == 1) {
+      final single = double.tryParse(parts.first.trim());
+      if (single == null) {
+        jockeyHorseWinsRangeValues = const RangeValues(1, 5);
+        hasSelectedJockeyHorseWinsRange = false;
+        return;
+      }
+      final normalized = single.clamp(1.0, 5.0);
+      jockeyHorseWinsRangeValues = RangeValues(normalized, normalized);
+      hasSelectedJockeyHorseWinsRange = true;
+      return;
+    }
+    if (parts.length != 2) {
+      jockeyHorseWinsRangeValues = const RangeValues(1, 5);
+      hasSelectedJockeyHorseWinsRange = false;
+      return;
+    }
+    final start = double.tryParse(parts[0].trim());
+    final end = double.tryParse(parts[1].trim());
+    if (start == null || end == null) {
+      jockeyHorseWinsRangeValues = const RangeValues(1, 5);
+      hasSelectedJockeyHorseWinsRange = false;
+      return;
+    }
+    final normalizedStart = start.clamp(1.0, 5.0);
+    final normalizedEnd = end.clamp(1.0, 5.0);
+    jockeyHorseWinsRangeValues = RangeValues(
+      normalizedStart <= normalizedEnd ? normalizedStart : normalizedEnd,
+      normalizedStart <= normalizedEnd ? normalizedEnd : normalizedStart,
+    );
+    hasSelectedJockeyHorseWinsRange = true;
+  }
+
+  String _formatJockeyWinsBound(double value) => value.toStringAsFixed(0);
+
+  String _formatJockeyWinsRange(double start, double end) {
+    final min = _formatJockeyWinsBound(start);
+    final max = _formatJockeyWinsBound(end);
+    if (min == max) return min;
+    return "$min-$max";
+  }
+
+  String _normalizeJockeyRangeFromBounds(String minRaw, String maxRaw) {
+    final min = minRaw.trim();
+    final max = maxRaw.trim();
+    if (min.isEmpty && max.isEmpty) return "";
+    if (min == max) return max;
+    return "$min-$max";
+  }
+
+  // Barrier uses single-value points on UI (no "x-y" labels).
+  static const List<int> _barrierPoints = [1, 4, 7, 10, 13, 16];
+
+  (int, int) _barrierMinMaxFromIndexes(int startIndex, int endIndex) {
+    final lowerIndex = startIndex <= endIndex ? startIndex : endIndex;
+    final upperIndex = startIndex <= endIndex ? endIndex : startIndex;
+    return (
+      _barrierPoints[lowerIndex],
+      _barrierPoints[upperIndex],
+    );
+  }
+
+  int _barrierNearestIndex(int value) {
+    int nearestIndex = 0;
+    int minDiff = 1 << 30;
+    for (int i = 0; i < _barrierPoints.length; i++) {
+      final diff = (value - _barrierPoints[i]).abs();
+      if (diff <= minDiff) {
+        minDiff = diff;
+        nearestIndex = i;
+      }
+    }
+    return nearestIndex;
+  }
+
+  String _barrierStringFromIndexes(int startIndex, int endIndex) {
+    final (minValue, maxValue) = _barrierMinMaxFromIndexes(startIndex, endIndex);
+    if (minValue == maxValue) return "$minValue";
+    return "$minValue-$maxValue";
+  }
+
+  String _barrierStringFromValues(String minRaw, String maxRaw) {
+    final minParsed = int.tryParse(minRaw.trim());
+    final maxParsed = int.tryParse(maxRaw.trim());
+    if (minParsed == null || maxParsed == null) return "";
+    final min = _barrierPoints[_barrierNearestIndex(minParsed)];
+    final max = _barrierPoints[_barrierNearestIndex(maxParsed)];
+    if (min == max) return "$max";
+    return "$min-$max";
+  }
+
+  bool? _parseFlexibleNullableBool(dynamic value) {
+    if (value == null) return null;
+    if (value is String && value.trim().isEmpty) return null;
+    if (value is bool) return value;
+    if (value is num) return value == 1;
+    if (value is String) {
+      final v = value.trim().toLowerCase();
+      if (v == "true" || v == "1" || v == "yes") return true;
+      if (v == "false" || v == "0" || v == "no") return false;
+    }
+    return null;
   }
 
   //! ============= tip slip section ====================

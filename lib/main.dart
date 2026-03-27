@@ -15,23 +15,9 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
   ]);
   await Future.wait([LocaleStorageService.init()]);
-  // SystemChrome.setSystemUIOverlayStyle(
-  //   const SystemUiOverlayStyle(
-  //     statusBarColor: Colors.transparent,
-  //     systemStatusBarContrastEnforced: false,
-  //     statusBarIconBrightness: Brightness.light,
-  //     statusBarBrightness: Brightness.dark,
-  //   ),
-  // );
+
   runApp(ToastificationWrapper(child: const PuntGPTApp()));
 }
 /*
--> Worked on creating custom widgets and imoprove code efficiency.
--> Worked on upgrade the stats list.
--> Worked on fix the country selection regarding issue.
--> Worked on fix the status bar's UI regardingissue and show the icons proeprly.
--> Worked on 
--> Worked on 
--> Worked on 
--> Worked on 
+
 */

@@ -23,7 +23,7 @@ class ResetPasswordScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        28.h.verticalSpace,
+                        28.w.verticalSpace,
                         Text(
                           "Reset Password",
                           style: regular(

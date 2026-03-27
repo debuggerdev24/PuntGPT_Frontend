@@ -105,21 +105,27 @@ class AuthProvider extends ChangeNotifier {
 
     isSignUpLoading = true;
     notifyListeners();
-    final result = await AuthApiService.instance.registerUser(
-      firstName: firstNameCtr.text.trim(),
-      lastName: lastNameCtr.text.trim(),
-      state: selectedState!,
-      email: emailCtr.text.trim(),
-      phone:
+    final registerData = <String, dynamic>{
+      "first_name": firstNameCtr.text.trim(),
+      "last_name": lastNameCtr.text.trim(),
+      "state": selectedState!,
+      "email": emailCtr.text.trim(),
+      "phone":
           '+${country.phoneCode}${phoneCtr.text.replaceAll(RegExp(r'[^0-9]'), '')}',
-      password: passwordCtr.text.trim(),
-      confirmPassword: confirmPasswordCtr.text.trim(),
-      agreedToTerms: isReadTermsAndConditions.toString(),
-      addressLine1: addressLine1Ctr.text.trim(),
-      addressLine2: addressLine2Ctr.text.trim(),
-      suburb: suburbCtr.text.trim(),
-      postCode: postCodeCtr.text.trim(),
-      country: country.name,
+      "password": passwordCtr.text.trim(),
+      "confirm_password": confirmPasswordCtr.text.trim(),
+      "agreed_to_terms": isReadTermsAndConditions.toString(),
+      if (addressLine1Ctr.text.trim().isNotEmpty)
+        "address_line_1": addressLine1Ctr.text.trim(),
+      if (addressLine2Ctr.text.trim().isNotEmpty)
+        "address_line_2": addressLine2Ctr.text.trim(),
+      if (suburbCtr.text.trim().isNotEmpty) "suburb": suburbCtr.text.trim(),
+      if (postCodeCtr.text.trim().isNotEmpty)
+        "post_code": postCodeCtr.text.trim(),
+      "country": country.name,
+    };
+    final result = await AuthApiService.instance.registerUser(
+      data: registerData,
     );
 
     result.fold(

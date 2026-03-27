@@ -1,6 +1,5 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
-import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/race_start_timing_options.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/search_section.dart';
 
@@ -38,8 +37,6 @@ class PuntGptSearchEngineView extends StatelessWidget {
                     onTap: () {
                       context.pushNamed(AppRoutes.runnersScreen.name);
                       provider.getUpcomingRunner(
-                        isSubscribed:
-                            context.read<SubscriptionProvider>().isSubscribed,
                         onSuccess: () {},
                       );
                     },

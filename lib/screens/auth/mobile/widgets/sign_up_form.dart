@@ -44,21 +44,15 @@ class SignUpForm extends StatelessWidget {
               ),
               AppTextField(
                 controller: provider.addressLine1Ctr,
-                hintText: "Address Line 1",
-                validator: (value) =>
-                    FieldValidators().required(value, "Address Line 1"),
+                hintText: "Address Line 1 (Optional)",
               ),
               AppTextField(
                 controller: provider.addressLine2Ctr,
-                hintText: "Address Line 2",
-                validator: (value) =>
-                    FieldValidators().required(value, "Address Line 2"),
+                hintText: "Address Line 2 (Optional)",
               ),
               AppTextField(
                 controller: provider.suburbCtr,
-                hintText: "Suburb",
-                validator: (value) =>
-                    FieldValidators().required(value, "Suburb"),
+                hintText: "Suburb (Optional)",
               ),
               AppTextField(
                 controller: provider.postCodeCtr,
@@ -67,10 +61,9 @@ class SignUpForm extends StatelessWidget {
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(4),
                 ],
-                hintText: "Post Code",
+                hintText: "Post Code (Optional)",
                 validator: (value) {
-                  final r = FieldValidators().required(value, "Post Code");
-                  if (r != null) return r;
+                  if ((value ?? "").trim().isEmpty) return null;
                   return FieldValidators().lengthValidator(value, 4);
                 },
               ),

@@ -1,6 +1,5 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
-import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_section_shimmers.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/runner_box.dart';
 import 'home_screen.dart';
@@ -33,9 +32,7 @@ class _RunnersListScreenState extends State<RunnersListScreen> {
     if (!provider.hasMoreRunners || provider.isLoadingMoreRunners) return;
     final pos = _scrollController.position;
     if (pos.pixels >= pos.maxScrollExtent - 200) {
-      provider.loadNextRunners(
-        isSubscribed: context.read<SubscriptionProvider>().isSubscribed,
-      );
+      provider.loadNextRunners();
     }
   }
 
@@ -111,9 +108,6 @@ class _RunnersListScreenState extends State<RunnersListScreen> {
                                     context.pop(dialogContext);
                                     provider.createSaveSearch(
                                       name: name,
-                                      isSubscribed: context
-                                          .read<SubscriptionProvider>()
-                                          .isSubscribed,
                                       onError: (error) {
                                         AppToast.error(
                                           context: context,

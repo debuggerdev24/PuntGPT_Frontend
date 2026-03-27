@@ -1,7 +1,10 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
-import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/barrier_range_slider_field.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_section_shimmers.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/jockey_horse_wins_slider_field.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/odds_range_slider_field.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/search_checkbox_field.dart';
 
 class SearchDetailScreen extends StatelessWidget {
   const SearchDetailScreen({super.key});
@@ -89,9 +92,6 @@ class SearchDetailScreen extends StatelessWidget {
 
                     // Proceed with saving if changes are detected
                     provider.editSaveSearch(
-                      isSubscribed: context
-                          .read<SubscriptionProvider>()
-                          .isSubscribed,
                       onSuccess: () {
                         provider.getAllSaveSearch();
                         AppToast.success(
@@ -164,51 +164,12 @@ class SearchDetailScreen extends StatelessWidget {
           ),
           horizontalDivider(),
           //* Placed at last start Section
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 19.w),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: isEditMode
-                  ? () {
-                      provider.togglePlacedLastStart(!provider.placedLastStart);
-                    }
-                  : null,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Placed last start",
-                    style: semiBold(
-                      fontSize: (context.isBrowserMobile) ? 36.sp : 16.sp,
-                    ),
-                  ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    width: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                    height: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: provider.placedLastStart
-                            ? Colors.green
-                            : AppColors.primary.setOpacity(0.15),
-                      ),
-                      borderRadius: BorderRadius.circular(1),
-                      color: provider.placedLastStart
-                          ? Colors.green
-                          : Colors.transparent,
-                    ),
-                    child: provider.placedLastStart
-                        ? Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: (context.isBrowserMobile) ? 30.sp : 18.sp,
-                          )
-                        : null,
-                  ),
-                ],
-              ),
-            ),
+          SearchCheckboxField(
+            title: "Placed last start",
+            isChecked: provider.placedLastStart,
+            onTap: isEditMode
+                ? () => provider.togglePlacedLastStart(!provider.placedLastStart)
+                : null,
           ),
           horizontalDivider(),
           //* Placed at distance Section
@@ -224,90 +185,44 @@ class SearchDetailScreen extends StatelessWidget {
           //       : (_) {},
           //   hintText: "Placed at distance",
           // ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 19.w),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: isEditMode
-                  ? () {
-                      provider.togglePlacedAtDistance(!provider.placedAtDistance);
-                    }
-                  : null,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Placed at distance",
-                    style: semiBold(
-                      fontSize: (context.isBrowserMobile) ? 36.sp : 16.sp,
-                    ),
-                  ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    width: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                    height: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: provider.placedAtDistance
-                            ? Colors.green
-                            : AppColors.primary.setOpacity(0.15),
-                      ),
-                      borderRadius: BorderRadius.circular(1),
-                      color: provider.placedAtDistance
-                          ? Colors.green
-                          : Colors.transparent,
-                    ),
-                    child: provider.placedAtDistance
-                        ? Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: (context.isBrowserMobile) ? 30.sp : 18.sp,
-                          )
-                        : null,
-                  ),
-                ],
-              ),
-            ),
+          SearchCheckboxField(
+            title: "Placed at distance",
+            isChecked: provider.placedAtDistance,
+            onTap: isEditMode
+                ? () => provider.togglePlacedAtDistance(!provider.placedAtDistance)
+                : null,
           ),
           horizontalDivider(),
           //* Placed at track Section
-          AppTextFieldDropdown(
-            margin: EdgeInsets.symmetric(vertical: 20.w),
-            items: provider.distanceDetails ?? [],
-            selectedValue: provider.selectedPlaceAtTrack,
-            enabled: isEditMode,
-
-            onChange: isEditMode
-                ? (selectedValue) {
-                    provider.setSelectedPlaceAtTrack = selectedValue;
+          SearchCheckboxField(
+            title: "Placed at track",
+            isChecked: provider.selectedPlaceAtTrack == true,
+            onTap: isEditMode
+                ? () {
+                    final current = provider.selectedPlaceAtTrack;
+                    provider.setSelectedPlaceAtTrack =
+                        current == null ? true : !current;
                   }
-                : (_) {},
-            hintText: "Placed at track",
+                : null,
           ),
           //* Odds range Section
           horizontalDivider(),
-          AppTextField(
-            margin: EdgeInsets.symmetric(vertical: 20.w),
-            inputFormatter: [FilteringTextInputFormatter.digitsOnly],
-            keyboardType: TextInputType.number,
-            controller: provider.oddsRangeCtr,
-            hintText: "Odds Range",
-            enabled: isEditMode,
+          OddsRangeSliderField(
+            values: provider.oddsRangeValues,
+            onChanged: isEditMode ? provider.updateOddsRange : null,
           ),
           horizontalDivider(),
           //* Win at track Section
-          AppTextFieldDropdown(
-            margin: EdgeInsets.symmetric(vertical: 20.w),
-            items: provider.trackDetails ?? [],
-            selectedValue: provider.selectedWinsAtTrack,
-            onChange: isEditMode
-                ? (selectedValue) {
-                    provider.setSelectedWinsAtTrack = selectedValue;
+          SearchCheckboxField(
+            title: "Win at track",
+            isChecked: provider.selectedWinsAtTrack == true,
+            onTap: isEditMode
+                ? () {
+                    final current = provider.selectedWinsAtTrack;
+                    provider.setSelectedWinsAtTrack =
+                        current == null ? true : !current;
                   }
-                : (_) {},
-            enabled: isEditMode,
-            hintText: "Win at track",
+                : null,
           ),
           horizontalDivider(),
           //* Wins at distance Section
@@ -323,172 +238,43 @@ class SearchDetailScreen extends StatelessWidget {
           //   enabled: isEditMode,
           //   hintText: "Wins at distance",
           // ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 19.w),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: isEditMode
-                  ? () {
-                      provider.toggleWonAtDistance(!provider.wonAtDistance);
-                    }
-                  : null,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Won at distance",
-                    style: semiBold(
-                      fontSize: (context.isBrowserMobile) ? 36.sp : 16.sp,
-                    ),
-                  ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    width: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                    height: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: provider.wonAtDistance
-                            ? Colors.green
-                            : AppColors.primary.setOpacity(0.15),
-                      ),
-                      borderRadius: BorderRadius.circular(1),
-                      color: provider.wonAtDistance
-                          ? Colors.green
-                          : Colors.transparent,
-                    ),
-                    child: provider.wonAtDistance
-                        ? Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: (context.isBrowserMobile) ? 30.sp : 18.sp,
-                          )
-                        : null,
-                  ),
-                ],
-              ),
-            ),
+          SearchCheckboxField(
+            title: "Won at distance",
+            isChecked: provider.wonAtDistance,
+            onTap: isEditMode
+                ? () => provider.toggleWonAtDistance(!provider.wonAtDistance)
+                : null,
           ),
           horizontalDivider(),
           //* Won last start Section
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.w),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: isEditMode
-                  ? () {
-                      provider.toggleWonLastStart(!provider.wonLastStart);
-                    }
-                  : null,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Won last start",
-                    style: semiBold(
-                      fontSize: (context.isBrowserMobile) ? 36.sp : 16.sp,
-                    ),
-                  ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    width: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                    height: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: provider.wonLastStart
-                            ? Colors.green
-                            : AppColors.primary.setOpacity(0.15),
-                      ),
-                      borderRadius: BorderRadius.circular(1),
-                      color: provider.wonLastStart
-                          ? Colors.green
-                          : Colors.transparent,
-                    ),
-                    child: provider.wonLastStart
-                        ? Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: (context.isBrowserMobile) ? 30.sp : 18.sp,
-                          )
-                        : null,
-                  ),
-                ],
-              ),
-            ),
+          SearchCheckboxField(
+            title: "Won last start",
+            isChecked: provider.wonLastStart,
+            onTap: isEditMode
+                ? () => provider.toggleWonLastStart(!provider.wonLastStart)
+                : null,
+            verticalPadding: 20.w,
           ),
           horizontalDivider(),
           //* Won last 12 months Section
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 19.w),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: isEditMode
-                  ? () {
-                      provider.toggleWonLast12Months(!provider.wonLast12Months);
-                    }
-                  : null,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Won last 12 months",
-                    style: semiBold(
-                      fontSize: (context.isBrowserMobile) ? 36.sp : 16.sp,
-                    ),
-                  ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    width: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                    height: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: provider.wonLast12Months
-                            ? Colors.green
-                            : AppColors.primary.setOpacity(0.15),
-                      ),
-                      borderRadius: BorderRadius.circular(1),
-                      color: provider.wonLast12Months
-                          ? Colors.green
-                          : Colors.transparent,
-                    ),
-                    child: provider.wonLast12Months
-                        ? Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: (context.isBrowserMobile) ? 30.sp : 18.sp,
-                          )
-                        : null,
-                  ),
-                ],
-              ),
-            ),
+          SearchCheckboxField(
+            title: "Won last 12 months",
+            isChecked: provider.wonLast12Months,
+            onTap: isEditMode
+                ? () => provider.toggleWonLast12Months(!provider.wonLast12Months)
+                : null,
           ),
           horizontalDivider(),
           //* Jockey horse wins Section
-          AppTextField(
-            margin: EdgeInsets.symmetric(vertical: 20.w),
-            inputFormatter: [FilteringTextInputFormatter.digitsOnly],
-            keyboardType: TextInputType.number,
-            controller: provider.jockeyHorseWinsCtr,
-            hintText: "Jockey horse wins",
-            enabled: isEditMode,
+          JockeyHorseWinsSliderField(
+            values: provider.jockeyHorseWinsRangeValues,
+            onChanged: isEditMode ? provider.updateJockeyHorseWinsRange : null,
           ),
           horizontalDivider(),
           //* Barrier Section
-          AppTextFieldDropdown(
-            enabled: isEditMode,
-
-            margin: EdgeInsets.symmetric(vertical: 20.w),
-            selectedValue: provider.selectedBarrier,
-            onChange: isEditMode
-                ? (selectedValue) {
-                    provider.setSelectedBarrier = selectedValue;
-                  }
-                : (_) {},
-            items: provider.barrierList ?? [],
-            hintText: "Barrier",
+          BarrierRangeSliderField(
+            values: provider.barrierRangeIndexValues,
+            onChanged: isEditMode ? provider.updateBarrierRange : null,
           ),
         ],
       ),

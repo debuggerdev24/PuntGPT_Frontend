@@ -20,38 +20,11 @@ class AuthApiService {
   }
 
   Future<Either<ApiException, Map<String, dynamic>>> registerUser({
-    required String firstName,
-    required String lastName,
-    required String state,
-    required String email,
-    required String phone,
-    required String password,
-    required String confirmPassword,
-    required String agreedToTerms,
-    required String addressLine1,
-    required String addressLine2,
-    required String suburb,
-    required String postCode,
-    required String country,
+    required Map<String, dynamic> data,
   }) async {
     return await BaseApiHelper.instance.post<Map<String, dynamic>>(
       EndPoints.userRegister,
-      data: {
-        "first_name": firstName,
-        "last_name": lastName,
-        "state": state,
-        "email": email,
-        "phone": phone,
-        "password": password,
-        "confirm_password": confirmPassword,
-        "agreed_to_terms": agreedToTerms,
-        "address_line_1": addressLine1,
-        "address_line_2": addressLine2,
-        //
-        "suburb": suburb,
-        "post_code": postCode,
-        "country": country,
-      },
+      data: data,
     );
   }
 
