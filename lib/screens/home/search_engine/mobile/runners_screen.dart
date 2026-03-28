@@ -1,4 +1,5 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/provider/home/classic_form/classic_form_provider.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_section_shimmers.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/runner_box.dart';
@@ -44,22 +45,28 @@ class _RunnersListScreenState extends State<RunnersListScreen> {
         if (provider.runnersList == null) {
           return HomeSectionShimmers.runnerShimmer();
         }
-
         final totalDisplay = provider.totalRunners ?? runners!.length;
-
         return Stack(
           children: [
             Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.fromLTRB(25.w, 16.w, 25.w, 16.w),
+                  padding: EdgeInsets.fromLTRB(3.w, 0.w, 25.w, 0.w),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          context.pop();
+                        },
+                        icon: Icon(Icons.arrow_back_ios_rounded, size: 20.w),
+                      ),
+                      // Spacer(),
                       Text(
                         "Total Runners: ($totalDisplay)",
                         style: bold(fontSize: 16.sp),
                       ),
+                      Spacer(),
                       GestureDetector(
                         onTap: () {
                           provider.getAllSaveSearch();
@@ -67,13 +74,14 @@ class _RunnersListScreenState extends State<RunnersListScreen> {
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
+                          spacing: 5,
                           children: [
                             ImageWidget(
                               type: ImageType.svg,
                               path: AppAssets.bookmark,
                               height: 16.w.flexClamp(14, 18),
                             ),
-                            SizedBox(width: 5),
+
                             Text(
                               "Saved Searches",
                               style: bold(
@@ -95,7 +103,8 @@ class _RunnersListScreenState extends State<RunnersListScreen> {
                             ListView.builder(
                               controller: _scrollController,
                               padding: EdgeInsets.only(bottom: 95.w),
-                              itemCount: runners.length +
+                              itemCount:
+                                  runners.length +
                                   (provider.isLoadingMoreRunners ? 1 : 0),
                               itemBuilder: (context, index) {
                                 if (index >= runners.length) {
@@ -103,6 +112,7 @@ class _RunnersListScreenState extends State<RunnersListScreen> {
                                 }
                                 final runner = runners[index];
                                 return RunnerBox(
+                                  index: index + 1,
                                   runner: runner,
                                   onAddToSaveSearch: (name, dialogContext) {
                                     context.pop(dialogContext);
@@ -117,8 +127,7 @@ class _RunnersListScreenState extends State<RunnersListScreen> {
                                       onSuccess: () {
                                         AppToast.success(
                                           context: context,
-                                          message:
-                                              "Search saved successfully",
+                                          message: "Search saved successfully",
                                         );
                                       },
                                     );
@@ -126,16 +135,37 @@ class _RunnersListScreenState extends State<RunnersListScreen> {
                                   onAddToTipSlip: () {
                                     provider.createTipSlip(
                                       selectionId:
-                                          runner.selectionId?.toString() ??
-                                          '',
+                                          runner.selectionId?.toString() ?? '',
                                       context: context,
                                     );
                                   },
                                   onCompareToField: () {
                                     provider.compareHorses(
                                       selectionId:
-                                          runner.selectionId?.toString() ??
-                                          '',
+                                          runner.selectionId?.toString() ?? '',
+                                    );
+                                  },
+                                  onOpenClassicFormGuide: () async {
+                                    final classicForm = context
+                                        .read<ClassicFormProvider>();
+                                    classicForm.setTempLoading = true;
+                                    await classicForm.getClassicFormGuide();
+
+                                    Future.wait([
+                                      classicForm.getMeetingRaceList(
+                                        meetingId: classicForm
+                                            .classicFormGuide![0]
+                                            .meetingId
+                                            .toString(),
+                                      ),
+                                      classicForm.getRaceFieldDetail(
+                                        id: runner.raceId?.toString() ?? '',
+                                      ),
+                                    ]);
+                                    classicForm.setTempLoading = false;
+
+                                    context.pushNamed(
+                                      AppRoutes.selectedRace.name,
                                     );
                                   },
                                 );
@@ -181,7 +211,10 @@ class _RunnersListScreenState extends State<RunnersListScreen> {
                 // ),
               ],
             ),
-            if (provider.isCreatingSaveSearch) FullPageIndicator(),
+
+            if (provider.isCreatingSaveSearch ||
+                context.watch<ClassicFormProvider>().tempLoading)
+              FullPageIndicator(),
           ],
         );
       },
@@ -298,7 +331,9 @@ class _RunnersListScreenState extends State<RunnersListScreen> {
               ),
               style: OutlinedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-                side: BorderSide(color: AppColors.primary.withValues(alpha: 0.5)),
+                side: BorderSide(
+                  color: AppColors.primary.withValues(alpha: 0.5),
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
                 ),

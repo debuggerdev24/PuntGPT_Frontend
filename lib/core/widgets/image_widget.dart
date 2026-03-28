@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:puntgpt_nick/core/theme/app_colors.dart';
 
 enum ImageType { asset, svg, network }
 
@@ -89,10 +90,13 @@ class ImageWidget extends StatelessWidget {
   }
 
   Widget _defaultPlaceholder() => Center(
-    child: SizedBox(
-      height: 24.w.clamp(20, 30),
-      width: 24.w.clamp(20, 30),
-      child: const CircularProgressIndicator(strokeWidth: 2),
+    child: Padding(
+      padding: EdgeInsets.symmetric(horizontal: 2),
+      child: SizedBox(
+        height: 22.w.clamp(20, 28),
+        width: 22.w.clamp(20, 28),
+        child: const CircularProgressIndicator(strokeWidth: 2,color: AppColors.primary,),
+      ),
     ),
   );
 

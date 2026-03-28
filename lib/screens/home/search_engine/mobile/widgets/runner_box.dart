@@ -9,200 +9,178 @@ import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_sect
 class RunnerBox extends StatelessWidget {
   const RunnerBox({
     super.key,
+    required this.index,
     required this.runner,
     required this.onAddToTipSlip,
     required this.onCompareToField,
     required this.onAddToSaveSearch,
+    required this.onOpenClassicFormGuide,
   });
   final RunnerModel runner;
-  final VoidCallback onAddToTipSlip;
-  final VoidCallback onCompareToField;
+  final int index;
+  final VoidCallback onAddToTipSlip, onCompareToField, onOpenClassicFormGuide;
   final Function(String name, BuildContext context) onAddToSaveSearch;
 
   @override
   Widget build(BuildContext context) {
     final isGuest = !LocaleStorageService.isUserLoggedIn;
     final padding = EdgeInsets.fromLTRB(8.w, 0, 8.w, 3);
-    return Container(
-      margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 16),
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          //* first row section
-          Padding(
-            padding: EdgeInsets.fromLTRB(8.w, 12, 8.w, 3),
-            child: Row(
-              children: [
-                // AnimatedContainer(
-                //   duration: const Duration(milliseconds: 250),
-                //   curve: Curves.easeInOut,
-                //   width: 22,
-                //   height: 22,
-                //   decoration: BoxDecoration(
-                //     border: Border.all(
-                //       color:
-                //           // isChecked
-                //           //     ? Colors.green
-                //           //     :
-                //           AppColors.primary.setOpacity(0.15),
-                //     ),
-                //     color: Colors
-                //         .transparent, //isChecked ? Colors.green : Colors.transparent,
-                //   ),
-                //   child: Icon(Icons.check, color: Colors.white, size: 16),
-                //
-                // ),
-                Text(
-                  runner.barrier != null ? "${runner.barrier}. " : '-',
-                  style: bold(fontSize: 18.sp),
-                ),
-                if ((runner.silksImage ?? '').isNotEmpty)
-                  ImageWidget(
-                    path: runner.silksImage!,
-                    type: ImageType.svg,
-                    height: 24.w,
-                  ),
-                if ((runner.silksImage ?? '').isNotEmpty) 4.horizontalSpace,
-                Text(runner.horseName ?? '-', style: semiBold(fontSize: 18.sp)),
-                Spacer(),
-                Text(
-                  runner.odds != null ? "\$${runner.odds} " : '-',
-                  style: bold(fontSize: 18.sp),
-                ),
-                // if (context.read<SearchEngineProvider>().saveSearches?.any(
-                //       (element) => element.id == runner.selectionId,
-                //     ) ??
-                //     false)
-                //   Icon(Icons.bookmark_add_outlined)
-                // else
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    if (isGuest) {
-                      showGuestCreateAccountSheet(
-                        context,
-                        message: AppStrings.guestSaveSearchMessage,
-                      );
-                      return;
-                    }
-                    _showSaveSearchDialog(
-                      context: context,
-                      onSave: onAddToSaveSearch,
-                    );
-                  },
-                  child: Icon(Icons.bookmark_add_outlined),
-                ),
-              ],
-            ),
-          ),
-          Divider(color: AppColors.primary.withValues(alpha: 0.15)),
-          //*----------- second row section
-          Padding(
-            padding: padding,
-            child: Row(
-              spacing: 10,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  textAlign: TextAlign.start,
-                  "${runner.jumpTimeAu?.split(" ").first ?? '-'}\n${DateFormatter.formatTimeFromString(runner.jumpTimeAu)}",
-                  style: medium(fontSize: 16.sp),
-                ),
-                Expanded(
-                  child: Text(
-                    textAlign: TextAlign.start,
-                    runner.jockeyName ?? '-',
-                    style: medium(fontSize: 16.sp),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Divider(color: AppColors.primary.withValues(alpha: 0.15)),
-          //*----------- third row section
-          Padding(
-            padding: padding,
-            child: Column(
-              spacing: 2,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Odds may differ with:", style: bold(fontSize: 16.sp)),
-                ImageWidget(path: AppAssets.unibatLogo, height: 26.w),
-              ],
-            ),
-          ),
-          // Divider(color: AppColors.greyColor.withValues(alpha: 0.15)),
-          // Padding(
-          //   padding: EdgeInsets.fromLTRB(12, 6, 12, 2),
-          //   child: Text(
-          //     "Next race ${runner.nextRaceRemainTime}",
-          //     style: medium(fontSize: 16.sp),
-          //   ),
-          // ),
-          Divider(color: AppColors.primary.withValues(alpha: 0.15)),
-          Padding(
-            padding: padding,
-            child: Row(
-              spacing: 6.w,
-              children: [
-                Expanded(
-                  child: AppFilledButton(
-                    text: "Add to Tip Slip",
-                    textStyle: semiBold(
-                      fontSize: 16.sp,
-                      color: AppColors.white,
+    return GestureDetector(
+      onTap: onOpenClassicFormGuide,
+      child: Container(
+        margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 16),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //*----------- first row section
+            Padding(
+              padding: EdgeInsets.fromLTRB(8.w, 12, 8.w, 3),
+              child: Row(
+                children: [
+                  Text("$index. ", style: bold(fontSize: 18.sp)),
+                  if ((runner.silksImage ?? '').isNotEmpty)
+                    ImageWidget(
+                      path: runner.silksImage!,
+                      type: ImageType.svg,
+                      height: 24.w,
                     ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: 12.h,
-                      horizontal: 6.w,
-                    ),
-
-                    onTap: onAddToTipSlip,
-                    // child: progressIndicator(),
-                    child: _isThisRunnerLoading(context)
-                        ? progressIndicator()
-                        : null,
+                  if ((runner.silksImage ?? '').isNotEmpty) 4.horizontalSpace,
+                  Text(
+                    "${runner.horseName ?? '-'} (${runner.barrier ?? '-'})",
+                    style: semiBold(fontSize: 18.sp),
                   ),
-                ),
-                Expanded(
-                  child: GestureDetector(
+                  Spacer(),
+                  ImageWidget(path: AppAssets.unibatLogo, height: 26.w),
+                  Text(
+                    runner.odds != null ? "\$${runner.odds} " : '  - ',
+                    style: bold(fontSize: 18.sp),
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      onCompareToField.call();
-
-                      showCompareToField(context);
+                      if (isGuest) {
+                        showGuestCreateAccountSheet(
+                          context,
+                          message: AppStrings.guestSaveSearchMessage,
+                        );
+                        return;
+                      }
+                      _showSaveSearchDialog(
+                        context: context,
+                        onSave: onAddToSaveSearch,
+                      );
                     },
-                    child: Container(
+                    child: Icon(Icons.bookmark_add_outlined),
+                  ),
+                ],
+              ),
+            ),
+            Divider(color: AppColors.primary.withValues(alpha: 0.15)),
+            //*----------- second row: race details + jockey / trainer
+            Padding(
+              padding: padding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 5,
+                children: [
+                  Text(
+                    [
+                      if ((runner.track ?? '').trim().isNotEmpty)
+                        (runner.track ?? '').trim(),
+                      '${runner.jumpTimeAu?.split(' ').first ?? '-'} · ${DateFormatter.formatTimeFromString(runner.jumpTimeAu)}',
+                      'Race ${runner.raceNumber ?? '-'} · ${runner.distance ?? '-'}m',
+                    ].join(' · '),
+                    style: medium(fontSize: 15.sp),
+                  ),
+                  _RunnerPersonRow(label: 'Jockey', name: runner.jockeyName),
+                  _RunnerPersonRow(label: 'Trainer', name: runner.trainerName),
+                ],
+              ),
+            ),
+            Divider(color: AppColors.primary.withValues(alpha: 0.15)),
+            //*----------- third row section
+            Padding(
+              padding: padding,
+              child: Row(
+                children: [
+                  Text("Odds may differ with :  ", style: bold(fontSize: 16.sp)),
+                  ImageWidget(path: AppAssets.dabbleLogo, height: 26.w),
+                ],
+              ),
+            ),
+            // Divider(color: AppColors.greyColor.withValues(alpha: 0.15)),
+            // Padding(
+            //   padding: EdgeInsets.fromLTRB(12, 6, 12, 2),
+            //   child: Text(
+            //     "Next race ${runner.nextRaceRemainTime}",
+            //     style: medium(fontSize: 16.sp),
+            //   ),
+            // ),
+            Divider(color: AppColors.primary.withValues(alpha: 0.15)),
+            Padding(
+              padding: padding,
+              child: Row(
+                spacing: 6.w,
+                children: [
+                  Expanded(
+                    child: AppFilledButton(
+                      text: "Add to Tip Slip",
+                      textStyle: semiBold(
+                        fontSize: 16.sp,
+                        color: AppColors.white,
+                      ),
                       padding: EdgeInsets.symmetric(
                         vertical: 12.h,
-                        horizontal: 8.w,
+                        horizontal: 6.w,
                       ),
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        border: Border.all(color: AppColors.primary),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ImageWidget(path: AppAssets.horse, height: 24.w),
-                          Expanded(
-                            child: Text(
-                              "Compare to field",
-                              textAlign: TextAlign.center,
-                              style: bold(fontSize: 14.sp),
+      
+                      onTap: onAddToTipSlip,
+                      // child: progressIndicator(),
+                      child: _isThisRunnerLoading(context)
+                          ? progressIndicator()
+                          : null,
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        onCompareToField.call();
+      
+                        showCompareToField(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 12.h,
+                          horizontal: 8.w,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          border: Border.all(color: AppColors.primary),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ImageWidget(path: AppAssets.horse, height: 24.w),
+                            Expanded(
+                              child: Text(
+                                "Compare to field",
+                                textAlign: TextAlign.center,
+                                style: bold(fontSize: 14.sp),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -227,27 +205,86 @@ class RunnerBox extends StatelessWidget {
                   context: modalContext,
                 );
               }
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(14.w, 18.h, 14.w, 12.h),
-                    child: Text(
-                      "Analysis and Field Comparison",
-                      style: semiBold(fontSize: 16.sp),
+              return SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(14.w, 18.h, 14.w, 12.h),
+                      child: Text(
+                        "Analysis and Field Comparison",
+                        style: semiBold(fontSize: 16.sp),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                  Divider(color: AppColors.primary.withValues(alpha: 0.2)),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(22.w, 10.h, 22.w, 16.h),
-                    child: Text(
-                      provider.compareHorse?.summary ??
-                          "Unable to load analysis.",
-                      style: regular(fontSize: 16.sp),
+                    Divider(color: AppColors.primary.withValues(alpha: 0.2)),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(22.w, 10.h, 22.w, 12.h),
+                      child: Text(
+                        provider.compareHorse?.summary ??
+                            "Unable to load analysis.",
+                        style: regular(fontSize: 16.sp),
+                      ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(22.w, 0, 22.w, 20.h),
+                      child: Container(
+                        padding: EdgeInsets.all(14.w),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.06),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.2),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.menu_book_outlined,
+                                  color: AppColors.primary,
+                                  size: 22,
+                                ),
+                                10.horizontalSpace,
+                                Expanded(
+                                  child: Text(
+                                    "Tip: analysis often ends with “refer to the Classic Form Guide”. "
+                                    "Use Classic Form on the home tab to view the full field for this race.",
+                                    style: medium(fontSize: 14.sp, height: 1.4),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            14.verticalSpace,
+                            OnMouseTap(
+                              onTap: (){
+                                modalContext.pop();
+                                onOpenClassicFormGuide.call();
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(vertical: 12.h),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  border: Border.all(color: AppColors.primary),
+                                ),
+                                child: Text(
+                                  "Open Classic Form Guide",
+                                  style: semiBold(fontSize: 15.sp),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
           ),
@@ -277,6 +314,41 @@ class RunnerBox extends StatelessWidget {
     final provider = context.read<SearchEngineProvider>();
     return provider.isCreatingTipSlip &&
         provider.creatingForSelectionId == runner.selectionId?.toString();
+  }
+}
+
+/// Label + value row so jockey/trainer names don’t crush into vertical letter soup.
+class _RunnerPersonRow extends StatelessWidget {
+  const _RunnerPersonRow({required this.label, required this.name});
+
+  final String label;
+  final String? name;
+
+  @override
+  Widget build(BuildContext context) {
+    final display = (name != null && name!.trim().isNotEmpty)
+        ? name!.trim()
+        : '—';
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "$label :  ",
+          style: semiBold(
+            fontSize: 14.sp,
+            color: AppColors.primary.withValues(alpha: 0.85),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            display,
+            style: medium(fontSize: 15.sp, height: 1.3),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
   }
 }
 

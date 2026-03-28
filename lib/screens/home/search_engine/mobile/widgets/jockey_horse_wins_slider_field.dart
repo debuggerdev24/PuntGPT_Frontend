@@ -12,13 +12,13 @@ class JockeyHorseWinsSliderField extends StatelessWidget {
 
   // Allowed fixed values for this slider.
   static const List<double> _steps = [1, 2, 3, 4, 5];
-  static const List<String> _scaleLabels = ["1", "2", "3", "4", "5"];
+  // static const List<String> _scaleLabels = ["\$1", "\$2", "\$3", "\$4", "\$5"];
 
   String _format(double value) => value.toStringAsFixed(0);
 
   String _selectedText() {
-    if (values.start == values.end) return _format(values.start);
-    return "${_format(values.start)} - ${_format(values.end)}";
+    if (values.start == values.end) return "\$${_format(values.start)}";
+    return "\$${_format(values.start)} - \$${_format(values.end)}";
   }
 
   int _stepIndexFromValue(double value) {
@@ -50,7 +50,7 @@ class JockeyHorseWinsSliderField extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Jockey horse wins",
+                "Jockey / Horse wins",
                 style: semiBold(
                   fontSize: (context.isBrowserMobile) ? 36.sp : 16.sp,
                 ),
@@ -69,10 +69,10 @@ class JockeyHorseWinsSliderField extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 22),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: _scaleLabels
+              children: _steps
                   .map(
                     (label) => Text(
-                      label,
+                      "\$${label.toInt()}",
                       style: medium(
                         fontSize: (context.isBrowserMobile) ? 24.sp : 12.sp,
                         color: AppColors.primary.withValues(alpha: 0.8),
@@ -104,8 +104,8 @@ class JockeyHorseWinsSliderField extends StatelessWidget {
               max: 4,
               values: RangeValues(startIndex, endIndex),
               labels: RangeLabels(
-                _format(values.start),
-                _format(values.end),
+                "\$${_format(values.start)}",
+                "\$${_format(values.end)}",
               ),
               divisions: 4,
               onChanged: onChanged == null

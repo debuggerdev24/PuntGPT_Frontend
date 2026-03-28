@@ -13,7 +13,7 @@ class SelectedMeetingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ClassicFormProvider>(
       builder: (context, provider, child) {
-        if (provider.meetingRace == null || provider.raceFieldDetail == null) {
+        if (provider.raceList == null || provider.raceFieldDetail == null) {
           return HomeSectionShimmers.selectedRaceScreenShimmer(
             context: context,
           );
@@ -40,10 +40,10 @@ class SelectedMeetingScreen extends StatelessWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: List.generate(
-                                  provider.meetingRace!.races.length,
+                                  provider.raceList!.races.length,
                                   (index) {
                                     final race =
-                                        provider.meetingRace!.races[index];
+                                        provider.raceList!.races[index];
                                     return GestureDetector(
                                       onTap: () {
                                         provider.changeSelectedRace = index;
@@ -117,7 +117,7 @@ class SelectedMeetingScreen extends StatelessWidget {
                                 onTap: () {
                                   provider.getSpeedMaps(
                                     meetingId: provider
-                                        .meetingRace!
+                                        .raceList!
                                         .meeting
                                         .meetingId
                                         .toString(),
@@ -186,8 +186,8 @@ class SelectedMeetingScreen extends StatelessWidget {
     required ClassicFormProvider provider,
     required BuildContext context,
   }) {
-    final meeting = provider.meetingRace!.meeting;
-    final races = provider.meetingRace!.races;
+    final meeting = provider.raceList!.meeting;
+    final races = provider.raceList!.races;
     if (races.isEmpty) {
       return Column(
         children: [

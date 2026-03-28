@@ -4,6 +4,8 @@ import 'package:puntgpt_nick/core/widgets/guest_create_account_sheet.dart';
 import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
 import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
+import 'package:puntgpt_nick/screens/auth/auth_constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -70,6 +72,7 @@ class AccountScreen extends StatelessWidget {
                       "Terms & Conditions",
                       style: bold(
                         fontSize: (context.isBrowserMobile) ? 30.sp : 14.sp,
+                        decoration: TextDecoration.underline,
                       ),
                     ),
                     Container(
@@ -90,10 +93,19 @@ class AccountScreen extends StatelessWidget {
                       color: AppColors.primary,
                       margin: EdgeInsets.symmetric(horizontal: 10),
                     ),
-                    Text(
-                      "Privacy Policy",
-                      style: bold(
-                        fontSize: (context.isBrowserMobile) ? 30.sp : 14.sp,
+                    OnMouseTap(
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse(kPrivacyPolicyUrl),
+                          mode: LaunchMode.externalApplication,
+                        );
+                      },
+                      child: Text(
+                        "Privacy Policy",
+                        style: bold(
+                          fontSize: (context.isBrowserMobile) ? 30.sp : 14.sp,
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
                   ],

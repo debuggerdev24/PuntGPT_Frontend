@@ -20,8 +20,8 @@ class BarrierRangeSliderField extends StatelessWidget {
     final upper = start <= end ? end : start;
     final minValue = _points[lower];
     final maxValue = _points[upper];
-    if (minValue == maxValue) return "$minValue";
-    return "$minValue - $maxValue";
+    if (minValue == maxValue) return "\$$minValue";
+    return "\$$minValue - \$$maxValue";
   }
 
   @override
@@ -57,7 +57,7 @@ class BarrierRangeSliderField extends StatelessWidget {
               children: _points
                   .map(
                     (value) => Text(
-                      "$value",
+                      "\$$value",
                       style: medium(
                         fontSize: (context.isBrowserMobile) ? 24.sp : 12.sp,
                         color: AppColors.primary.withValues(alpha: 0.8),
@@ -89,8 +89,8 @@ class BarrierRangeSliderField extends StatelessWidget {
               max: 5,
               values: values,
               labels: RangeLabels(
-                "${_points[values.start.round()]}",
-                "${_points[values.end.round()]}",
+                "\$${_points[values.start.round()]}",
+                "\$${_points[values.end.round()]}",
               ),
               // 6 fixed points.
               divisions: 5,

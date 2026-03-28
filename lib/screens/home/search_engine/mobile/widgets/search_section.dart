@@ -16,75 +16,22 @@ class SearchFields extends StatelessWidget {
     // final provider = context.read<SearchEngineProvider>();
     return SizedBox(
       width: double.maxFinite,
-      child: Consumer2<SearchEngineProvider, SubscriptionProvider>(
-        builder: (context, provider, subProvider, child) => Column(
+      child: Consumer<SearchEngineProvider>(
+        builder: (context, provider, child) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            //* Saved Searches
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                bodyHorizontalPadding,
-                12.w,
-                bodyHorizontalPadding,
-                20.w,
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Search for a horse that meets your criteria:",
-                      style: bold(
-                        fontSize: (context.isBrowserMobile) ? 36.sp : 16.sp,
-                        height: 1.2,
-                      ),
-                    ),
-                  ),
-                  OnMouseTap(
-                    onTap: () {
-                      context.pushNamed(
-                        (context.isPhysicalMobile)
-                            ? AppRoutes.savedSearchedScreen.name
-                            : WebRoutes.savedSearchedScreen.name,
-                      );
-                      if (subProvider.isSubscribed) {
-                        provider.getAllSaveSearch();
-                      }
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ImageWidget(
-                          type: ImageType.svg,
-                          path: AppAssets.bookmark,
-                          height: 16.w.flexClamp(14, 18),
-                        ),
-                        5.w.horizontalSpace,
-                        Text(
-                          "Saved Searches",
-                          style: bold(
-                            fontSize: (context.isBrowserMobile) ? 36.sp : 16.sp,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            //* FORM AREA
-            horizontalDivider(),
-
             Padding(
               padding: EdgeInsets.symmetric(horizontal: bodyHorizontalPadding),
               child: Column(
-                children: [
+                children:[
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 18.w),
+                    child: horizontalDivider(),
+                  ),
                   //* Track Section
                   AppTextFieldDropdown(
-                    margin: EdgeInsets.symmetric(vertical: 20.w),
+                    margin: EdgeInsets.only(bottom: 18.w),
                     items: provider.trackDetails ?? [],
                     selectedValue: provider.selectedTrack,
                     onChange: (selectedValue) {
@@ -132,7 +79,7 @@ class SearchFields extends StatelessWidget {
                           : !current;
                     },
                   ),
-                  if (subProvider.isSubscribed) ...[
+                  if (context.read<SubscriptionProvider>().isSubscribed) ...[
                     //* Odds range Section
                     horizontalDivider(),
                     //* Win at track Section

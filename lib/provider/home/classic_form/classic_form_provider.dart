@@ -25,7 +25,7 @@ class ClassicFormProvider extends ChangeNotifier {
   ];
 
   List<ClassicFormModel>? get classicFormGuide => _classicFormGuideList;
-  MeetingDetailsModel? get meetingRace => _meetingRaceList;
+  MeetingDetailsModel? get raceList => _meetingRaceList;
   List<NextRaceModel> get nextRaceList => _nextRaceList ?? [];
   RaceDetailsModel? get raceFieldDetail => _raceFieldDetail;
   TipsAnalysisModel? get tipsAndAnalysis => _tipsAndAnalysis;
@@ -227,6 +227,12 @@ class ClassicFormProvider extends ChangeNotifier {
             : SpeedMapsModel.fromJson({});
       },
     );
+    notifyListeners();
+  }
+
+  bool tempLoading = false;
+  set setTempLoading(bool value) {
+    tempLoading = value;
     notifyListeners();
   }
 }

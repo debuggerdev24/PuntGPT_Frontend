@@ -17,7 +17,7 @@ class SearchCheckboxField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 19.w),
+      padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 18.w),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,

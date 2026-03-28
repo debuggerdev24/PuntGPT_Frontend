@@ -31,6 +31,7 @@ class RunnerModel {
     this.silksImage,
     this.odds,
     this.barrier,
+    this.distance,
   });
 
   factory RunnerModel.fromJson(Map<String, dynamic> json) => RunnerModel(
@@ -45,6 +46,7 @@ class RunnerModel {
     jumpTimeAu: json["jump_time_au"],
     silksImage: json["silks_image"],
     barrier: json["barrier"],
+    distance: json["race_distance"],
     odds: json["odds"] != null
         ? (json["odds"] is num
               ? (json["odds"] as num).toDouble()
@@ -52,7 +54,7 @@ class RunnerModel {
         : null,
   );
 
-  int? selectionId, selectionNumber, raceId, raceNumber, barrier;
+  int? selectionId, selectionNumber, raceId, raceNumber, barrier,distance;
   String? horseName, jockeyName, trainerName, track, jumpTimeAu, silksImage;
   double? odds;
 }
