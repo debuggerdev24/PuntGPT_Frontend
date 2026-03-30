@@ -153,7 +153,7 @@ class SearchDetailScreen extends StatelessWidget {
             enabled: isEditMode,
 
             margin: EdgeInsets.symmetric(vertical: 20.w),
-            items: provider.trackDetails ?? [],
+            items: provider.trackList ?? [],
             selectedValue: provider.selectedTrack,
             onChange: isEditMode
                 ? (selectedValue) {

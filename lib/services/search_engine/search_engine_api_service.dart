@@ -6,9 +6,10 @@ class SearchEngineAPISearvice {
   SearchEngineAPISearvice._();
   static SearchEngineAPISearvice instance = SearchEngineAPISearvice._();
 
-  Future<Either<ApiException, Map<String, dynamic>>> getTrackDetails() async {
+  Future<Either<ApiException, Map<String, dynamic>>> getTracList({Map<String, dynamic>? queryParameters}) async {
     return await BaseApiHelper.instance.get<Map<String, dynamic>>(
       EndPoints.trackDetails,
+      queryParameters: queryParameters,
     );
   }
 

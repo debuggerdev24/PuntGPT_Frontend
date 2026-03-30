@@ -6,6 +6,16 @@ import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_section_shimmers.dart';
 
+/// Placeholder until API exposes weight; swap for `runner.weightKg` when available.
+
+
+
+String _displayName(String? name) {
+  final t = name?.trim();
+  if (t == null || t.isEmpty) return '—';
+  return t;
+}
+
 class RunnerBox extends StatelessWidget {
   const RunnerBox({
     super.key,
@@ -54,8 +64,9 @@ class RunnerBox extends StatelessWidget {
                   ),
                   Spacer(),
                   ImageWidget(path: AppAssets.unibatLogo, height: 26.w),
+                  6.horizontalSpace,
                   Text(
-                    runner.odds != null ? "\$${runner.odds} " : '  - ',
+                    runner.odds != null ? "\$${runner.odds} " : '- ',
                     style: bold(fontSize: 18.sp),
                   ),
                   GestureDetector(
@@ -84,19 +95,59 @@ class RunnerBox extends StatelessWidget {
               padding: padding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 5,
+                spacing: 8,
                 children: [
                   Text(
                     [
-                      if ((runner.track ?? '').trim().isNotEmpty)
-                        (runner.track ?? '').trim(),
-                      '${runner.jumpTimeAu?.split(' ').first ?? '-'} · ${DateFormatter.formatTimeFromString(runner.jumpTimeAu)}',
-                      'Race ${runner.raceNumber ?? '-'} · ${runner.distance ?? '-'}m',
-                    ].join(' · '),
-                    style: medium(fontSize: 15.sp),
+                      runner.track ?? '-',
+                      "R${runner.raceNumber ?? '-'}",
+                      "${runner.distance ?? '-'}m",
+                      DateFormatter.formatTimeFromString(runner.jumpTimeAu),
+                    ].join(" - "),
+                    style: semiBold(fontSize: 15.sp, height: 1.25),
                   ),
-                  _RunnerPersonRow(label: 'Jockey', name: runner.jockeyName),
-                  _RunnerPersonRow(label: 'Trainer', name: runner.trainerName),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 12,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          spacing: 6,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _RunnerStatCell(
+                              label: 'J',
+                              value: _displayName(runner.jockeyName),
+                            ),
+
+                            _RunnerStatCell(
+                              label: 'T',
+                              value: _displayName(runner.track),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 6,
+                          children: [
+                            _RunnerStatCell(
+                              label: 'W',
+                              value: runner.weight ?? '-',
+                            ),
+
+                            _RunnerStatCell(
+                              label: 'F',
+                              value: runner.form ?? '-',
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -106,7 +157,10 @@ class RunnerBox extends StatelessWidget {
               padding: padding,
               child: Row(
                 children: [
-                  Text("Odds may differ with :  ", style: bold(fontSize: 16.sp)),
+                  Text(
+                    "Odds may differ with :  ",
+                    style: bold(fontSize: 16.sp),
+                  ),
                   ImageWidget(path: AppAssets.dabbleLogo, height: 26.w),
                 ],
               ),
@@ -136,7 +190,7 @@ class RunnerBox extends StatelessWidget {
                         vertical: 12.h,
                         horizontal: 6.w,
                       ),
-      
+
                       onTap: onAddToTipSlip,
                       // child: progressIndicator(),
                       child: _isThisRunnerLoading(context)
@@ -148,7 +202,7 @@ class RunnerBox extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         onCompareToField.call();
-      
+
                         showCompareToField(context);
                       },
                       child: Container(
@@ -261,7 +315,7 @@ class RunnerBox extends StatelessWidget {
                             ),
                             14.verticalSpace,
                             OnMouseTap(
-                              onTap: (){
+                              onTap: () {
                                 modalContext.pop();
                                 onOpenClassicFormGuide.call();
                               },
@@ -317,23 +371,20 @@ class RunnerBox extends StatelessWidget {
   }
 }
 
-/// Label + value row so jockey/trainer names don’t crush into vertical letter soup.
-class _RunnerPersonRow extends StatelessWidget {
-  const _RunnerPersonRow({required this.label, required this.name});
+/// Single-letter label + value; `Expanded` keeps long jockey/track names from overflowing.
+class _RunnerStatCell extends StatelessWidget {
+  const _RunnerStatCell({required this.label, required this.value});
 
   final String label;
-  final String? name;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
-    final display = (name != null && name!.trim().isNotEmpty)
-        ? name!.trim()
-        : '—';
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "$label :  ",
+          '$label: ',
           style: semiBold(
             fontSize: 14.sp,
             color: AppColors.primary.withValues(alpha: 0.85),
@@ -341,9 +392,9 @@ class _RunnerPersonRow extends StatelessWidget {
         ),
         Expanded(
           child: Text(
-            display,
-            style: medium(fontSize: 15.sp, height: 1.3),
-            maxLines: 3,
+            value,
+            style: medium(fontSize: 15.sp, height: 1.25),
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
         ),

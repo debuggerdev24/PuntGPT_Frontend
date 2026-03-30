@@ -17,17 +17,10 @@ class TipSlipModel {
 }
 
 class Selection {
-    String horseName;
-    String jockeyName;
-    String trainerName;
-    String trackName;
-    String raceName;
-    String raceNumber;
+    String horseName,jockeyName,trainerName,trackName,raceName,raceNumber,silksImage,unibetFixedOddsWin,distance;
     DateTime startTimeUtc;
-    int selectionId;
-    int number;
-    String silksImage;
-    String unibetFixedOddsWin;
+    int selectionId,number,barrier;
+
 
     Selection({
         required this.horseName,
@@ -41,6 +34,8 @@ class Selection {
         required this.number,
         required this.silksImage,
         required this.unibetFixedOddsWin,
+        required this.barrier,
+        required this.distance,
     });
 
     factory Selection.fromJson(Map<String, dynamic> json) => Selection(
@@ -55,5 +50,7 @@ class Selection {
         number: json["number"] ?? 0,
         silksImage: json["silks_image"] ?? "",
         unibetFixedOddsWin: json["unibet_fixed_odds_win"] ?? "",
+        barrier: json["barrier"] ?? 0,
+        distance: json["race_distance"] ?? 0,
     );
 }

@@ -20,16 +20,22 @@ class SearchEngineProvider extends ChangeNotifier {
   int? expandedTipSlipId;
   JumpType _selectedRaceTimingEnum = JumpType.jumps_within_10mins;
   JumpType get selectedRaceTimingEnum => _selectedRaceTimingEnum;
+  
+  final Map<String, List<String>> _tracksPack = {}; // key: today/tomorrow
+
+
   TextEditingController oddsRangeCtr = TextEditingController(),
       jockeyHorseWinsCtr = TextEditingController();
   RangeValues oddsRangeValues = _defaultOddsRange;
-  bool hasSelectedOddsRange = false,hasSelectedJockeyHorseWinsRange = false,hasSelectedBarrierRange = false;
+  bool hasSelectedOddsRange = false,
+      hasSelectedJockeyHorseWinsRange = false,
+      hasSelectedBarrierRange = false;
   RangeValues jockeyHorseWinsRangeValues = _defaultJockeyWinsRange;
 
   RangeValues barrierRangeIndexValues = const RangeValues(0, 0);
 
   List<SaveSearchModel>? saveSearches;
-  List<String>? trackDetails, distanceDetails, searchFilterDetails, barrierList;
+  List<String>? trackList, distanceDetails, searchFilterDetails, barrierList;
   SaveSearchModel? selectedSaveSearch;
   List<RunnerModel>? runnersList;
   CompareHorseModel? compareHorse;
@@ -62,11 +68,7 @@ class SearchEngineProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  
-
-  String? selectedTrack,
-      selectedPlaceAtDistance,
-      selectedWinsAtDistance;
+  String? selectedTrack, selectedPlaceAtDistance, selectedWinsAtDistance;
   bool? selectedPlaceAtTrack, selectedWinsAtTrack;
 
   set setSelectedTrack(String value) {
@@ -97,6 +99,7 @@ class SearchEngineProvider extends ChangeNotifier {
   set setSelectedRaceTimingEnum(JumpType value) {
     _selectedRaceTimingEnum = value;
 
+    getTrackList();
     notifyListeners();
   }
 
@@ -126,8 +129,6 @@ class SearchEngineProvider extends ChangeNotifier {
     JumpType.jumps_today,
     JumpType.jumps_tomorrow,
   ];
-
-  String get selectedRaceTimingApiString => selectedRaceTimingEnum.name;
 
   //* Home Screen Track Section (Checkboxes) - Simple boolean variables
   bool placedLastStart = false;
@@ -186,7 +187,6 @@ class SearchEngineProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  
   /// 0: 1-3, 1: 4-6, 2: 7-10, 3: 11-13, 4: 14-16.
   /// We store slider indexes (0..4), then convert to min/max for API.
   void updateBarrierRange(RangeValues values) {
@@ -218,24 +218,47 @@ class SearchEngineProvider extends ChangeNotifier {
 
   //todo APIs functions
 
-  Future<void> getTrackDetails() async {
-    trackDetails = null;
+  String _trackDateKeyFromJumpType(JumpType type) {
+  
+    return type == JumpType.jumps_tomorrow ? "tomorrow" : "today";
+  }
+
+  Future<void> getTrackList({bool force = false}) async {
+    final dateKey = _trackDateKeyFromJumpType(selectedRaceTimingEnum);
+
+    if (!force && _tracksPack.containsKey(dateKey)) {
+      trackList = _tracksPack[dateKey];
+      notifyListeners();
+      return;
+    }
+
+    // final requestId = ++_trackRequestId;
+    // isLoadingTrackList = true;
     notifyListeners();
-    final result = await SearchEngineAPISearvice.instance.getTrackDetails();
+
+    final result = await SearchEngineAPISearvice.instance.getTracList(
+      queryParameters: {"date": dateKey},
+    );
+    // Logger.info("getTrackList result: $requestId");
+    // Logger.info("_trackRequestId: $_trackRequestId");
+    // If user changed filter while we were loading, ignore this response.
+    // if (requestId != _trackRequestId) return;
 
     result.fold(
-      (l) {
-        Logger.error(l.errorMsg);
-      },
+      (l) => Logger.error(l.errorMsg),
       (r) {
         final data = r["data"];
         if (data is List) {
-          trackDetails = data.map((e) => e.toString()).toList();
+          final list = data.map((e) => e.toString()).toList();
+          _tracksPack[dateKey] = list;
+          trackList = list;
         } else {
-          trackDetails = null;
+          trackList = null;
         }
       },
     );
+
+    // isLoadingTrackList = false;
     notifyListeners();
   }
 
@@ -279,20 +302,15 @@ class SearchEngineProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getUpcomingRunner({
-    required VoidCallback onSuccess,
-  }) async {
+  Future<void> getUpcomingRunner({required VoidCallback onSuccess}) async {
     runnersList = null;
     totalRunners = null;
     totalPages = null;
     _runnersCurrentPage = 1;
     notifyListeners();
 
-   
-
     final result = await SearchEngineAPISearvice.instance.getSearchEngine(
-        // jumpFilter: selectedRaceTimingApiString,
-
+      // jumpFilter: selectedRaceTimingApiString,
       page: 1,
       filters: _buildSaveSearchFilters(),
     );
@@ -306,7 +324,8 @@ class SearchEngineProvider extends ChangeNotifier {
         final runners = data?["runners"] as List? ?? [];
         runnersList = runners
             .map<RunnerModel>(
-                (e) => RunnerModel.fromJson(e as Map<String, dynamic>))
+              (e) => RunnerModel.fromJson(e as Map<String, dynamic>),
+            )
             .toList();
         totalRunners = data?["total_runners"] as int?;
         totalPages = data?["total_pages"] as int?;
@@ -324,11 +343,8 @@ class SearchEngineProvider extends ChangeNotifier {
     isLoadingMoreRunners = true;
     notifyListeners();
 
-
-
     final nextPage = _runnersCurrentPage + 1;
     final result = await SearchEngineAPISearvice.instance.getSearchEngine(
-
       page: nextPage,
       filters: _buildSaveSearchFilters(),
     );
@@ -342,7 +358,8 @@ class SearchEngineProvider extends ChangeNotifier {
         final runners = data?["runners"] as List? ?? [];
         final converted = runners
             .map<RunnerModel>(
-                (e) => RunnerModel.fromJson(e as Map<String, dynamic>))
+              (e) => RunnerModel.fromJson(e as Map<String, dynamic>),
+            )
             .toList();
         runnersList!.addAll(converted);
         _runnersCurrentPage = data?["page"] as int? ?? nextPage;
@@ -356,7 +373,7 @@ class SearchEngineProvider extends ChangeNotifier {
   bool isCreatingSaveSearch = false;
   Map<String, dynamic> _buildSaveSearchFilters() {
     final filters = <String, dynamic>{
-      "jump": selectedRaceTimingApiString,
+      "jump": selectedRaceTimingEnum.name,
       "track": selectedTrack ?? "",
     };
     if (hasSelectedOddsRange) {
@@ -383,10 +400,12 @@ class SearchEngineProvider extends ChangeNotifier {
       filters["barrier_max"] = barrierRange.$2.toString();
     }
     if (hasSelectedJockeyHorseWinsRange) {
-      filters["jockey_horse_wins_min"] =
-          _formatJockeyWinsBound(jockeyHorseWinsRangeValues.start);
-      filters["jockey_horse_wins_max"] =
-          _formatJockeyWinsBound(jockeyHorseWinsRangeValues.end);
+      filters["jockey_horse_wins_min"] = _formatJockeyWinsBound(
+        jockeyHorseWinsRangeValues.start,
+      );
+      filters["jockey_horse_wins_max"] = _formatJockeyWinsBound(
+        jockeyHorseWinsRangeValues.end,
+      );
     }
     if (selectedWinsAtTrack != null) {
       filters["wins_at_track"] = selectedWinsAtTrack;
@@ -518,9 +537,7 @@ class SearchEngineProvider extends ChangeNotifier {
           selectedPlaceAtTrack = _parseFlexibleNullableBool(
             filters.placedAtTrack,
           );
-          selectedWinsAtTrack = _parseFlexibleNullableBool(
-            filters.winsAtTrack,
-          );
+          selectedWinsAtTrack = _parseFlexibleNullableBool(filters.winsAtTrack);
           final hasBarrierMin =
               filters.barrierMin != null && filters.barrierMin!.isNotEmpty;
           final hasBarrierMax =
@@ -575,10 +592,12 @@ class SearchEngineProvider extends ChangeNotifier {
     if (placedAtDistance != _parseFlexibleBool(filters.placedAtDistance)) {
       return true;
     }
-    if (selectedPlaceAtTrack != _parseFlexibleNullableBool(filters.placedAtTrack)) {
+    if (selectedPlaceAtTrack !=
+        _parseFlexibleNullableBool(filters.placedAtTrack)) {
       return true;
     }
-    if (selectedWinsAtTrack != _parseFlexibleNullableBool(filters.winsAtTrack)) {
+    if (selectedWinsAtTrack !=
+        _parseFlexibleNullableBool(filters.winsAtTrack)) {
       return true;
     }
     if (wonAtDistance != _parseFlexibleBool(filters.winAtDistance)) {
@@ -608,13 +627,15 @@ class SearchEngineProvider extends ChangeNotifier {
     final currentOddsRange = hasSelectedOddsRange
         ? _formatRange(oddsRangeValues.start, oddsRangeValues.end)
         : "";
-    final hasSavedOddsMin = filters.oddsMin != null && filters.oddsMin!.isNotEmpty;
-    final hasSavedOddsMax = filters.oddsMax != null && filters.oddsMax!.isNotEmpty;
+    final hasSavedOddsMin =
+        filters.oddsMin != null && filters.oddsMin!.isNotEmpty;
+    final hasSavedOddsMax =
+        filters.oddsMax != null && filters.oddsMax!.isNotEmpty;
     final savedOddsRange = (hasSavedOddsMin && hasSavedOddsMax)
         ? _normalizeOddsRangeFromBounds(filters.oddsMin!, filters.oddsMax!)
         : (filters.oddsRange != null && filters.oddsRange!.isNotEmpty)
-            ? filters.oddsRange!.trim()
-            : "";
+        ? filters.oddsRange!.trim()
+        : "";
     if (currentOddsRange != savedOddsRange) return true;
 
     final currentJockeyWins = hasSelectedJockeyHorseWinsRange
@@ -623,9 +644,11 @@ class SearchEngineProvider extends ChangeNotifier {
             jockeyHorseWinsRangeValues.end,
           )
         : "";
-    final hasSavedJockeyMin = filters.jockeyHorseWinsMin != null &&
+    final hasSavedJockeyMin =
+        filters.jockeyHorseWinsMin != null &&
         filters.jockeyHorseWinsMin!.isNotEmpty;
-    final hasSavedJockeyMax = filters.jockeyHorseWinsMax != null &&
+    final hasSavedJockeyMax =
+        filters.jockeyHorseWinsMax != null &&
         filters.jockeyHorseWinsMax!.isNotEmpty;
     final savedJockeyWins = (hasSavedJockeyMin && hasSavedJockeyMax)
         ? _normalizeJockeyRangeFromBounds(
@@ -638,9 +661,7 @@ class SearchEngineProvider extends ChangeNotifier {
     return false; // No changes detected
   }
 
-  Future<void> editSaveSearch({
-    required VoidCallback onSuccess,
-  }) async {
+  Future<void> editSaveSearch({required VoidCallback onSuccess}) async {
     final id = selectedSaveSearch!.id.toString();
     final result = await SearchEngineAPISearvice.instance.editSaveSearch(
       id: id,
@@ -735,12 +756,15 @@ class SearchEngineProvider extends ChangeNotifier {
 
   void _setJockeyWinsRangeFromSavedFilters(Filters filters) {
     final hasJockeyMin =
-        filters.jockeyHorseWinsMin != null && filters.jockeyHorseWinsMin!.isNotEmpty;
+        filters.jockeyHorseWinsMin != null &&
+        filters.jockeyHorseWinsMin!.isNotEmpty;
     final hasJockeyMax =
-        filters.jockeyHorseWinsMax != null && filters.jockeyHorseWinsMax!.isNotEmpty;
+        filters.jockeyHorseWinsMax != null &&
+        filters.jockeyHorseWinsMax!.isNotEmpty;
 
     if (hasJockeyMin && hasJockeyMax) {
-      final combined = "${filters.jockeyHorseWinsMin}-${filters.jockeyHorseWinsMax}";
+      final combined =
+          "${filters.jockeyHorseWinsMin}-${filters.jockeyHorseWinsMax}";
       jockeyHorseWinsCtr.text = combined;
       _applyJockeyWinsRangeFromString(combined);
       return;
@@ -871,10 +895,7 @@ class SearchEngineProvider extends ChangeNotifier {
   (int, int) _barrierMinMaxFromIndexes(int startIndex, int endIndex) {
     final lowerIndex = startIndex <= endIndex ? startIndex : endIndex;
     final upperIndex = startIndex <= endIndex ? endIndex : startIndex;
-    return (
-      _barrierPoints[lowerIndex],
-      _barrierPoints[upperIndex],
-    );
+    return (_barrierPoints[lowerIndex], _barrierPoints[upperIndex]);
   }
 
   int _barrierNearestIndex(int value) {
@@ -891,7 +912,10 @@ class SearchEngineProvider extends ChangeNotifier {
   }
 
   String _barrierStringFromIndexes(int startIndex, int endIndex) {
-    final (minValue, maxValue) = _barrierMinMaxFromIndexes(startIndex, endIndex);
+    final (minValue, maxValue) = _barrierMinMaxFromIndexes(
+      startIndex,
+      endIndex,
+    );
     if (minValue == maxValue) return "$minValue";
     return "$minValue-$maxValue";
   }
@@ -953,7 +977,6 @@ class SearchEngineProvider extends ChangeNotifier {
           getAllTipSlips();
         }
       },
-
     );
     isCreatingTipSlip = false;
     creatingForSelectionId = null;
@@ -973,7 +996,9 @@ class SearchEngineProvider extends ChangeNotifier {
         Logger.info(r.toString());
         final data = r["data"];
         tipSlips = (data != null)
-            ? (data["tip_slips"] as List).map((e) => TipSlipModel.fromJson(e)).toList()
+            ? (data["tip_slips"] as List)
+                  .map((e) => TipSlipModel.fromJson(e))
+                  .toList()
             : [];
         // tipSlipCount = data["count"] ?? 0;
       },
@@ -998,7 +1023,6 @@ class SearchEngineProvider extends ChangeNotifier {
 
   //* compare horses
   Future<void> compareHorses({required String selectionId}) async {
-
     compareHorse = null;
     notifyListeners();
     final result = await SearchEngineAPISearvice.instance.compareHorses(
@@ -1006,7 +1030,6 @@ class SearchEngineProvider extends ChangeNotifier {
     );
     result.fold(
       (l) {
-
         Logger.error(l.errorMsg);
         notifyListeners();
       },

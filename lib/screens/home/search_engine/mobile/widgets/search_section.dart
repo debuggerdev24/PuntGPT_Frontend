@@ -32,7 +32,7 @@ class SearchFields extends StatelessWidget {
                   //* Track Section
                   AppTextFieldDropdown(
                     margin: EdgeInsets.only(bottom: 18.w),
-                    items: provider.trackDetails ?? [],
+                    items: provider.trackList ?? [],
                     selectedValue: provider.selectedTrack,
                     onChange: (selectedValue) {
                       provider.setSelectedTrack = selectedValue;

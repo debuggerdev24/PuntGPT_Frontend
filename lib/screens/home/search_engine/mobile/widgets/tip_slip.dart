@@ -63,7 +63,7 @@ class TipSlipItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          children: [
+                          children:[
                             Text(
                               '${selection.number}. ',
                               style: semiBold(
@@ -75,7 +75,7 @@ class TipSlipItem extends StatelessWidget {
                             ),
                             Expanded(
                               child: Text(
-                                selection.horseName,
+                                "${selection.horseName} (${selection.barrier})",
                                 style: semiBold(
                                   fontSize: context.isBrowserMobile
                                       ? 32.sp
@@ -87,9 +87,9 @@ class TipSlipItem extends StatelessWidget {
                             ),
                           ],
                         ),
-                        4.h.verticalSpace,
+                        4.w.verticalSpace,
                         Text(
-                          'R${selection.raceNumber} • ${selection.trackName}',
+                          '${selection.trackName} • R${selection.raceNumber} • ${selection.distance}m',
                           style: regular(
                             fontSize: context.isBrowserMobile ? 26.sp : 13.sp,
                             color: AppColors.primary.withValues(alpha: 0.7),
@@ -102,8 +102,8 @@ class TipSlipItem extends StatelessWidget {
                   12.w.horizontalSpace,
                   Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 6.h,
+                      horizontal: 8.w,
+                      vertical: 6.w,
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.1),
@@ -118,9 +118,12 @@ class TipSlipItem extends StatelessWidget {
                     ),
                   ),
                   if (onRemove != null) ...[
-                    14.horizontalSpace,
+                    10.horizontalSpace,
                     GestureDetector(
-                      onTap: onRemove,
+                      onTap: () => _showRemoveTipConfirmation(
+                        context,
+                        onRemove!,
+                      ),
                       child: Icon(
                         Icons.close,
                         size: 18.sp,
@@ -198,14 +201,14 @@ class TipSlipItem extends StatelessWidget {
                               label: 'Trainer',
                               value: selection.trainerName,
                             ),
-                            8.h.verticalSpace,
-                            _buildDetailRow(
-                              context: context,
-                              icon: Icons.location_on_outlined,
-                              label: 'Track',
-                              value: selection.trackName,
-                            ),
-                            12.h.verticalSpace,
+                            8.w.verticalSpace,
+                            // _buildDetailRow(
+                            //   context: context,
+                            //   icon: Icons.location_on_outlined,
+                            //   label: 'Track',
+                            //   value: selection.trackName,
+                            // ),
+                            12.w.verticalSpace,
                             Row(
                               children: [
                                 Icon(
@@ -236,6 +239,35 @@ class TipSlipItem extends StatelessWidget {
                     ],
                   )
                 : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static void _showRemoveTipConfirmation(
+    BuildContext context,
+    VoidCallback onConfirmRemove,
+  ) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppColors.white,
+        content: Text(
+          'Are you sure you want to remove this tip?',
+          style: medium(fontSize: 16.sp, color: AppColors.black),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text('Cancel', style: medium(fontSize: 16.sp)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              onConfirmRemove();
+            },
+            child: Text('Yes', style: semiBold(fontSize: 16.sp,color: AppColors.red)),
           ),
         ],
       ),

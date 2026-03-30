@@ -269,7 +269,7 @@ class PunterClubScreenWebScreen extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.only(top: 4),
                             child: Text(
-                              "Create Punter Club",
+                              "Create Punters Club",
                               style: regular(
                                 fontSize: 22.twentyTwoSp(context),
                                 fontFamily: AppFontFamily.secondary,
@@ -466,7 +466,7 @@ class PunterClubScreenWebScreen extends StatelessWidget {
             height: boxSize,
             width: boxSize,
             padding: EdgeInsets.all(context.isDesktop ? 12.w : 18.w),
-            decoration: BoxDecoration(color: AppColors.greyColor2),
+            decoration: BoxDecoration(color: AppColors.greyColor),
             child: ImageWidget(type: ImageType.svg, path: AppAssets.userIcon),
           ),
           15.w.horizontalSpace,

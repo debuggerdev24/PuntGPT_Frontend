@@ -2,7 +2,7 @@ import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/widgets/subscription_gate_view.dart';
 import 'package:puntgpt_nick/provider/bot/bot_provider.dart';
 import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
-import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/chat_section.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/chat_bubble.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_section_shimmers.dart';
 
 class AskPuntGptScreen extends StatefulWidget {
@@ -94,11 +94,12 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             topBar(context),
+            Row(children: []),
             Expanded(
               child: Stack(
                 children: [
                   if (provider.messages.isEmpty && !provider.isLoading)
-                    Center(child: _buildEmptyState(context))
+                    _buildEmptyState(context)
                   else
                     ListView.builder(
                       controller: _scrollController,
@@ -108,7 +109,15 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
                           (provider.isLoading ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index < provider.messages.length) {
-                          return ChatSection(message: provider.messages[index]);
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              top: index == 0 ? 6.w : 0,
+                            ),
+                            child: ChatBubble(
+                              message: provider.messages[index],
+                              isUser: provider.messages[index].isUser,
+                            ),
+                          );
                         }
                         return HomeSectionShimmers.chatMessageShimmer(
                           context: context,
@@ -162,7 +171,22 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
                           controller: _controller,
                           enabled: !provider.isLoading,
                           onSubmitted: (_) => _sendMessage(provider),
+                          style: medium(
+                            fontSize: (context.isBrowserMobile)
+                                ? 17.sp
+                                : 15.sp,
+                            color: AppColors.primary,
+                          ),
                           decoration: InputDecoration(
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: AppColors.primary,
+                                width: 1.5,
+                              ),
+                            ),
                             filled: true,
                             fillColor: AppColors.white,
                             suffixIcon: IconButton(
@@ -171,14 +195,15 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
                                   : () => _sendMessage(provider),
                               icon: Icon(Icons.send_rounded, size: 24.w),
                             ),
-
                             hintText: "Type your message...",
+                            // `medium()` defaults to fontSize 20; use .sp so hint matches input scale.
                             hintStyle: medium(
                               fontStyle: FontStyle.italic,
                               fontSize: (context.isBrowserMobile)
-                                  ? 24.sp
+                                  ? 17.sp
                                   : 14.sp,
-                              color: AppColors.primary.withValues(alpha: 0.9),
+                              color:
+                                  AppColors.primary.withValues(alpha: 0.45),
                             ),
                           ),
                         ),
@@ -197,10 +222,12 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
   Widget _buildEmptyState(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 40.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        // mainAxisAlignment: MainAxisAlignment.center,
+        // mainAxisSize: MainAxisSize.min,
         children: [
+          45.verticalSpace,
           Container(
             padding: EdgeInsets.all((context.isBrowserMobile) ? 28.w : 20.w),
             decoration: BoxDecoration(
@@ -234,15 +261,23 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
             textAlign: TextAlign.center,
           ),
           20.h.verticalSpace,
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 8.w,
-            runSpacing: 8.h,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 10.w,
             children: [
-              _suggestionChip("Best race today?", context),
-              _suggestionChip("Compare horses", context),
-              _suggestionChip("Track conditions", context),
-              _suggestionChip("Form analysis", context),
+              _suggestionChip(
+                "Give me a jockey’s name,I’ll tell you what it’s riding today",
+                context,
+              ),
+              _suggestionChip(
+                "Give me a trainer's name,I’ll tell you where it has runners today",
+                context,
+              ),
+              _suggestionChip("Find me 3 favourite’s racing today", context),
+              _suggestionChip(
+                "Any winning barrier bias/trends from todays racing so far?",
+                context,
+              ),
             ],
           ),
         ],
@@ -256,6 +291,8 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
         _controller.text = label;
       },
       child: Container(
+        width: double.infinity,
+        alignment: Alignment.centerLeft,
         padding: EdgeInsets.symmetric(
           horizontal: (context.isBrowserMobile) ? 20.w : 14.w,
           vertical: (context.isBrowserMobile) ? 14.h : 10.h,
@@ -267,9 +304,11 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
         ),
         child: Text(
           label,
+          textAlign: TextAlign.left,
           style: medium(
             fontSize: (context.isBrowserMobile) ? 22.sp : 13.sp,
             color: AppColors.primary.withValues(alpha: 0.8),
+            height: 1.3,
           ),
         ),
       ),

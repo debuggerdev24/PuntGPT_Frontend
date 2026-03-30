@@ -34,7 +34,7 @@ class CreateChatGroupSheet extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              "Create Punter Club",
+              "Create Punters Club",
               style: regular(
                 fontSize: 24.sp,
                 fontFamily: AppFontFamily.secondary,

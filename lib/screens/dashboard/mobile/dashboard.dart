@@ -67,10 +67,9 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       bottomNavigationBar: SafeArea(
-
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          // crossAxisAlignment: CrossAxisAlignment.center,
+
           children: [
             Container(
               width: context.screenWidth,
@@ -106,7 +105,7 @@ class _DashboardState extends State<Dashboard> {
                       provider.getNotifications();
                     },
         
-                    text: "PuntGPT Punter Club",
+                    text: "PuntGPT Punters Club",
                     icon: AppAssets.group,
         
                     hasLock: false,

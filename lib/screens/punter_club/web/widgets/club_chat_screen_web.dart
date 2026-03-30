@@ -326,7 +326,7 @@ class PunterClubChatSectionWeb extends StatelessWidget {
               horizontal: 12.w,
               vertical: context.isDesktop ? 12.w : 18.w,
             ),
-            decoration: BoxDecoration(color: AppColors.greyColor2),
+            decoration: BoxDecoration(color: AppColors.greyColor),
             child: ImageWidget(type: ImageType.svg, path: AppAssets.userIcon),
           ),
           14.w.horizontalSpace,

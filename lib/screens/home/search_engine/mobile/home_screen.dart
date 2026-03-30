@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         // resizeToAvoidBottomInset: true,
         body: Consumer<SearchEngineProvider>(
           builder: (context, provider, child) {
-            if (provider.trackDetails == null ||
+            if (provider.trackList == null ||
                 provider.distanceDetails == null) {
               return HomeSectionShimmers.homeScreenShimmer(context: context);
             }

@@ -217,7 +217,7 @@ class InviteUserSheet extends StatelessWidget {
               height: height,
               width: width,
               padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(color: AppColors.greyColor2),
+              decoration: BoxDecoration(color: AppColors.greyColor),
               child: ImageWidget(type: ImageType.svg, path: AppAssets.userIcon),
             ),
             (context.isBrowserMobile)

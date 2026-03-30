@@ -85,7 +85,7 @@ class JockeyHorseWinsSliderField extends StatelessWidget {
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: AppColors.primary,
-              inactiveTrackColor: AppColors.greyColor2,
+              inactiveTrackColor: AppColors.greyColor,
               trackHeight: 4,
               thumbColor: Colors.white,
               overlayColor: AppColors.primary.withValues(alpha: 0.15),

@@ -19,6 +19,12 @@ Future<void> main() async {
   runApp(ToastificationWrapper(child: const PuntGPTApp()));
 }
 /*
-
+-> Worked on update the lay out for the default question in the chat with AI screen.
+-> Worked on modify the track list based on jump type.
+-> Worked on added the logic to remove unnecessary API calls for the track list.
+-> Worked on modify the lay out of the runner box and make it as per reqiurements.
+-> Worked on update the tipslip model and added new attributes and display them.
+-> Worked on display the user friendly color combination in the chat bubble.
+-> Worked on update the lay out of the chat bubble and and make it like other platform.
 -> Worked on 
 */
