@@ -143,13 +143,14 @@ class AuthProvider extends ChangeNotifier {
 
     result.fold(
       (l) {
-        Logger.error(l.apiErrorMsg!);
+        Logger.error(l.errorMsg);
+        if (l.errorMsg.contains("already exists")) {
+          AppToast.info(context: context, message: "Email already exists");
+        }
+        isSignUpLoading = false;
+        notifyListeners();
       },
       (r) async {
-        // context.pushNamed(
-        //   (kIsWeb) ? WebRoutes.logInScreen.name : AppRoutes.loginScreen.name,
-        // );
-
         await login(context: context, showLoginToast: false);
         // ignore: use_build_context_synchronously
         AppToast.success(context: context, message: "Register Successfully.");
@@ -196,9 +197,7 @@ class AuthProvider extends ChangeNotifier {
           int.parse(data["user_id"].toString()),
         );
         await LocaleStorageService.setIsUserLoggedIn();
-        await LocaleStorageService.setLoggedInUserEmail(
-          emailCtr.text.trim(),
-        );
+        await LocaleStorageService.setLoggedInUserEmail(emailCtr.text.trim());
         await LocaleStorageService.setLoggedInUserPassword(
           passwordCtr.text.trim(),
         );
