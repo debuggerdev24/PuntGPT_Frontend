@@ -23,7 +23,6 @@ class WebSignUpScreen extends StatelessWidget {
             children: [
               SingleChildScrollView(
                 padding: EdgeInsets.only(bottom: 30.w),
-
                 child: Column(
                   children: [
                     Stack(
@@ -36,7 +35,7 @@ class WebSignUpScreen extends StatelessWidget {
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                            left: (context.isDesktop) ? 35.w : 12.w,
+                            left: 35,
                             top: (context.isBrowserMobile) ? 30.h : 14.h,
                           ),
                           child: Align(
@@ -54,10 +53,10 @@ class WebSignUpScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    50.h.verticalSpace,
+                    50.verticalSpace,
 
                     WebSignUpForm(formKey: formKey),
-                    20.h.verticalSpace,
+                    20.verticalSpace,
                     WebSignUpBottomSection(
                       onLoginTap: () {
                         provider.clearLoginControllers();
