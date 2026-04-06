@@ -1,5 +1,6 @@
 import 'package:pinput/pinput.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:puntgpt_nick/core/widgets/web_top_section.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
 
 class VerifyOtpScreen extends StatelessWidget {
@@ -7,6 +8,8 @@ class VerifyOtpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final otpFieldHeight = (context.isMobileView) ? 50.0 : 55.w;
+    final otpFieldWidth = (context.isMobileView) ? 50.0 : 70.w;
     final provider = context.read<AuthProvider>();
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -14,6 +17,7 @@ class VerifyOtpScreen extends StatelessWidget {
       ),
       child: SafeArea(
         child: Scaffold(
+          appBar: !kIsWeb ? null : WebTopSection(),
           body: Consumer<AuthProvider>(
             builder: (context, value, child) {
               return Stack(
@@ -23,37 +27,36 @@ class VerifyOtpScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        26.h.verticalSpace,
+                        SizedBox(height: 26),
                         Text(
                           "Verify OTP",
+
                           style: regular(
                             fontFamily: AppFontFamily.secondary,
-                            fontSize: (context.isBrowserMobile) ? 60.sp : 40.sp,
+                            fontSize: 40.fSize,
+                            height: (kIsWeb) ? 0.9 : null,
                           ),
                         ),
-                        28.w.verticalSpace,
+                        SizedBox(height: 28),
                         Text(
                           textAlign: TextAlign.center,
                           "Enter the OTP received on your registered email address to reset password.",
                           style: regular(
-                            fontSize: (context.isBrowserMobile) ? 30.sp : 16.sp,
-          
+                            fontSize: 16.fSize,
+
                             color: AppColors.primary.withValues(),
                           ),
                         ),
-                        28.w.verticalSpace,
+                        SizedBox(height: 28),
                         //* otp field
                         Pinput(
                           controller: provider.otpCtr,
                           length: 4,
-          
-                          separatorBuilder: (index) => (context.isMobileView)
-                              ? 28.w.horizontalSpace
-                              : 14.w.horizontalSpace,
+                          separatorBuilder: (index) => 18.horizontalSpace,
                           defaultPinTheme: PinTheme(
-                            height: (context.isBrowserMobile) ? 80.w : 55.h,
-                            width: context.isBrowserMobile ? 80.w : 70.w,
-                            textStyle: medium(fontSize: 20),
+                            height: otpFieldHeight,
+                            width: otpFieldWidth,
+                            textStyle: medium(fontSize: 20.fSize),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: AppColors.primary.withValues(alpha: 0.1),
@@ -61,9 +64,9 @@ class VerifyOtpScreen extends StatelessWidget {
                             ),
                           ),
                           focusedPinTheme: PinTheme(
-                            height: context.isBrowserMobile ? 80.w : 55.h,
-                            width: context.isBrowserMobile ? 80.w : 70.w,
-          
+                            height: otpFieldHeight,
+                            width: otpFieldWidth,
+
                             // textStyle: medium(fontSize: 20.sp),
                             decoration: BoxDecoration(
                               border: Border.all(
@@ -73,11 +76,9 @@ class VerifyOtpScreen extends StatelessWidget {
                             ),
                           ),
                           submittedPinTheme: PinTheme(
-                            height: (context.isBrowserMobile) ? 80.w : 55.h,
-                            width: (context.isBrowserMobile) ? 80.w : 70.w,
-                            textStyle: regular(
-                              fontSize: (context.isBrowserMobile) ? 35.sp : 20.sp,
-                            ),
+                            height: otpFieldHeight.toDouble(),
+                            width: otpFieldWidth,
+                            textStyle: regular(fontSize: 20.fSize),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey.shade400),
                             ),
@@ -89,9 +90,7 @@ class VerifyOtpScreen extends StatelessWidget {
                         //todo bottom buttons
                         Text(
                           "Didn’t receive OTP?",
-                          style: semiBold(
-                            fontSize: (context.isBrowserMobile) ? 28.sp : 14.sp,
-                          ),
+                          style: semiBold(fontSize: 14.fSize),
                         ),
                         AppOutlinedButton(
                           text: provider.isResendOtpLoading
@@ -105,21 +104,12 @@ class VerifyOtpScreen extends StatelessWidget {
                               provider.resendOtp(context: context);
                             }
                           },
-                          textStyle: (context.isBrowserMobile)
-                              ? semiBold(fontSize: 30.sp)
-                              : null,
                           margin: EdgeInsets.only(top: 10.h, bottom: 12.h),
                         ),
                         SafeArea(
                           child: AppFilledButton(
                             margin: EdgeInsets.only(bottom: 20.h),
                             text: "Reset Password",
-                            textStyle: (context.isBrowserMobile)
-                                ? semiBold(
-                                    fontSize: 30.sp,
-                                    color: AppColors.white,
-                                  )
-                                : null,
                             onTap: () {
                               provider.verifyOtp(context: context);
                               // context.pushNamed(AppRoutes.resetPasswordScreen.name);
@@ -129,7 +119,8 @@ class VerifyOtpScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (provider.isVerifyOtpLoading || provider.isResendOtpLoading)
+                  if (provider.isVerifyOtpLoading ||
+                      provider.isResendOtpLoading)
                     FullPageIndicator(),
                 ],
               );

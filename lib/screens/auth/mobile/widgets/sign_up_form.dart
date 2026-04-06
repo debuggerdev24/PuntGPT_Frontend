@@ -14,8 +14,8 @@ class SignUpForm extends StatelessWidget {
         return Form(
           key: formKey,
           child: Column(
-            spacing: 8.w,
-            children: [
+            spacing: 8,
+            children: [ 
               AppTextField(
                 controller: provider.firstNameCtr,
                 inputFormatter: [

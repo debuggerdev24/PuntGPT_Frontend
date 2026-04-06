@@ -1,10 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:puntgpt_nick/core/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:toastification/toastification.dart';
 
-import '../theme/app_colors.dart';
-import '../theme/text_style.dart';
 
 class AppToast {
   // Base show method
@@ -32,13 +28,7 @@ class AppToast {
         overflow: TextOverflow.ellipsis,
         style: medium(
           color: textColor ?? AppColors.white,
-          fontSize: context.isDesktop
-              ? 21.sp
-              : context.isTablet
-              ? 32.sp
-              : context.isBrowserMobile
-              ? 30.sp
-              : 16.6.sp,
+          fontSize: 18.fSize,
         ),
       ),
     );

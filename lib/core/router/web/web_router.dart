@@ -62,7 +62,9 @@ class WebRouter {
       GoRoute(
         path: WebRoutes.forgotPasswordScreen.path,
         name: WebRoutes.forgotPasswordScreen.name,
-        builder: (context, state) => context.isMobileView
+        builder: (context, state) => 
+        // WebForgotPassScreen(),
+        context.isMobileView
             ? ForgotPasswordScreen()
             : WebForgotPassScreen(),
       ),

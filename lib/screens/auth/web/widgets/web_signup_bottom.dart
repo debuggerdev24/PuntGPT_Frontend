@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/constants/app_strings.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
@@ -17,15 +19,15 @@ class WebSignUpBottomSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hPad = 25.adaptiveSpacing(context);
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.w),
+      padding: EdgeInsets.symmetric(horizontal: hPad),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            width: context.isMobileView
-                ? double.maxFinite
-                : context.screenWidth * 0.6.flexClamp(null, 600),
+            width: math.min(context.screenWidth - 2 * hPad, 600),
             child: AppCheckBox(
               value: provider.isReadTermsAndConditions,
               onChanged: (value) {
@@ -34,54 +36,31 @@ class WebSignUpBottomSection extends StatelessWidget {
               label: Text(
                 "I have read and accept the Terms & Conditions, AI disclaimer and understand my personal information will be handled in accordance with the Privacy Policy.",
                 style: regular(
-                  fontSize: (context.isDesktop)
-                      ? 14.sp
-                      : (context.isTablet)
-                      ? 22.sp
-                      : (context.isBrowserMobile)
-                      ? 30.sp
-                      : 14.sp,
+                  fontSize: 14,
                   height: 1.2,
                   color: AppColors.primary.withValues(alpha: 0.8),
                 ),
               ),
             ),
           ),
-          60.h.verticalSpace,
 
           AppFilledButton(
             text: "Create Account",
-            width: (context.isDesktop)
-                ? 400.w
-                : (context.isTablet)
-                ? 500.w
-                : 600.w,
+            width: (context.isMobileView) ? null : 400,
             onTap: onSignUpTap,
+            margin: EdgeInsets.only(top: 60,bottom: 20),
             textStyle: semiBold(
-              fontSize: (context.isDesktop)
-                  ? 16.sp
-                  : (context.isTablet)
-                  ? 24.sp
-                  : (context.isBrowserMobile)
-                  ? 30.sp
-                  : 18.sp, //(kIsWeb) ? 28.sp : 18.sp,
+              fontSize: 16,
               color: AppColors.white,
             ),
           ),
-          20.h.verticalSpace,
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 "Already Registered?",
                 style: regular(
-                  fontSize: (context.isDesktop)
-                      ? 14.sp
-                      : (context.isTablet)
-                      ? 22.sp
-                      : (context.isBrowserMobile)
-                      ? 28.sp
-                      : 14.sp,
+                  fontSize: 14,
                   color: AppColors.primary.withValues(alpha: 0.8),
                 ),
               ),
@@ -90,19 +69,13 @@ class WebSignUpBottomSection extends StatelessWidget {
                 child: Text(
                   " Login",
                   style: bold(
-                    fontSize: (context.isDesktop)
-                        ? 14.sp
-                        : (context.isTablet)
-                        ? 22.sp
-                        : (context.isBrowserMobile)
-                        ? 28.sp
-                        : 14.sp,
+                    fontSize: 14,
                   ),
                 ),
               ),
             ],
           ),
-          60.h.verticalSpace,
+          60.adaptiveSpacing(context).verticalSpace,
           Wrap(
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
@@ -110,39 +83,31 @@ class WebSignUpBottomSection extends StatelessWidget {
               Text(
                 "Terms & Conditions",
                 style: bold(
-                  fontSize: (context.isDesktop)
-                      ? 12.sp
-                      : (context.isTablet)
-                      ? 20.sp
-                      : (context.isBrowserMobile)
-                      ? 22.sp
-                      : 14.sp,
+                  fontSize: 12,
                 ),
               ),
               Container(
                 width: 1,
-                height: 20.h,
+                height: 20.adaptiveSpacing(context),
                 color: AppColors.primary,
-                margin: EdgeInsets.symmetric(horizontal: 10),
+                margin: EdgeInsets.symmetric(
+                  horizontal: 10.adaptiveSpacing(context),
+                ),
               ),
               Text(
                 "AI disclaimer",
                 style: bold(
-                  fontSize: (context.isDesktop)
-                      ? 12.sp
-                      : (context.isTablet)
-                      ? 20.sp
-                      : (context.isBrowserMobile)
-                      ? 22.sp
-                      : 14.sp,
+                  fontSize: 12,
                   decoration: TextDecoration.underline,
                 ),
               ),
               Container(
                 width: 1,
-                height: 20.h,
+                height: 20.adaptiveSpacing(context),
                 color: AppColors.primary,
-                margin: EdgeInsets.symmetric(horizontal: 10),
+                margin: EdgeInsets.symmetric(
+                  horizontal: 10.adaptiveSpacing(context),
+                ),
               ),
               OnMouseTap(
                 onTap: () {
@@ -154,13 +119,7 @@ class WebSignUpBottomSection extends StatelessWidget {
                 child: Text(
                   "Privacy Policy",
                   style: bold(
-                    fontSize: (context.isDesktop)
-                        ? 12.sp
-                        : (context.isTablet)
-                        ? 20.sp
-                        : (context.isBrowserMobile)
-                        ? 22.sp
-                        : 14.sp,
+                    fontSize: 12,
                     decoration: TextDecoration.underline,
                   ),
                 ),

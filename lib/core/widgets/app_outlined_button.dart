@@ -55,7 +55,7 @@ class AppOutlinedButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style:
                     textStyle ??
-                    semiBold(fontSize: 18.sp, color: AppColors.primary),
+                    semiBold(fontSize: 18.fSize, color: AppColors.primary),
               ),
         ),
       ),

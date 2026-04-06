@@ -1,4 +1,3 @@
-
 import 'package:puntgpt_nick/core/app_imports.dart';
 
 class AppFilledButton extends StatelessWidget {
@@ -37,7 +36,9 @@ class AppFilledButton extends StatelessWidget {
         child: Container(
           margin: margin,
           alignment: AlignmentGeometry.center,
-          padding: padding ?? EdgeInsets.symmetric(vertical: 12.h, horizontal: 15.w),
+          padding:
+              padding ??
+              EdgeInsets.symmetric(vertical: 12.wSize, horizontal: 15.w),
           height: height,
           width: (width == null)
               ? (isExpand ?? true)
@@ -55,7 +56,7 @@ class AppFilledButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style:
                     textStyle ??
-                    semiBold(fontSize: 18.sp, color: AppColors.white),
+                    semiBold(fontSize: 17.fSize, color: AppColors.white),
               ),
         ),
       ),

@@ -3,7 +3,12 @@ import 'package:puntgpt_nick/core/app_imports.dart';
 extension ResponsiveSize on int {
   double get fSize {
     if (kIsWeb) return toDouble();
-    return sp;
+    return sp ;
+  }
+
+  double get wSize {
+    if (kIsWeb) return toDouble();
+    return w;
   }
 
   double adaptiveSpacing(BuildContext context) {
@@ -18,6 +23,7 @@ extension ResponsiveSize on int {
     return (base * 1.25) > base ? base * 1.25 : base; // large screens
   }
 }
+
 /*
 -> for the common component of the app's UI which used in both, for mobile and web use the f.size extension.
 -> For the Mobile screen UI use scrren util extension (like sp for fonts, r for radius) as I use for the mobile screens.

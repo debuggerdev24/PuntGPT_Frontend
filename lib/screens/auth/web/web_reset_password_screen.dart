@@ -14,20 +14,17 @@ class WebResetPasswordScreen extends StatelessWidget {
         child: Consumer<AuthProvider>(
           builder: (context, provider, child) {
             return SizedBox(
-              width: context.isDesktop ? 400.w : 550.w,
+              width: 400,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   //todo title
                   Text(
                     "Reset Password",
+
                     style: regular(
                       fontFamily: AppFontFamily.secondary,
-                      fontSize: context.isDesktop
-                          ? 40.sp
-                          : context.isTablet
-                          ? 48.sp
-                          : 58.sp,
+                      fontSize: 38.fSize,
                     ),
                   ),
                   Padding(
@@ -35,13 +32,7 @@ class WebResetPasswordScreen extends StatelessWidget {
                     child: Text(
                       textAlign: TextAlign.center,
                       "Enter new password below to reset.",
-                      style: regular(
-                        fontSize: context.isDesktop
-                            ? 16.sp
-                            : context.isTablet
-                            ? 24.sp
-                            : 32.sp,
-                      ),
+                      style: regular(fontSize: 16.fSize),
                     ),
                   ),
                   AppTextField(
@@ -49,7 +40,8 @@ class WebResetPasswordScreen extends StatelessWidget {
                     hintText: "New Password",
                     validator: FieldValidators().password,
                   ),
-                  8.w.verticalSpace,
+                  SizedBox(height: 8),
+
                   AppTextField(
                     controller: provider.resetConfirmPasswordCtr,
                     hintText: "Confirm Password",
@@ -79,10 +71,6 @@ class WebResetPasswordScreen extends StatelessWidget {
                         provider.resetPassword(context: context);
                       });
                     },
-                    textStyle: semiBold(
-                      color: AppColors.white,
-                      fontSize: context.isDesktop ? 16.sp : 24.sp,
-                    ),
                     child:
                         (provider.isResetPasswordLoading &&
                             !context.isBrowserMobile)

@@ -37,7 +37,7 @@ export 'package:puntgpt_nick/core/constants/app_theme.dart';
 export 'package:puntgpt_nick/core/helper/log_helper.dart';
 export 'package:puntgpt_nick/core/extensions/color_extensions.dart';
 export 'package:puntgpt_nick/core/extensions/context_extensions.dart';
-export 'package:puntgpt_nick/core/extensions/double_extensions.dart';
+export 'package:puntgpt_nick/core/extensions/responsive_extensions.dart';
 
 // Widgets
 export 'package:puntgpt_nick/core/widgets/app_devider.dart';

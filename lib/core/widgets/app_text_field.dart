@@ -1,6 +1,5 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 
-
 class AppTextField extends StatelessWidget {
   const AppTextField({
     super.key,
@@ -45,18 +44,17 @@ class AppTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final EdgeInsetsGeometry? margin;
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: margin ??EdgeInsets.zero,
+      padding: margin ?? EdgeInsets.zero,
       child: TextFormField(
         onChanged: onChanged,
         onTap: onTap,
         readOnly: readOnly ?? false,
         controller: controller,
         cursorColor: AppColors.primary,
-      
+
         // textStyle: medium(fontSize: (kIsWeb) ? 28.sp : 16.sp),
         obscureText: obscureText,
         autovalidateMode: autovalidateMode,
@@ -76,21 +74,17 @@ class AppTextField extends StatelessWidget {
           return error;
         },
         onFieldSubmitted: (value) {
-          if(onSubmit != null) {
+          if (onSubmit != null) {
             onSubmit!.call();
           }
         },
-        style:
-            textStyle ??
-            medium(
-              fontSize:16.fSize,
-            ),
+        style: textStyle ?? medium(fontSize: 16.fSize),
         decoration: InputDecoration(
           suffixIconConstraints: BoxConstraints(
-            maxHeight: 26.h.flexClamp(24, 28),
-            minHeight: 26.h.flexClamp(24, 28),
-            maxWidth: 26.w.flexClamp(24, 28) + 20,
-            minWidth: 26.w.flexClamp(24, 28) + 20,
+            maxHeight: 28,
+            minHeight: 28,
+            maxWidth: 28.adaptiveSpacing(context) + 20,
+            minWidth: 28.adaptiveSpacing(context) + 20,
           ),
           suffixIcon: trailingIcon == null
               ? const SizedBox()
@@ -104,31 +98,15 @@ class AppTextField extends StatelessWidget {
                   ),
                 ),
           hintText: hintText,
-      
+
           hintStyle:
               hintStyle ??
               medium(
-                fontSize: context.isDesktop
-                    ? 14.6.sp
-                    : context.isTablet
-                    ? 21.5.sp
-                    : (context.isBrowserMobile)
-                    ? 30.sp
-                    : 14.sp,
+                fontSize: 16.fSize,
                 color: AppColors.primary.withValues(alpha: 0.65),
               ),
           errorStyle:
-              errorStyle ??
-              medium(
-                fontSize: context.isDesktop
-                    ? 15.5.sp
-                    : context.isTablet
-                    ? 21.sp
-                    : (context.isBrowserMobile)
-                    ? 26.sp
-                    : 12.sp,
-                color: AppColors.red,
-              ),
+              errorStyle ?? medium(fontSize: 14.fSize, color: AppColors.red),
           errorMaxLines: 5,
           // error: _currentError == null
           //     ? null
@@ -141,17 +119,24 @@ class AppTextField extends StatelessWidget {
           //               medium(fontSize: 12, color: AppColors.red),
           //         ),
           //       ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 17),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 20.adaptiveSpacing(context),
+            vertical: 17.adaptiveSpacing(context),
+          ),
           isDense: true,
           filled: true,
           fillColor: AppColors.white,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 0),
-            borderSide: BorderSide(color: AppColors.primary.withValues(alpha: 0.15)),
+            borderSide: BorderSide(
+              color: AppColors.primary.withValues(alpha: 0.15),
+            ),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 0),
-            borderSide: BorderSide(color: AppColors.primary.withValues(alpha: 0.05)),
+            borderSide: BorderSide(
+              color: AppColors.primary.withValues(alpha: 0.05),
+            ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 0),

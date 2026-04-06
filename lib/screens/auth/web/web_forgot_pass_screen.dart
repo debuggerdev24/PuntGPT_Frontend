@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:puntgpt_nick/core/theme/app_colors.dart';
 import 'package:puntgpt_nick/core/theme/text_style.dart';
@@ -25,7 +24,7 @@ class WebForgotPassScreen extends StatelessWidget {
       appBar: WebTopSection(),
       body: Center(
         child: SizedBox(
-          width: context.isDesktop ? 400.w : 550.w,
+          width: 400, // context.isDesktop ? 400.w : 550.w,
           child: Consumer<AuthProvider>(
             builder: (context, provider, child) {
               return Form(
@@ -35,41 +34,28 @@ class WebForgotPassScreen extends StatelessWidget {
                   children: [
                     Text(
                       "Forgot Password",
+                      textAlign: TextAlign.center,
                       style: regular(
                         fontFamily: AppFontFamily.secondary,
-                        fontSize: context.isDesktop
-                            ? 40.sp
-                            : context.isTablet
-                            ? 48.sp
-                            : 58.sp,
+                        fontSize: 40,
                       ),
                     ),
-                    8.w.verticalSpace,
+                    SizedBox(height: 8),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
+                      padding: EdgeInsets.symmetric(horizontal: 8),
                       child: Text(
                         textAlign: TextAlign.center,
                         "We will send you an OTP to the email address you signed up with.",
-                        style: regular(
-                          fontSize: context.isDesktop
-                              ? 16.sp
-                              : context.isTablet
-                              ? 24.sp
-                              : 32.sp,
-                        ),
+                        style: regular(fontSize: 16),
                       ),
                     ),
-                    36.w.verticalSpace,
+                    SizedBox(height: 36),
                     AppTextField(
                       controller: provider.forgotPasswordCtr,
                       hintText: "Email",
                       validator: FieldValidators().email,
-                      // errorStyle: medium(
-                      //   fontSize: (kIsWeb) ? 25.sp : 12.sp,
-                      //   color: AppColors.red,
-                      // ),
                       hintStyle: medium(
-                        fontSize: (context.isDesktop) ? 16.sp : 22.sp,
+                        fontSize: 16,
                         color: AppColors.primary.withValues(alpha: 0.55),
                       ),
                       onSubmit: () {
@@ -81,7 +67,7 @@ class WebForgotPassScreen extends StatelessWidget {
                       },
                     ),
                     AppFilledButton(
-                      margin: EdgeInsets.only(top: 45.w),
+                      margin: EdgeInsets.only(top: 45),
                       text: "Send OTP",
                       child:
                           (provider.isForgotPassLoading &&

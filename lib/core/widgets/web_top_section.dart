@@ -17,7 +17,7 @@ class WebTopSection extends StatelessWidget implements PreferredSizeWidget {
               Text(
                 "Visit UK Site",
                 style: bold(
-                  fontSize: 16.sp.flexClamp(12, 18),
+                  fontSize: 16,
                   color: AppColors.white,
                 ),
               ),
@@ -39,7 +39,7 @@ class WebTopSection extends StatelessWidget implements PreferredSizeWidget {
             Text(
               "Visit UK Site",
               style: bold(
-                fontSize: 16.sp.flexClamp(12, 16),
+                fontSize: 16,
                 color: AppColors.white,
               ),
             ),
