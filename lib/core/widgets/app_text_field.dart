@@ -83,13 +83,7 @@ class AppTextField extends StatelessWidget {
         style:
             textStyle ??
             medium(
-              fontSize: context.isDesktop
-                  ? 15.5.sp
-                  : context.isTablet
-                  ? 21.sp
-                  : (context.isBrowserMobile)
-                  ? 28.sp
-                  : 16.sp,
+              fontSize:16.fSize,
             ),
         decoration: InputDecoration(
           suffixIconConstraints: BoxConstraints(

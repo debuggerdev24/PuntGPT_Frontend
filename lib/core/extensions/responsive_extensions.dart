@@ -1,27 +1,29 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:puntgpt_nick/core/responsive/responsive_builder.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 
-extension ResponsiveTextSize on int {
-  double responsiveTextSize([double? min, double? max]) {
-    return r
-        .clamp(min ?? ((this - 2) <= 10 ? 10 : (this - 2)), max ?? (this + 2))
-        .toDouble();
+extension ResponsiveSize on int {
+  double get fSize {
+    if (kIsWeb) return toDouble();
+    return sp;
   }
 
-  double responsiveSize([double? min, double? max]) {
-    return w
-        .clamp(min ?? ((this - 4) <= 8 ? 8 : (this - 4)), max ?? (this + 2))
-        .toDouble();
-  }
+  double adaptiveSpacing(BuildContext context) {
+    final base = toDouble();
 
-  double responsiveSpacing([double? min, double? max]) {
-    return w
-        .clamp(min ?? ((this - 5) <= 5 ? 5 : (this - 5)), max ?? (this + 5))
-        .toDouble();
+    if (!kIsWeb) return base.w; // Mobile scaling
+
+    final width = MediaQuery.of(context).size.width;
+
+    if (width < 1200) return base; // laptop
+    if (width < 1600) return (base * 1.1) > base ? base * 1.1 : base; // desktop
+    return (base * 1.25) > base ? base * 1.25 : base; // large screens
   }
 }
+/*
+-> for the common component of the app's UI which used in both, for mobile and web use the f.size extension.
+-> For the Mobile screen UI use scrren util extension (like sp for fonts, r for radius) as I use for the mobile screens.
+-> For the web screen UI do not use any kind of extension just use only constant  values (like 14, 16 etc, only)
 
+*/
 extension FlexibleClamp on double {
   double flexClamp([double? min, double? max]) {
     double value = this;
@@ -105,6 +107,4 @@ extension ResponsiveTextScreenUtil on int {
     if (context.isBrowserMobile) return 34.sp;
     return 18.sp;
   }
-
-
 }

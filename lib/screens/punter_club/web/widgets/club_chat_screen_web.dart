@@ -221,7 +221,7 @@ class PunterClubChatSectionWeb extends StatelessWidget {
             children: [
               Text(
                 "View Members",
-                style: semiBold(fontSize: 14.responsiveTextSize()),
+                style: semiBold(fontSize: 14.fSize),
               ),
               Icon(Icons.chevron_right, size: 18),
             ],
@@ -236,7 +236,7 @@ class PunterClubChatSectionWeb extends StatelessWidget {
             children: [
               Text(
                 "Change Name",
-                style: semiBold(fontSize: 14.responsiveTextSize()),
+                style: semiBold(fontSize: 14.fSize),
               ),
               Icon(Icons.chevron_right, size: 18),
             ],
@@ -248,13 +248,13 @@ class PunterClubChatSectionWeb extends StatelessWidget {
           child: AppOutlinedButton(
             isExpand: false,
             padding: EdgeInsets.symmetric(
-              vertical: 12.responsiveTextSize(),
-              horizontal: 20.responsiveSize(),
+              vertical: 12.fSize,
+              horizontal: 20.adaptiveSpacing(context),
             ),
             margin: EdgeInsets.only(top: 35.w, bottom: 20.w),
             text: "Leave Group",
             textStyle: semiBold(
-              fontSize: 14.responsiveTextSize(),
+              fontSize: 14.fSize,
               color: AppColors.redButton,
             ),
             borderColor: AppColors.redButton,

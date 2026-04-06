@@ -47,9 +47,9 @@ class PuntGPTApp extends StatelessWidget {
           child: ScreenUtilInit(
             minTextAdapt: true,
             splitScreenMode: true,
-            designSize: (context.isPhysicalMobile)
-                ? Size(430, 932)
-                : Size(1440, 824),
+            designSize: (kIsWeb)
+                ? Size(1440, 824)
+                : Size(430, 932),
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
               theme: AppTheme.appThemeData,

@@ -15,14 +15,14 @@ class WebSignUpScreen extends StatelessWidget {
     return Scaffold(
       appBar: WebTopSection(),
       body: Container(
-        alignment: context.isMobileView
-            ? Alignment.topLeft
-            : Alignment.topCenter,
+        // alignment: context.isMobileView
+        //     ? Alignment.topLeft
+        //     : Alignment.topCenter,
         child: Consumer<AuthProvider>(
           builder: (context, provider, child) => Stack(
             children: [
               SingleChildScrollView(
-                padding: EdgeInsets.only(bottom: 30.w),
+                padding: EdgeInsets.only(bottom: 30),
                 child: Column(
                   children: [
                     Stack(
@@ -36,7 +36,7 @@ class WebSignUpScreen extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.only(
                             left: 35,
-                            top: (context.isBrowserMobile) ? 30.h : 14.h,
+                            top:14,
                           ),
                           child: Align(
                             alignment: Alignment.centerLeft,
@@ -46,7 +46,7 @@ class WebSignUpScreen extends StatelessWidget {
                               },
                               child: Icon(
                                 Icons.arrow_back_ios_rounded,
-                                size: context.isDesktop ? 22.w : 28.w,
+                                size: 22,
                               ),
                             ),
                           ),
@@ -54,7 +54,6 @@ class WebSignUpScreen extends StatelessWidget {
                       ],
                     ),
                     50.verticalSpace,
-
                     WebSignUpForm(formKey: formKey),
                     20.verticalSpace,
                     WebSignUpBottomSection(

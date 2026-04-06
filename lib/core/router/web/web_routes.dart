@@ -1,7 +1,6 @@
 enum WebRoutes {
   splashScreen,
   homeScreen,
-  ageConfirmationScreen,
   onBoardingScreen,
   signUpScreen,
   logInScreen,

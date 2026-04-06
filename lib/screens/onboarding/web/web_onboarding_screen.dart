@@ -1,4 +1,3 @@
-
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/widgets/web_top_section.dart';
 import 'package:puntgpt_nick/screens/onboarding/mobile/widgets/video_widget.dart';
@@ -96,6 +95,7 @@ class WebOnboardingScreen extends StatelessWidget {
                         "Mug Punter?",
                         style: regular(
                           fontSize: 38,
+
                           // context.isDesktop
                           //     ? 38.sp
                           //     : context.isTablet
@@ -103,7 +103,6 @@ class WebOnboardingScreen extends StatelessWidget {
                           //     : context.isBrowserMobile
                           //     ? 62.sp
                           //     : 48.sp,
-
                           height: context.isPhysicalMobile ? 1 : null,
 
                           fontFamily: AppFontFamily.secondary,
@@ -158,7 +157,7 @@ class WebOnboardingScreen extends StatelessWidget {
                             ? Text(
                                 planData[index]['title'],
                                 style: regular(
-                                  fontSize: 24,
+                                  fontSize: 22,
                                   fontFamily: AppFontFamily.secondary,
                                 ),
                               )
@@ -169,7 +168,7 @@ class WebOnboardingScreen extends StatelessWidget {
                                     TextSpan(
                                       text: planData[index]['title'].toString(),
                                       style: regular(
-                                        fontSize: 24,
+                                        fontSize: 22,
                                         fontFamily: AppFontFamily.secondary,
                                         color: AppColors.primary,
                                       ),
@@ -177,7 +176,7 @@ class WebOnboardingScreen extends StatelessWidget {
                                     TextSpan(
                                       text: ' ‘Pro Punter’ ',
                                       style: regular(
-                                        fontSize: 24,
+                                        fontSize: 22,
                                         fontFamily: AppFontFamily.secondary,
                                         color: AppColors.premiumYellow,
                                       ),
@@ -185,7 +184,7 @@ class WebOnboardingScreen extends StatelessWidget {
                                     TextSpan(
                                       text: 'Account',
                                       style: regular(
-                                        fontSize: 24,
+                                        fontSize: 22,
                                         fontFamily: AppFontFamily.secondary,
                                         color: AppColors.primary,
                                       ),
@@ -204,15 +203,13 @@ class WebOnboardingScreen extends StatelessWidget {
                                 ImageWidget(
                                   type: ImageType.svg,
                                   path: item['icon'],
-                                  height: 20,
+                                  height: 18,
                                 ),
                                 SizedBox(width: 10),
                                 Flexible(
                                   child: Text(
                                     item['text'],
-                                    style: regular(
-                                      fontSize: 16,
-                                    ),
+                                    style: regular(fontSize: 14),
                                   ),
                                 ),
                               ],
@@ -226,14 +223,12 @@ class WebOnboardingScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     "\$ ${planData[index]['price'].toString()}",
-                                    style: bold(
-                                      fontSize: 24,
-                                    ),
+                                    style: bold(fontSize: 22),
                                   ),
                                   Text(
                                     " /${planData[index]['title'].toString().toLowerCase()}",
                                     style: bold(
-                                      fontSize: 14,
+                                      fontSize: 12,
                                       color: AppColors.primary.setOpacity(0.6),
                                     ),
                                   ),
@@ -245,17 +240,14 @@ class WebOnboardingScreen extends StatelessWidget {
                               : "Subscribe",
                           textStyle: semiBold(
                             color: AppColors.white,
-                            fontSize: 16,
+                            fontSize: 15,
                           ),
                           onTap: () {
                             context
                                 .read<AuthProvider>()
                                 .clearSignUpControllers();
                             LocaleStorageService.setIsFirstTime(false);
-                            context.pushNamed(
-                              WebRoutes.signUpScreen.name,
-                           
-                            );
+                            context.pushNamed(WebRoutes.signUpScreen.name);
                           },
                         ),
                       ],

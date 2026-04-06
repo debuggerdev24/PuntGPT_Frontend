@@ -39,7 +39,7 @@ class _WebSplashScreenState extends State<WebSplashScreen> {
           if (LocaleStorageService.isFirstTime && authToken.isEmpty) {
             Logger.info("Inside if part");
 
-            context.goNamed(WebRoutes.ageConfirmationScreen.name);
+            context.goNamed(WebRoutes.onBoardingScreen.name);
 
             return;
           }
@@ -70,7 +70,7 @@ class _WebSplashScreenState extends State<WebSplashScreen> {
                       await LocaleStorageService.removeRefreshToken();
                       await LocaleStorageService.removeAccessToken();
 
-                      context.goNamed(WebRoutes.ageConfirmationScreen.name);
+                      context.goNamed(WebRoutes.onBoardingScreen.name);
                       return;
                     }
                   },

@@ -530,7 +530,7 @@ class PunterClubScreenWebScreen extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 30.w),
               borderColor: AppColors.redButton,
               textStyle: semiBold(
-                fontSize: 14.responsiveTextSize(),
+                fontSize: 14.fSize,
                 color: AppColors.redButton,
               ),
               text: "Clear all",

@@ -10,7 +10,7 @@ class SignUpTitle extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          35.w.verticalSpace,
+          35.verticalSpace,
           RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -19,7 +19,7 @@ class SignUpTitle extends StatelessWidget {
                   text: "Create",
                   style: regular(
                     height: 1.2,
-                    fontSize: 38.sp,
+                    fontSize: 38,
                     fontFamily: AppFontFamily.secondary,
                   ),
                 ),
@@ -27,7 +27,7 @@ class SignUpTitle extends StatelessWidget {
                   text: " “Pro Punter” ",
                   style: regular(
                     height: 1.2,
-                    fontSize: 38.sp,
+                    fontSize: 38,
                     fontFamily: AppFontFamily.secondary,
                     color: AppColors.premiumYellow,
                   ),
@@ -36,7 +36,7 @@ class SignUpTitle extends StatelessWidget {
                   text: "Account",
                   style: regular(
                     height: 1.2,
-                    fontSize: 38.sp,
+                    fontSize: 38,
                     fontFamily: AppFontFamily.secondary,
                   ),
                 ),
@@ -48,7 +48,7 @@ class SignUpTitle extends StatelessWidget {
             textAlign: TextAlign.center,
             "Cancel Subscription anytime*",
             style: regular(
-              fontSize: context.isBrowserMobile ? 30.sp : 16.sp,
+              fontSize: 30,
               color: AppColors.primary.setOpacity(0.8),
             ),
           ),
@@ -72,7 +72,7 @@ class SignUpTitle extends StatelessWidget {
                       text: "Create",
                       style: regular(
                         height: 1.2,
-                        fontSize: 44.sp,
+                        fontSize: 44,
                         fontFamily: AppFontFamily.secondary,
                       ),
                     ),
@@ -80,7 +80,7 @@ class SignUpTitle extends StatelessWidget {
                       text: " “Pro Punter” ",
                       style: regular(
                         height: 1.2,
-                        fontSize: 44.sp,
+                        fontSize: 44,
                         fontFamily: AppFontFamily.secondary,
                         color: AppColors.premiumYellow,
                       ),
@@ -89,7 +89,7 @@ class SignUpTitle extends StatelessWidget {
                       text: "Account",
                       style: regular(
                         height: 1.2,
-                        fontSize: 38.sp,
+                        fontSize: 38,
                         fontFamily: AppFontFamily.secondary,
                       ),
                     ),
@@ -100,7 +100,7 @@ class SignUpTitle extends StatelessWidget {
               Text(
                 "Cancel Subscription anytime",
                 style: regular(
-                  fontSize: 24.sp,
+                  fontSize: 24,
                   color: AppColors.primary.setOpacity(0.8),
                 ),
               ),
@@ -125,7 +125,7 @@ class SignUpTitle extends StatelessWidget {
                       text: "Create",
                       style: regular(
                         height: 1.2,
-                        fontSize: 36.sp,
+                        fontSize: 36,
                         fontFamily: AppFontFamily.secondary,
                       ),
                     ),
@@ -133,7 +133,7 @@ class SignUpTitle extends StatelessWidget {
                       text: " “Pro Punter” ",
                       style: regular(
                         height: 1.2,
-                        fontSize: 36.sp,
+                        fontSize: 36,
                         fontFamily: AppFontFamily.secondary,
                         color: AppColors.premiumYellow,
                       ),
@@ -142,7 +142,7 @@ class SignUpTitle extends StatelessWidget {
                       text: "Account",
                       style: regular(
                         height: 1.2,
-                        fontSize: 36.sp,
+                        fontSize: 36,
                         fontFamily: AppFontFamily.secondary,
                       ),
                     ),
@@ -153,7 +153,7 @@ class SignUpTitle extends StatelessWidget {
               Text(
                 "Cancel Subscription anytime",
                 style: regular(
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   color: AppColors.primary.setOpacity(0.8),
                 ),
               ),

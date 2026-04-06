@@ -17,7 +17,6 @@ import 'package:puntgpt_nick/screens/auth/web/web_verify_otp_screen.dart';
 import 'package:puntgpt_nick/screens/dashboard/web/web_dashboard.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/home_screen_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/tip_slip_screen_web.dart';
-import 'package:puntgpt_nick/screens/onboarding/web/web_age_confirmation.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/club_chat_screen.dart';
 import 'package:puntgpt_nick/screens/punter_club/web/punter_club_screen_web.dart';
 import 'package:puntgpt_nick/screens/splash/web_splash_screen.dart';
@@ -49,11 +48,6 @@ class WebRouter {
         path: WebRoutes.onBoardingScreen.path,
         name: WebRoutes.onBoardingScreen.name,
         builder: (context, state) => WebOnboardingScreen(),
-      ),
-      GoRoute(
-        path: WebRoutes.ageConfirmationScreen.path,
-        name: WebRoutes.ageConfirmationScreen.name,
-        builder: (context, state) => WebAgeConfirmationScreen(),
       ),
       GoRoute(
         path: WebRoutes.signUpScreen.path,
