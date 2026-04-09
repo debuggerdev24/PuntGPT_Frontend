@@ -58,7 +58,9 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
     if (text.isEmpty) return;
     _controller.clear();
     scrollToBottom();
-    provider.sendMessage(text);
+    provider.sendMessage(userQuery: text,onFailed: (error) {
+      AppToast.info(context: context, message: error);
+    },);
   }
 
   @override
@@ -285,9 +287,9 @@ class _AskPuntGptScreenState extends State<AskPuntGptScreen> {
 
   Widget _suggestionChip(String label, BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        _controller.text = label;
-      },
+      // onTap: () {
+      //   _controller.text = label;
+      // },
       child: Container(
         width: double.infinity,
         alignment: Alignment.centerLeft,

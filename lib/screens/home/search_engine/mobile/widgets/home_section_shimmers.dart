@@ -5,188 +5,310 @@ class HomeSectionShimmers {
 
   /// Shimmer for the Search Detail screen (home_screen)
   static Widget homeScreenShimmer({required BuildContext context}) {
-  final bodyHorizontalPadding = (context.isBrowserMobile) ? 50.w : 25.w;
+    final bodyPad = (context.isBrowserMobile) ? 50.w : 25.w;
+    const storyPad = 18.0;
+    const tabPad = 20.0;
+    final isWide = context.isBrowserMobile;
 
-  return Shimmer.fromColors(
-    baseColor: AppColors.shimmerBaseColor,
-    highlightColor: AppColors.shimmerHighlightColor,
-    child: SingleChildScrollView(
+    return Shimmer.fromColors(
+      baseColor: AppColors.shimmerBaseColor,
+      highlightColor: AppColors.shimmerHighlightColor,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // "Search for a horse..." title shimmer
+          // Bookie stories: banner + three circular avatars
           Padding(
-            padding: EdgeInsets.fromLTRB(
-              bodyHorizontalPadding,
-              16.w,
-              bodyHorizontalPadding,
-              0,
-            ),
-            child: Container(
-              width: (context.isBrowserMobile) ? 420.w : 220.w,
-              height: (context.isBrowserMobile) ? 40.h : 18.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-
-          // "Total runners" row shimmer
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              (context.isBrowserMobile) ? 50.w : 25.w,
-              12.w,
-              (context.isBrowserMobile) ? 50.w : 25.w,
-              20.w,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: (context.isBrowserMobile) ? 260.w : 140.w,
-                  height: (context.isBrowserMobile) ? 32.h : 18.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                Container(
-                  width: (context.isBrowserMobile) ? 260.w : 150.w,
-                  height: (context.isBrowserMobile) ? 32.h : 18.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          horizontalDivider(),
-
-          // Filters area shimmer
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: bodyHorizontalPadding),
+            padding: EdgeInsets.symmetric(horizontal: storyPad.w),
             child: Column(
               children: [
-                // Track dropdown shimmer
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 20.w),
-                  height: (context.isBrowserMobile) ? 56.h : 46.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                horizontalDivider(),
-
-                // First checkbox row shimmer (e.g. "Placed last start")
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 19.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: (context.isBrowserMobile) ? 260.w : 160.w,
-                        height: (context.isBrowserMobile) ? 32.h : 18.h,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      Container(
-                        width: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                        height: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                horizontalDivider(),
-
-                // "Placed at distance" dropdown shimmer
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 20.w),
-                  height: (context.isBrowserMobile) ? 56.h : 46.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                horizontalDivider(),
-
-                // "Odds range" text field shimmer
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                5.w.verticalSpace,
+                Center(
                   child: Container(
-                    height: (context.isBrowserMobile) ? 56.h : 46.h,
-                    width: double.infinity,
+                    width: isWide ? 420.w : 280.w,
+                    height: 12.h,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
                 ),
-                horizontalDivider(),
-
-                // Additional dropdown / text-field rows shimmer
-                ...List.generate(4, (index) {
-                  return Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 20.w),
-                        height: (context.isBrowserMobile) ? 56.h : 46.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(4),
+                12.w.verticalSpace,
+                SizedBox(
+                  height: 64.w,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.symmetric(horizontal: 4.w),
+                    itemCount: 3,
+                    separatorBuilder: (_, __) => SizedBox(width: 10.w),
+                    itemBuilder: (_, __) => Container(
+                      width: 64.w,
+                      height: 64.w,
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.shimmerBaseColor.withValues(
+                            alpha: 0.45,
+                          ),
                         ),
                       ),
-                      horizontalDivider(),
-                    ],
-                  );
-                }),
-
-                // Final checkbox row shimmer (e.g. "Won last start")
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: (context.isBrowserMobile) ? 260.w : 160.w,
-                        height: (context.isBrowserMobile) ? 32.h : 18.h,
+                      child: const DecoratedBox(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(4),
+                          shape: BoxShape.circle,
                         ),
                       ),
-                      Container(
-                        width: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                        height: (context.isBrowserMobile) ? 40.sp : 22.sp,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // HomeScreenTab: two equal tabs
+          Padding(
+            padding: EdgeInsets.fromLTRB(tabPad.w, 14.w, tabPad.w, 0),
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: isWide ? 72.h : 52.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: AppColors.primary),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: isWide ? 72.h : 52.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: AppColors.primary),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          16.w.verticalSpace,
+
+          Expanded(
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                SingleChildScrollView(
+                  padding: EdgeInsets.only(bottom: 100.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Tagline row + Saved Searches
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          bodyPad,
+                          0,
+                          bodyPad,
+                          14.w,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: isWide ? 28.h : 18.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ),
+                            10.w.horizontalSpace,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 16.w,
+                                  height: 16.w,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                                6.w.horizontalSpace,
+                                Container(
+                                  width: 110.w,
+                                  height: 14.h,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Race timing chips (horizontal)
+                      SizedBox(
+                        height: 45.w.flexClamp(40, 55),
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.symmetric(horizontal: bodyPad),
+                          itemCount: 3,
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(width: 15),
+                          itemBuilder: (_, i) {
+                            final w = i == 0 ? 115.w : (i == 1 ? 145.w : 100.w);
+                            return Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 18.w,
+                                vertical: 10.w,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.15,
+                                  ),
+                                ),
+                              ),
+                              child: SizedBox(
+                                width: w,
+                                height: 16.h,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: bodyPad),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 18.w),
+                              child: horizontalDivider(),
+                            ),
+                            // All Tracks dropdown
+                            Container(
+                              margin: EdgeInsets.only(bottom: 18.w),
+                              height: isWide ? 56.h : 46.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4.r),
+                                border: Border.all(
+                                  color: AppColors.shimmerBaseColor,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 12.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: 120.w,
+                                    height: 16.h,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 20.w,
+                                    height: 20.w,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            horizontalDivider(),
+                            ...List.generate(6, (index) {
+                              return Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 19.w,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          width: isWide ? 220.w : 160.w,
+                                          height: isWide ? 22.h : 18.h,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 22,
+                                          height: 22,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(2),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  horizontalDivider(),
+                                ],
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+
+                      Center(
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            left: 24.w,
+                            right: 24.w,
+                            top: 20.w,
+                          ),
+                          height: 48.h,
+                          width: 120.w,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(4.r),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                horizontalDivider(),
+                Positioned(
+                  right: 18.w,
+                  bottom: 18.w,
+                  child: Container(
+                    width: 140.w,
+                    height: 44.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4.r),
+                      border: Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.22),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ],
       ),
-    ),
-  );
+    );
   }
 
   static Widget searchedItemShimmer({required BuildContext context}) {

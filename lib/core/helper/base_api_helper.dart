@@ -1,7 +1,14 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
+import '../constants/end_points.dart';
+import '../router/app/app_routes.dart';
+import '../router/app/app_router.dart';
+import '../router/web/web_router.dart';
 import '../../services/storage/locale_storage_service.dart';
 import '../constants/app_config.dart';
 import 'log_helper.dart';
@@ -21,6 +28,49 @@ class DioClient {
           }
           return handler.next(options);
         },
+        onError: (error, handler) async {
+          final status = error.response?.statusCode;
+          final requestOptions = error.requestOptions;
+
+          final shouldSkip = requestOptions.extra['skipAuthRefresh'] == true;
+          final isRefreshCall = requestOptions.path.contains(EndPoints.refreshToken);
+          final alreadyRetried = requestOptions.extra['__retried_after_refresh'] == true;
+
+          // Only attempt refresh on token-expired 401, and never for the refresh endpoint itself.
+          if (status != 401 || shouldSkip || isRefreshCall || alreadyRetried) {
+            return handler.next(error);
+          }
+
+          final data = error.response?.data;
+          final tokenNotValid =
+              data is Map && (data['code']?.toString() == 'token_not_valid');
+          if (!tokenNotValid) return handler.next(error);
+
+          //* If we don't have a refresh token, there's nothing to do.
+          if (LocaleStorageService.refreshToken.isEmpty) {
+            await _logoutAndGoToLogin();
+            return handler.next(error);
+          }
+
+          try {
+            final refreshed = await _refreshAccessTokenOnce();
+            if (!refreshed) {
+              await _logoutAndGoToLogin();
+              return handler.next(error);
+            }
+
+            // Retry the original request with the new access token.
+            final newAccessToken = LocaleStorageService.acccessToken;
+            final retryOptions = requestOptions..extra['__retried_after_refresh'] = true;
+            retryOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+
+            final response = await dio.fetch(retryOptions);
+            return handler.resolve(response);
+          } catch (e, st) {
+            Logger.error('[DioClient] Refresh+retry failed: $e\n$st');
+            return handler.next(error);
+          }
+        },
       ),
     );
     dio.interceptors.addAll([
@@ -34,6 +84,54 @@ class DioClient {
   }
   static final DioClient _instance = DioClient._internal();
   late Dio dio;
+
+  /// Ensures only a single refresh call runs at a time.
+  Completer<bool>? _refreshCompleter;
+
+  Future<void> _logoutAndGoToLogin() async {
+    await LocaleStorageService.clearUserTokens();
+    // Keep it simple: go to onboarding (login flow starts from there).
+    (kIsWeb ? WebRouter.router : AppRouter.router)
+        .goNamed(AppRoutes.onboardingScreen.name);
+  }
+
+  Future<bool> _refreshAccessTokenOnce() async {
+    if (_refreshCompleter != null) return _refreshCompleter!.future;
+
+    _refreshCompleter = Completer<bool>();
+    try {
+      final refresh = LocaleStorageService.refreshToken;
+      if (refresh.isEmpty) {
+        _refreshCompleter!.complete(false);
+        return _refreshCompleter!.future;
+      }
+
+      // Use a separate Dio instance to avoid interceptor loops.
+      final refreshDio = Dio(BaseOptions(baseUrl: AppConfig.apiBaseurl));
+      final res = await refreshDio.post<Map<String, dynamic>>(
+        EndPoints.refreshToken,
+        data: {"refresh": refresh},
+        options: Options(extra: const {"skipAuthRefresh": true}),
+      );
+
+      final data = res.data ?? const <String, dynamic>{};
+      final newAccess = data["access"]?.toString() ?? '';
+      if (newAccess.isEmpty) {
+        _refreshCompleter!.complete(false);
+        return _refreshCompleter!.future;
+      }
+
+      await LocaleStorageService.saveUserToken(newAccess);
+      _refreshCompleter!.complete(true);
+      return _refreshCompleter!.future;
+    } catch (e, st) {
+      Logger.error('[DioClient] Refresh token call failed: $e\n$st');
+      _refreshCompleter!.complete(false);
+      return _refreshCompleter!.future;
+    } finally {
+      _refreshCompleter = null;
+    }
+  }
 }
 
 class BaseApiHelper {

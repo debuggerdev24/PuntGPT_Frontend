@@ -26,7 +26,7 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
     final bodyWidth = context.isBrowserMobile
         ? double.maxFinite
         : context.isTablet
-        ? 1240.w
+        ? double.maxFinite
         : 1040.w;
     // final twentyResponsive = context.isDesktop
     //     ? 20.sp

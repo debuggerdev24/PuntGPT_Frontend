@@ -106,7 +106,7 @@ class AppTextField extends StatelessWidget {
                 color: AppColors.primary.withValues(alpha: 0.65),
               ),
           errorStyle:
-              errorStyle ?? medium(fontSize: (kIsWeb) ? 12.5 : 16.sp, color: AppColors.red),
+              errorStyle ?? medium(fontSize: (kIsWeb) ? 12.5 : 14.5.sp, color: AppColors.red),
           errorMaxLines: 5,
           // error: _currentError == null
           //     ? null

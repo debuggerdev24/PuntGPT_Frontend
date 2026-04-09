@@ -25,7 +25,6 @@ class _BookieStoriesSectionState extends State<BookieStoriesSection> {
   /// between that index and the last page they were on as “seen”.
   Future<void> _onAvatarTapped(int startIndex) async {
     final list = widget.stories;
-
     final lastPageIndex = await Navigator.of(context).push<int>(
       MaterialPageRoute<int>(
         fullscreenDialog: true,

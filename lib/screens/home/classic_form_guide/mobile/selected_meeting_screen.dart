@@ -1,4 +1,5 @@
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:intl/intl.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/home/classic_form_guide/race_details_model.dart';
 import 'package:puntgpt_nick/provider/home/classic_form/classic_form_provider.dart';
@@ -319,25 +320,9 @@ class RaceDetails extends StatefulWidget {
 }
 
 class _RaceDetailsState extends State<RaceDetails> {
-  int? expandedIndex;
-
-  @override
-  void didUpdateWidget(RaceDetails oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    final selections = widget.provider.raceDetails?.selections ?? [];
-    if (expandedIndex != null &&
-        (selections.isEmpty || expandedIndex! >= selections.length)) {
-      expandedIndex = null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final selections = widget.provider.raceDetails!.selections;
-    final safeExpandedIndex =
-        expandedIndex != null && expandedIndex! < selections.length
-        ? expandedIndex
-        : null;
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -346,16 +331,74 @@ class _RaceDetailsState extends State<RaceDetails> {
       separatorBuilder: (_, __) => 10.w.verticalSpace,
       itemBuilder: (context, index) {
         final selection = selections[index];
-        print(selection.horseSex);
-        final isExpanded = safeExpandedIndex == index;
         return _selectionCard(
           context: context,
           index: index,
           selection: selection,
-          isExpanded: isExpanded,
-          onToggle: () {
-            setState(() => expandedIndex = isExpanded ? null : index);
-          },
+          onOpenDetail: () =>
+              _openSelectionDetailDialog(context, selection, index),
+        );
+      },
+    );
+  }
+
+  void _openSelectionDetailDialog(
+    BuildContext context,
+    Selection selection,
+    int index,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      backgroundColor: AppColors.white,
+      // Let the sheet fill the screen; inner [SafeArea] keeps content clear of notch/status bar.
+      // useSafeArea: true,
+      isScrollControlled: true,
+      builder: (dialogContext) {
+        final sheetH = MediaQuery.sizeOf(dialogContext).height - 95.w;
+        return SizedBox(
+          height: sheetH,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              //*Bottom sheet dialogue title
+              Padding(
+                padding: EdgeInsets.fromLTRB(22.w, 4.w, 5.w, 2.w),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${index + 1}. ${selection.horseName} (${selection.barrier})',
+                        style: semiBold(
+                          fontSize: (context.isBrowserMobile) ? 30.sp : 16.sp,
+                          color: AppColors.primary,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.close_rounded,
+                        color: AppColors.primary,
+                        size: (context.isBrowserMobile) ? 28.w : 24.w,
+                      ),
+                      onPressed: () => Navigator.of(dialogContext).pop(),
+                    ),
+                  ],
+                ),
+              ),
+              horizontalDivider(),
+              //* Bottom sheet body
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(22.w, 12.w, 22.w, 2.w),
+                  child: _SelectionDetailes(selection: selection),
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -399,41 +442,319 @@ Widget _pill({
   );
 }
 
+Widget _detailLabelValue({
+  required String label,
+  required String value,
+  int maxLines = 4,
+}) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        '$label : ',
+        style: bold(fontSize: 12.sp, color: AppColors.primary),
+      ),
+      Expanded(
+        child: Text(
+          value,
+          style: semiBold(
+            fontSize: 12.sp,
+            color: AppColors.primary.withValues(alpha: 0.7),
+          ),
+          maxLines: maxLines,
+        ),
+      ),
+    ],
+  );
+}
+
+/// Accent for track condition / distance line (reference-style blue).
+
+Color _kFormHistoryTrackBlue = Color(0xFF1565C0);
+
+class _FormHistoryCard extends StatelessWidget {
+  const _FormHistoryCard({required this.history});
+
+  final History history;
+
+  String _ordinalPlace(int n) {
+    if (n % 100 >= 11 && n % 100 <= 13) return '${n}th';
+    switch (n % 10) {
+      case 1:
+        return '${n}st';
+      case 2:
+        return '${n}nd';
+      case 3:
+        return '${n}rd';
+      default:
+        return '${n}th';
+    }
+  }
+
+  String _historyResultHeadline(History h) {
+    final pos = h.resultPosition;
+    final total = h.totalStarters;
+    if (pos == null || total == null) return '—';
+    final ord = _ordinalPlace(pos);
+    if (h.isTrial) {
+      return 'TRIAL: $ord of $total';
+    }
+    return '$ord of $total';
+  }
+
+  String _historyDateCompact(History h) =>
+      DateFormat('dd MMM, yyyy').format(h.date.toLocal());
+
+  String _historyConditionDistanceLine(History h) {
+    final cond = (h.trackCondition ?? '').trim();
+    final d = h.distance;
+    final dist = d != null ? '${d}m' : '';
+    if (cond.isEmpty && dist.isEmpty) return '—';
+    if (cond.isEmpty) return dist;
+    if (dist.isEmpty) return cond;
+    return '$cond $dist';
+  }
+
+  String _historyDetailBody(History h) {
+    // final summary = h.positionSummary?.trim();
+    // if (summary != null && summary.isNotEmpty) return summary;
+    final parts = <String>[];
+    final race = h.raceName?.trim();
+    if (race != null && race.isNotEmpty) parts.add(race);
+    final j = h.jockeyName;
+    if (j != null && j.isNotEmpty) parts.add(j);
+    final w = h.weightCarried?.trim();
+    if (w != null && w.isNotEmpty) parts.add("$w kg");
+    final m = h.margin?.trim();
+    if (m != null && m.isNotEmpty) parts.add("$m margin");
+    final pm = h.prizeMoney?.trim();
+    if (pm != null && pm.isNotEmpty) parts.add("$pm/-");
+    final b = h.barrier;
+    if (b != null) parts.add('Bar $b');
+    final sp = h.startingPrice?.trim();
+    if (sp != null && sp.isNotEmpty) parts.add('SP $sp');
+    final win = h.winnerHorseName?.trim();
+    if (win != null && win.isNotEmpty) parts.add(win);
+    return parts.join(', ');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final h = history;
+    final resultLine = _historyResultHeadline(h);
+    final dateLine = _historyDateCompact(h);
+
+    final condDist = _historyConditionDistanceLine(h);
+    final detail = _historyDetailBody(h);
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(14.w, 12.w, 14.w, 0.w),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.08)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (h.isTrial) ...[
+                      Icon(
+                        Icons.schedule_rounded,
+                        size: 18.w,
+                        color: AppColors.primary.withValues(alpha: 0.85),
+                      ),
+                      6.w.horizontalSpace,
+                    ],
+                    Expanded(
+                      child: Text(
+                        resultLine,
+                        style: bold(
+                          fontSize: 16.sp,
+                          color: AppColors.primary,
+                          height: 1.25,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                dateLine,
+                style: semiBold(
+                  fontSize: 12.sp,
+                  color: AppColors.primary.withValues(alpha: 0.55),
+                ),
+              ),
+            ],
+          ),
+
+          6.w.verticalSpace,
+          Text(
+            "${history.trackName ?? "-"}  R${history.raceNumber ?? "-"}",
+            style: semiBold(
+              fontSize: 14.sp,
+              color: AppColors.primary,
+              height: 1.2,
+            ),
+          ),
+          4.w.verticalSpace,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.waves_rounded,
+                size: 18.w,
+                color: _kFormHistoryTrackBlue,
+              ),
+              6.w.horizontalSpace,
+              Expanded(
+                child: Text(
+                  condDist,
+                  style: semiBold(
+                    fontSize: 12.5.sp,
+                    color: _kFormHistoryTrackBlue,
+                    height: 1.3,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (detail.isNotEmpty) ...[
+            10.w.verticalSpace,
+            Text(
+              detail,
+              style: semiBold(
+                fontSize: 11.sp,
+                color: AppColors.primary.withValues(alpha: 0.48),
+                height: 1.45,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Same content as the former in-card expanded section (Sire/Dam/stats + tip slip).
+class _SelectionDetailes extends StatelessWidget {
+  const _SelectionDetailes({required this.selection});
+
+  final Selection selection;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                spacing: 4.w,
+                children: [
+                  _detailLabelValue(label: 'Sire', value: selection.horseSire),
+                  _detailLabelValue(
+                    label: 'Colour',
+                    value: selection.horseColour,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                spacing: 4.w,
+                children: [
+                  _detailLabelValue(label: 'Dam', value: selection.horseDam),
+                  _detailLabelValue(
+                    label: 'Age/Sex',
+                    value: "${selection.horseAge} yo",
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                spacing: 4.w,
+                children: [
+                  _detailLabelValue(
+                    label: 'Prize',
+                    value: selection.horseTotalPrizeMoney,
+                  ),
+                  _detailLabelValue(label: 'Sex', value: selection.horseSex),
+                ],
+              ),
+            ),
+          ],
+        ),
+        10.w.verticalSpace,
+        //* Horse status content
+        _HorseStatusContent(selection: selection),
+        12.w.verticalSpace,
+
+        AppFilledButton(
+          text: 'Add to Tip Slip',
+          textStyle: semiBold(fontSize: 14.sp, color: AppColors.white),
+          padding: EdgeInsets.symmetric(vertical: 12.w),
+          onTap: () {
+            context.read<SearchEngineProvider>().createTipSlip(
+              context: context,
+              selectionId: selection.selectionId.toString(),
+            );
+          },
+        ),
+        if (selection.history.isNotEmpty) ...[
+          20.w.verticalSpace,
+          Text(
+            'Form history',
+            style: bold(fontSize: 14.sp, color: AppColors.primary),
+          ),
+          10.w.verticalSpace,
+          Expanded(
+            child: ListView.separated(
+              padding: EdgeInsets.zero,
+              itemCount: selection.history.length,
+              separatorBuilder: (_, __) => 12.w.verticalSpace,
+              itemBuilder: (context, index) {
+                return _FormHistoryCard(history: selection.history[index]);
+              },
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+//* Selection card
 Widget _selectionCard({
   required BuildContext context,
   required int index,
   required Selection selection,
-  required bool isExpanded,
-  required VoidCallback onToggle,
+  required VoidCallback onOpenDetail,
 }) {
   final trainerStr = selection.trainerName.toString();
-
-  Widget labelValue({required String label, required String value}) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '$label : ',
-          style: bold(fontSize: 12.sp, color: AppColors.primary),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: semiBold(
-              fontSize: 12.sp,
-              color: AppColors.primary.withValues(alpha: 0.7),
-            ),
-            maxLines: 1,
-          ),
-        ),
-      ],
-    );
-  }
 
   return Material(
     color: Colors.transparent,
     child: InkWell(
-      onTap: onToggle,
+      onTap: onOpenDetail,
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
         padding: EdgeInsets.all(9.w),
@@ -441,10 +762,8 @@ Widget _selectionCard({
           color: Colors.white,
           borderRadius: BorderRadius.circular(6.r),
           border: Border.all(
-            color: isExpanded
-                ? AppColors.primary.withValues(alpha: 0.6)
-                : AppColors.primary.withValues(alpha: 0.2),
-            width: isExpanded ? 1.5 : 1,
+            color: AppColors.primary.withValues(alpha: 0.2),
+            width: 1,
           ),
           boxShadow: [
             BoxShadow(
@@ -520,126 +839,38 @@ Widget _selectionCard({
                     child: Column(
                       spacing: 6.w,
                       children: [
-                        labelValue(
+                        _detailLabelValue(
                           label: 'Weight',
                           value: '${selection.weight}kg',
+                          maxLines: 1,
                         ),
-                        labelValue(label: 'Form', value: selection.formHistory),
+                        _detailLabelValue(
+                          label: 'Form',
+                          value: selection.formHistory,
+                          maxLines: 1,
+                        ),
                       ],
                     ),
                   ),
-
                   Expanded(
                     child: Column(
                       spacing: 6.w,
                       children: [
-                        labelValue(
+                        _detailLabelValue(
                           label: 'Jockey',
                           value: selection.jockeyName,
+                          maxLines: 1,
                         ),
-                        labelValue(label: 'Trainer', value: trainerStr),
+                        _detailLabelValue(
+                          label: 'Trainer',
+                          value: trainerStr,
+                          maxLines: 1,
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
-            ),
-            // Tap row still expands career/track stats + tip slip.
-            AnimatedSize(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              //* triggering the expanded stats content
-              child: isExpanded
-                  ? Padding(
-                      padding: EdgeInsets.only(top: 10.w),
-                      child: Column(
-                        children: [
-                          horizontalDivider(),
-
-                          10.w.verticalSpace,
-                          //* Sire, Colour, Dam, Age/Sex
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  spacing: 4.w,
-                                  children: [
-                                    labelValue(
-                                      label: 'Sire',
-                                      value: selection.horseSire,
-                                    ),
-                                    labelValue(
-                                      label: 'Colour',
-                                      value: selection.horseColour,
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              Expanded(
-                                child: Column(
-                                  spacing: 4.w,
-                                  children: [
-                                    labelValue(
-                                      label: 'Dam',
-                                      value: selection.horseDam,
-                                    ),
-                                    labelValue(
-                                      label: 'Age/Sex',
-                                      value:
-                                          "${selection.horseAge} yo",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  spacing: 4.w,
-                                  children: [
-                                    labelValue(
-                                      label: 'Prize',
-                                      value: selection.horseTotalPrizeMoney,
-                                    ),
-                                    labelValue(
-                                      label: 'Sex',
-                                      value: selection.horseSex,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          10.w.verticalSpace,
-                          //* Career, 1st Up, 2nd Up, 3rd Up, Firm, Good, Soft, Heavy
-                          _ExpandedStatsContent(selection: selection),
-                          12.w.verticalSpace,
-                          //* Add to Tip Slip button
-                          SizedBox(
-                            width: double.infinity,
-                            child: AppFilledButton(
-                              text: 'Add to Tip Slip',
-                              textStyle: semiBold(
-                                fontSize: 14.sp,
-                                color: AppColors.white,
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 12.w),
-                              onTap: () {
-                                context
-                                    .read<SearchEngineProvider>()
-                                    .createTipSlip(
-                                      context: context,
-                                      selectionId: selection.selectionId
-                                          .toString(),
-                                    );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : const SizedBox.shrink(),
             ),
           ],
         ),
@@ -648,135 +879,8 @@ Widget _selectionCard({
   );
 }
 
-// @override
-// Widget build(BuildContext context) {
-//   final selections = widget.provider.raceFieldDetail!.selections;
-//   final safeExpandedIndex =
-//       expandedIndex != null && expandedIndex! < selections.length
-//       ? expandedIndex
-//       : null;
-//   return SingleChildScrollView(
-//     scrollDirection: Axis.horizontal,
-//     child: Container(
-//       width: 1.4.sw,
-//       decoration: BoxDecoration(
-//         border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-//       ),
-//       margin: EdgeInsets.symmetric(horizontal: 24.w),
-//       child: Table(
-//         border: TableBorder.symmetric(
-//           inside: BorderSide(color: AppColors.primary.withValues(alpha: 0.2)),
-//         ),
-//         columnWidths: {0: FlexColumnWidth(1.7.w), 1: FlexColumnWidth(4.5.w)},
-//         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-//         children: List.generate(selections.length, (index) {
-//           final selection = selections[index];
-//           final isExpanded = safeExpandedIndex == index;
-//           return TableRow(
-//             children: [
-//               //* first column
-//               TableCell(
-//                 verticalAlignment: TableCellVerticalAlignment.top,
-
-//                 child: IntrinsicHeight(
-//                   child: GestureDetector(
-//                     onTap: () {
-//                       setState(() {
-//                         expandedIndex = isExpanded ? null : index;
-//                       });
-//                     },
-
-//                     child: Container(
-//                       // alignment: Alignment.,
-//                       color: isExpanded
-//                           ? AppColors.primary
-//                           : Colors.transparent,
-//                       child: Padding(
-//                         padding: EdgeInsets.symmetric(
-//                           vertical: 10.w,
-//                           horizontal: 8.w,
-//                         ),
-//                         child: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           children: [
-//                             Text(
-//                               "${index + 1}. ${selections[index].horseName}",
-//                               style: semiBold(
-//                                 fontSize: 16.sp,
-//                                 color: isExpanded ? Colors.white : null,
-//                               ),
-//                             ),
-//                             if (isExpanded) ...[
-//                               12.w.verticalSpace,
-//                               Text(
-//                                 "\$${selection.oddsWin}",
-//                                 style: semiBold(
-//                                   fontSize: 16.sp,
-//                                   color: Colors.white,
-//                                 ),
-//                               ),
-//                               AppFilledButton(
-//                                 margin: EdgeInsets.only(top: 4),
-//                                 text: "Add to Tip Slip",
-//                                 textStyle: semiBold(
-//                                   fontSize: 14.sp,
-//                                   color: AppColors.primary,
-//                                 ),
-//                                 padding: EdgeInsets.symmetric(vertical: 9.w),
-//                                 color: AppColors.white,
-//                                 onTap: () {
-//                                   context
-//                                       .read<SearchEngineProvider>()
-//                                       .createTipSlip(
-//                                         context: context,
-//                                         selectionId: selection.selectionId
-//                                             .toString(),
-//                                       );
-//                                 },
-//                               ),
-//                             ],
-//                           ],
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//               //* second column
-//               TableCell(
-//                 verticalAlignment: TableCellVerticalAlignment.top,
-//                 child: Container(
-//                   color: Colors.transparent,
-//                   padding: EdgeInsets.symmetric(
-//                     vertical: 8.w,
-
-//                     horizontal: 12.w,
-//                   ),
-//                   child: isExpanded
-//                       ? _ExpandedStatsContent(
-//                           selection: selection,
-//                           distance:
-//                               widget.provider.raceFieldDetail!.race.distance,
-//                         )
-//                       : Text(
-//                           "W: J: F: T:",
-//                           style: medium(
-//                             fontSize: 14.sp,
-//                             color: AppColors.primary,
-//                           ),
-//                         ),
-//                 ),
-//               ),
-//             ],
-//           );
-//         }),
-//       ),
-//     ),
-//   );
-// }
-
-class _ExpandedStatsContent extends StatelessWidget {
-  const _ExpandedStatsContent({required this.selection});
+class _HorseStatusContent extends StatelessWidget {
+  const _HorseStatusContent({required this.selection});
   final Selection selection;
 
   static String _formatStat(HorseStatsDetails value) {
@@ -786,18 +890,6 @@ class _ExpandedStatsContent extends StatelessWidget {
     final thirds = value.thirds;
     return '$runs : $wins-$seconds-$thirds';
   }
-
-  // static String _dashIfEmpty(String s) {
-  //   final t = s.trim();
-  //   return t.isEmpty ? '—' : t;
-  // }
-
-  // static String _formatPrize(String raw) {
-  //   final t = raw.trim();
-  //   if (t.isEmpty) return '—';
-  //   if (t.startsWith(r'$')) return t;
-  //   return '\$$t';
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -809,6 +901,8 @@ class _ExpandedStatsContent extends StatelessWidget {
       // MapEntry('Colour', _dashIfEmpty(selection.horseColour)),
       // MapEntry('Age', _dashIfEmpty(selection.horseAge)),
       // MapEntry('Sex', _dashIfEmpty(selection.horseSex)),
+      // MapEntry('12 Months', _formatStat(hs.twelveMonths)),
+      MapEntry('12 months', _formatStat(hs.last12Months)),
       MapEntry('Career', _formatStat(hs.career)),
       MapEntry('1st Up', _formatStat(hs.firstUp)),
       MapEntry('2nd Up', _formatStat(hs.secondUp)),
@@ -817,6 +911,9 @@ class _ExpandedStatsContent extends StatelessWidget {
       MapEntry('Good', _formatStat(hs.good)),
       MapEntry('Soft', _formatStat(hs.soft)),
       MapEntry('Heavy', _formatStat(hs.heavy)),
+      MapEntry('Track', _formatStat(hs.track)),
+      //
+      MapEntry('Distance', _formatStat(hs.distance)),
     ];
 
     final gap = 6.w;
@@ -840,6 +937,7 @@ class _ExpandedStatsContent extends StatelessWidget {
   }
 }
 
+//* Horse status tile
 Widget _statTile({required String label, required String value}) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.w),

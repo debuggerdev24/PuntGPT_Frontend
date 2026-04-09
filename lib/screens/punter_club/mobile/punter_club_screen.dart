@@ -30,8 +30,7 @@ class PunterClubScreen extends StatelessWidget {
                 Expanded(
                   child: SubscriptionGateView(
                     featureTitle: "Subscribe to access Punter Club",
-                    featureDescription:
-                        "Create and join clubs, chat with members, and share tips.",
+                    featureDescription: "Create and join clubs, chat with members, and share tips.",
                     icon: Icons.groups_rounded,
                   ),
                 ),

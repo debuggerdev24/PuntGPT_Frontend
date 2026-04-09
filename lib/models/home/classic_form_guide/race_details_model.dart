@@ -143,6 +143,10 @@ class HorseStats {
     required this.good,
     required this.soft,
     required this.heavy,
+    required this.last12Months,
+    required this.last10Months,
+    required this.track,
+    required this.distance,
   });
 
   factory HorseStats.fromJson(Map<String, dynamic> json) {
@@ -157,9 +161,13 @@ class HorseStats {
       good: _parse(json["good"] as Map<String, dynamic>?),
       soft: _parse(json["soft"] as Map<String, dynamic>?),
       heavy: _parse(json["heavy"] as Map<String, dynamic>?),
+      last12Months: _parse(json["last_12_months"]),
+      last10Months: _parse(json["last_10_starts"]),
+      track: _parse(json["track"]),
+      distance: _parse(json["distance"]),
     );
   }
-  HorseStatsDetails career, firstUp, secondUp, thirdUp, firm, good, soft, heavy;
+  HorseStatsDetails last12Months,last10Months,career, firstUp, secondUp, thirdUp, firm, good, soft, heavy,track,distance;
 }
 
 class HorseStatsDetails {

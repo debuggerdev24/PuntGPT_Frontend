@@ -21,6 +21,13 @@ class BookieStoryItem {
 
 const List<BookieStoryItem> kDefaultBookieStories = [
   BookieStoryItem(
+    id: 'puntgpt',
+    displayName: 'PuntGPT',
+    avatarAsset: AppAssets.puntGPTAdsLogo,
+    storyImageAsset: AppAssets.puntGPTAdvertisement,
+    affiliateUrl: "",
+  ),
+  BookieStoryItem(
     id: 'dabble',
     displayName: 'Dabble',
     avatarAsset: AppAssets.dabbleLogo,
@@ -34,4 +41,5 @@ const List<BookieStoryItem> kDefaultBookieStories = [
     storyImageAsset: AppAssets.unibatAdvertisement,
     affiliateUrl: AppStrings.unibetPartnerUrl,
   ),
+  
 ];

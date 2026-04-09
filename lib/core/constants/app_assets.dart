@@ -47,5 +47,7 @@ class AppAssets {
   static const dabbleBanner = "$_imagePath/dabble_banner.png";
   static const dabbleAdvertisement = "$_imagePath/dabble_ads.png";
   static const unibatAdvertisement = "$_imagePath/unibat_ads.png";
+  static const puntGPTAdsLogo = "$_imagePath/puntgpt_ads_logo.png";
+  static const puntGPTAdvertisement = "$_imagePath/puntgpt_ads.png";
   static const dabbleGIF = "assets/gif/dabble.gif";
 }

@@ -20,13 +20,13 @@ class BotProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendMessage(String content) async {
-    if (content.trim().isEmpty) return;
+  Future<void> sendMessage({required String userQuery, required Function(String error) onFailed}) async {
+    if (userQuery.trim().isEmpty) return;
 
     _errorMessage = null;
     final userMsg = ChatMessageModel(
       isUser: true,
-      content: content.trim(),
+      content: userQuery.trim(),
       timestamp: DateTime.now(),
     );
     _messages.add(userMsg);
@@ -35,14 +35,16 @@ class BotProvider extends ChangeNotifier {
     notifyListeners();
 
     final result = await BotApiService.instance.getBotResponse(
-      data: {'user_query': content.trim()},
+      data: {'user_query': userQuery.trim()},
     );
 
     _isLoading = false;
     result.fold(
       (l) {
-        Logger.error(l.errorMsg);
+        
         _errorMessage = l.errorMsg;
+        onFailed(l.errorMsg);
+        Logger.error("BotProvider sendMessage error: ${l.errorMsg}");
         notifyListeners();
       },
       (r) {
@@ -59,10 +61,4 @@ class BotProvider extends ChangeNotifier {
     );
   }
 
-  void clearMessages() {
-    _messages.clear();
-    _sessionId = null;
-    _errorMessage = null;
-    notifyListeners();
-  }
 }

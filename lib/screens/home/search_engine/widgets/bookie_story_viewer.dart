@@ -48,6 +48,24 @@ class _BookieStoryViewerState extends State<BookieStoryViewer> {
     }
   }
 
+  //*
+  // First story (PuntGPT, `id: puntgpt`): open Manage Subscription instead of a URL.
+  void _onStoryImageTap(BookieStoryItem story) {
+    if (story.id == 'puntgpt') {
+      final routeName = (context.isMobileView && kIsWeb)
+          ? WebRoutes.manageSubscriptionScreen.name
+          : AppRoutes.manageSubscriptionScreen.name;
+      Navigator.of(context).pop(_currentPage);
+      Future.microtask(() {
+        (kIsWeb ? WebRouter.router : AppRouter.router).pushNamed(routeName);
+      });
+      return;
+    }
+    final url = story.affiliateUrl;
+    if (url.isEmpty) return;
+    _openAffiliateLink(url);
+  }
+
   @override
   Widget build(BuildContext context) {
     final stories = widget.stories;
@@ -91,7 +109,7 @@ class _BookieStoryViewerState extends State<BookieStoryViewer> {
                   final story = stories[i];
                   return _StoryAdPage(
                     imageAsset: story.storyImageAsset,
-                    onTapImage: () => _openAffiliateLink(story.affiliateUrl),
+                    onTapImage: () => _onStoryImageTap(story),
                     onSwipeDown: _closeAndReturnLastPage,
                   );
                 },
