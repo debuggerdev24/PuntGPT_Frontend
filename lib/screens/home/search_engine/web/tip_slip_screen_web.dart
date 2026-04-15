@@ -17,22 +17,6 @@ class TipSlipScreenWeb extends StatelessWidget {
     //     ? 36.sp
     //     : 20.sp;
 
-    final sixteenResponsive = context.isDesktop
-        ? 16.sp
-        : context.isTablet
-        ? 24.sp
-        : (context.isBrowserMobile)
-        ? 32.sp
-        : 16.sp;
-
-    final fourteenResponsive = context.isDesktop
-        ? 14.sp
-        : context.isTablet
-        ? 22.sp
-        : (context.isBrowserMobile)
-        ? 30.sp
-        : 14.sp;
-
     return Scaffold(
       body: Stack(
         children: [

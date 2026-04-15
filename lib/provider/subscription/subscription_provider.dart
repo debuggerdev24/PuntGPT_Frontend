@@ -18,30 +18,32 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SubscriptionProvider extends ChangeNotifier {
   SubscriptionPlanModel? currentPlan;
-  SubscriptionEnum? tier;
   final Set<SubscriptionEnum> activeSubscriptions = {
-    SubscriptionEnum.monthlyPlan,
+
   };
 
-  bool _isSubscriptionProcessing = false;
+  bool _isSubscriptionProcessing = false,
+      _isUserInitiatedPurchaseFlow = false,
+      _isShowCurrentPlan = false,
+      _isShowSelectedPlan = false,
+      _showPurchaseSuccessToast = true;
   bool get isSubscriptionProcessing => _isSubscriptionProcessing;
 
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
   String _appAccountToken = "";
-  bool _isUserInitiatedPurchaseFlow = false;
 
   //* When true, [initiateSubscription] does not toggle [isSubscriptionProcessing] (used during startup restore).
   bool _silentSubscriptionFlow = false;
 
   List<SubscriptionPlanModel> plans = [];
   int selectedPlanId = 0;
-  bool _isShowCurrentPlan = false,
-      _isShowSelectedPlan = false,
-      _showPurchaseSuccessToast = true;
+
   List<LifeTimeMember>? lifetimeMembers;
 
   bool get showCurrentPlan => _isShowCurrentPlan;
   bool get showSelectedPlan => _isShowSelectedPlan;
+
+ 
 
   void setIsShowSelectedPlan({required bool showSelectedPlan, int? planIndex}) {
     _isShowSelectedPlan = showSelectedPlan;
@@ -54,18 +56,10 @@ class SubscriptionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /*
-  bool get isMonthlyPlanSubscribed =>
-      _activeSubscriptions.contains(SubscriptionEnum.monthlyPlan);
-  bool get isAnnualPlanSubscribed =>
-      _activeSubscriptions.contains(SubscriptionEnum.annualPlan);
-  bool get isLifeTimePlanSubscribed =>
-      _activeSubscriptions.contains(SubscriptionEnum.lifeTimePlan);
-  */
+  
   bool get isSubscribed => activeSubscriptions.isNotEmpty;
 
-  // Set<SubscriptionEnum> get activeSubscriptions => {..._activeSubscriptions};
-
+  
   void setSubscriptionProcessStatus({required bool status}) {
     _isSubscriptionProcessing = status;
     notifyListeners();
@@ -97,6 +91,7 @@ class SubscriptionProvider extends ChangeNotifier {
       },
     );
   }
+
 
   //* Handles the purchase statuses.
   void _handlePurchases(List<PurchaseDetails> purchases) {
@@ -491,8 +486,6 @@ class SubscriptionProvider extends ChangeNotifier {
     VoidCallback? onAlreadySubscribed,
     bool silent = false,
   }) async {
-   
-   
     if (!silent) {
       setSubscriptionProcessStatus(status: true);
       Logger.info("Subscription restored successfully.");
@@ -633,7 +626,6 @@ class SubscriptionProvider extends ChangeNotifier {
         Logger.error(l.errorMsg);
       },
       (r) {
-      
         final data = r["data"] as List;
         lifetimeMembers = data.map((e) => LifeTimeMember.fromJson(e)).toList();
         notifyListeners();

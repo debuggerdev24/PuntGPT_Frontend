@@ -10,9 +10,9 @@ import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 class AuthProvider extends ChangeNotifier {
   TextEditingController firstNameCtr = TextEditingController(),
       lastNameCtr = TextEditingController(),
-      emailCtr = TextEditingController(text: "guest21@mailinator.com"),
+      emailCtr = TextEditingController(),
       phoneCtr = TextEditingController(),
-      passwordCtr = TextEditingController(text: "Test@123"),
+      passwordCtr = TextEditingController(),
       confirmPasswordCtr = TextEditingController(),
       forgotPasswordCtr = TextEditingController(),
       newPasswordCtr = TextEditingController(),
@@ -60,6 +60,8 @@ class AuthProvider extends ChangeNotifier {
     _onboardingPlanTab = value;
     notifyListeners();
   }
+
+
 
   String? get selectedState => _selectedState;
   set selectedState(String? value) {

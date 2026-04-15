@@ -1,9 +1,11 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/widgets/web_top_section.dart';
+import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
 import 'package:puntgpt_nick/screens/auth/mobile/widgets/sign_up_bottom_section.dart';
 import 'package:puntgpt_nick/screens/auth/mobile/widgets/sign_up_form.dart';
 import 'package:puntgpt_nick/screens/auth/mobile/widgets/sign_up_title.dart';
+import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -78,6 +80,15 @@ class SignUpScreen extends StatelessWidget {
                                 }
                                 provider.registerUser(context: context);
                               });
+                            },
+                            onContinueAsGuestTap: () {
+                              LocaleStorageService.setIsFirstTime(false);
+                              isGuest = true;
+                              context.pushNamed(
+                                kIsWeb
+                                    ? WebRoutes.homeScreen.name
+                                    : AppRoutes.homeScreen.name,
+                              );
                             },
                           ),
                           30.w.verticalSpace,

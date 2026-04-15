@@ -44,15 +44,15 @@ class PuntClubProvider extends ChangeNotifier {
   /// Typing users excluding current user (so we don't show "You are typing").
 
   /// Call this with our display name (e.g. from profile or group username) to filter own typing.
-  void setMyDisplayName(String? name) {
-    if (name != null && name.trim().isNotEmpty) _myDisplayName = name.trim();
-  }
+  // void setMyDisplayName(String? name) {
+  //   if (name != null && name.trim().isNotEmpty) _myDisplayName = name.trim();
+  // }
 
   /// Tracks which group we're chatting in, to avoid clearing messages when re-entering.
   String? _currentChatGroupId;
 
   /// Our display name in this group (e.g. "Meera") - used to filter own typing indicator.
-  String? _myDisplayName;
+  // String? _myDisplayName;
 
   /// Current user id for "is mine" check. From LocaleStorageService.
   int get _currentUserId => LocaleStorageService.userId;
@@ -546,10 +546,10 @@ class PuntClubProvider extends ChangeNotifier {
         Logger.error("user name setup error: ${l.errorMsg}");
       },
       (r) async {
-        final newName = usernameCtr.text.trim();
-        if (newName.isNotEmpty) {
-          setMyDisplayName(newName);
-        }
+        // final newName = usernameCtr.text.trim();
+        // if (newName.isNotEmpty) {
+        //   setMyDisplayName(newName);
+        // }
         // Reconnect chat socket so backend picks up updated name
         disconnectChat();
         await connectChat();

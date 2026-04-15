@@ -4,11 +4,11 @@ class AgeConfirmationScreen extends StatelessWidget {
   const AgeConfirmationScreen({super.key});
 
   void _onYesTap(BuildContext context) {
-    context.pushNamed(AppRoutes.onboardingScreen.name);
+    context.pushNamed(AppRoutes.signUpScreen.name);//commenting the onboardingScreen to avoid the login flow.
   }
 
   void _onNoTap(BuildContext context) {
-    context.pushNamed(AppRoutes.onboardingScreen.name);
+    context.pushNamed(AppRoutes.signUpScreen.name);//commenting the onboardingScreen to avoid the login flow.
   }
 
   @override

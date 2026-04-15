@@ -92,7 +92,7 @@ class DioClient {
     await LocaleStorageService.clearUserTokens();
     // Keep it simple: go to onboarding (login flow starts from there).
     (kIsWeb ? WebRouter.router : AppRouter.router)
-        .goNamed(AppRoutes.onboardingScreen.name);
+        .goNamed(AppRoutes.signUpScreen.name);//commenting the onboardingScreen to avoid the login flow.
   }
 
   Future<bool> _refreshAccessTokenOnce() async {

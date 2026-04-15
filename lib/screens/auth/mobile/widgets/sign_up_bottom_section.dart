@@ -7,10 +7,12 @@ class SignUpBottomSection extends StatelessWidget {
     super.key,
     required this.onLoginTap,
     required this.onSignUpTap,
+    required this.onContinueAsGuestTap,
   });
 
   final VoidCallback onLoginTap;
   final VoidCallback onSignUpTap;
+  final VoidCallback onContinueAsGuestTap;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,18 @@ class SignUpBottomSection extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 25.w),
         ),
         10.w.verticalSpace,
+        OnMouseTap(
+          onTap: onContinueAsGuestTap,
+          child: Text(
+            "Continue as guest",
+            style: medium(
+              fontSize: 14.sp,
+              color: AppColors.primary.withValues(alpha: 0.85),
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+        20.w.verticalSpace,
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 5),
           child: Wrap(

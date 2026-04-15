@@ -229,7 +229,7 @@ class AccountScreen extends StatelessWidget {
                       );
                       context.read<SubscriptionProvider>().activeSubscriptions
                           .clear();
-                      context.goNamed(AppRoutes.onboardingScreen.name);
+                      context.goNamed(AppRoutes.signUpScreen.name);//commenting the onboardingScreen to avoid the login flow.
                     },
                     onFailed: (error) {
                       AppToast.error(context: context, message: error);
@@ -290,7 +290,7 @@ class AccountScreen extends StatelessWidget {
                       );
                       context.read<SubscriptionProvider>().activeSubscriptions
                           .clear();
-                      context.goNamed(AppRoutes.onboardingScreen.name);
+                      context.goNamed(AppRoutes.signUpScreen.name);//commenting the onboardingScreen to avoid the login flow.
                     },
                     onFailed: (error) {
                       AppToast.error(context: context, message: error);
