@@ -48,12 +48,17 @@ class AppAssets {
   static const instagramLogo = "$_imagePath/instagram.png";
   static const news = "$_imagePath/news.png";
   static const dabbleBanner = "$_imagePath/dabble_banner.png";
-  static const dabbleAdvertisement = "$_imagePath/dabble_ads.png";
-  static const unibatAdvertisement = "$_imagePath/unibat_ads.png";
+  static const dabbleAdvertisement1 = "$_imagePath/dabble_ads.png";
+  static const dabbleAdvertisement2 = "$_imagePath/dabble_ads2.png";
+  static const dabbleAdvertisement3 = "$_imagePath/dabble_ads3.png";
+  static const dabbleAdvertisement4 = "$_imagePath/dabble_ads4.png";
+  static const unibatAdvertisement1 = "$_imagePath/unibat_ads.png";
+  static const unibatAdvertisement2 = "$_imagePath/unibat_ads_2.png";
+  static const unibatAdvertisement3 = "$_imagePath/unibat_ads_3.png";
   static const puntGPTAdsLogo = "$_imagePath/puntgpt_ads_logo.png";
   static const puntGPTAdvertisement = "$_imagePath/puntgpt_ads.png";
   static const dabbleGIF = "$_gifsPath/dabble.gif";
-  /// PuntGPT story reel — must live under [assets/videos] and that folder must be listed in pubspec.yaml.
+  
   static const puntGPTVideoAds = "$_videosPath/puntgpt_story_ad.mp4";
   static const dummyVid = "$_videosPath/dummy.mp4";
   

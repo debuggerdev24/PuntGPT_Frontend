@@ -163,6 +163,7 @@ class _DashboardState extends State<Dashboard> {
     required int index,
     Color? color,
     bool hasLock = false,
+    String? tooltipMessage,
   }) {
     final currentIndex = AppRouter.indexedStackNavigationShell?.currentIndex;
     final opacity = 0.62;
@@ -171,36 +172,39 @@ class _DashboardState extends State<Dashboard> {
         color?.withValues(alpha: currentIndex == index ? 1 : opacity) ??
         AppColors.white.withValues(alpha: currentIndex == index ? 1 : opacity);
     return Expanded(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: Column(
-          spacing: isSvg ? 2.w: 5.w,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ImageWidget(
-              path: icon,
-              type: isSvg ? ImageType.svg : ImageType.asset,
-              color: inactiveColor,
-              height: isSvg ? 28.w : 24.w,
-            ),
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: medium(
-                fontSize: 12.sp,
-                height: 1.11,
-                color:
-                    color?.withValues(
-                      alpha: currentIndex == index ? 1 : opacity,
-                    ) ??
-                    AppColors.white.withValues(
-                      alpha: currentIndex == index ? 1 : opacity,
-                    ),
+      child: Tooltip(
+        message: tooltipMessage ?? text,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: Column(
+            spacing: isSvg ? 2.w : 5.w,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ImageWidget(
+                path: icon,
+                type: isSvg ? ImageType.svg : ImageType.asset,
+                color: inactiveColor,
+                height: isSvg ? 28.w : 24.w,
               ),
-            ),
-          ],
+              Text(
+                text,
+                textAlign: TextAlign.center,
+                style: medium(
+                  fontSize: 12.sp,
+                  height: 1.11,
+                  color:
+                      color?.withValues(
+                        alpha: currentIndex == index ? 1 : opacity,
+                      ) ??
+                      AppColors.white.withValues(
+                        alpha: currentIndex == index ? 1 : opacity,
+                      ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

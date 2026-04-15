@@ -35,15 +35,12 @@ class _BookieStoriesSectionState extends State<BookieStoriesSection> {
 
     if (!mounted) return;
 
-    // Where they stopped (same as start if they only tapped X immediately).
-    final end = lastPageIndex ?? startIndex;
-    final first = startIndex < end ? startIndex : end;
-    final last = startIndex < end ? end : startIndex;
+    // Flat page indices: one swipe can move across several slides and partners.
+    final startFlat = flatSlideIndexForChannel(list, startIndex);
+    final endFlat = lastPageIndex ?? startFlat;
 
     setState(() {
-      for (var i = first; i <= last; i++) {
-        _seenStoryIds.add(list[i].id);
-      }
+      _seenStoryIds.addAll(channelIdsInFlatPageRange(list, startFlat, endFlat));
     });
   }
 

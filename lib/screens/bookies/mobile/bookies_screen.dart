@@ -41,7 +41,7 @@ class BookiesScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         ImageWidget(
-                          path: AppAssets.dabbleAdvertisement,
+                          path: AppAssets.dabbleAdvertisement1,
                           type: ImageType.asset,
                           width: double.infinity,
                           fit: BoxFit.contain,

@@ -109,9 +109,10 @@ class RunnerBox extends StatelessWidget {
                       runner.track ?? '-',
                       "R${runner.raceNumber ?? '-'}",
                       "${runner.distance ?? '-'}m",
-                      "${jumpTime[1].split(":")[0]}:${jumpTime[1].split(":")[1]} ${jumpTime[2]}",
+                     (jumpTime != null) ? "${jumpTime[1].split(":")[0]}:${jumpTime[1].split(":")[1]} ${jumpTime[2]}" : "-",
                     ].join(" - "),
-                    style: semiBold(fontSize: 15.sp, height: 1.25),
+                    style: semiBold(fontSize: 15.sp, height: 1.25
+                    ),
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

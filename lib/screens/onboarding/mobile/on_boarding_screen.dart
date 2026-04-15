@@ -1,6 +1,7 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/main.dart';
 import 'package:puntgpt_nick/provider/auth/auth_provider.dart';
+import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 import 'package:puntgpt_nick/services/storage/locale_storage_service.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -42,6 +43,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   void initState() {
     super.initState();
+    context.read<SubscriptionProvider>().initialize(context: context);
+
     isGuest = false;
   }
 
@@ -56,7 +59,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           body: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.w),
             child: Consumer<AuthProvider>(
-              builder: (context, auth, _){
+              builder: (context, auth, _) {
                 final selected = auth.onboardingPlanTab; // 0/1
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -229,7 +232,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   ),
                                   24.w.verticalSpace,
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       ImageWidget(
                                         path: AppAssets.onBoardingImage,
@@ -246,8 +250,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             "First 100 Life Memberships",
                                             style: semiBold(
                                               height: 1,
-                                              fontSize:
-                                                  context.isBrowserMobile
+                                              fontSize: context.isBrowserMobile
                                                   ? 22.sp
                                                   : 18.sp,
                                               fontFamily:
@@ -258,21 +261,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           Text(
                                             "get individual Baggy Black #1-100",
                                             style: regular(
-                                              fontSize:
-                                                  context.isBrowserMobile
+                                              fontSize: context.isBrowserMobile
                                                   ? 16.sp
                                                   : 13.sp,
-                                              color: AppColors.primary.withValues(alpha: 0.6),
-                                                  height: 1,
+                                              color: AppColors.primary
+                                                  .withValues(alpha: 0.6),
+                                              height: 1,
                                             ),
                                           ),
 
-                                          
                                           AppOutlinedButton(
                                             margin: EdgeInsets.only(top: 10.w),
                                             text: "Upgrade to Pro",
                                             borderRadius: 2.r,
-                                      
+
                                             isExpand: false,
                                             padding: EdgeInsets.symmetric(
                                               horizontal: 12.w,
@@ -281,8 +283,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             borderColor:
                                                 AppColors.premiumYellow,
                                             textStyle: semiBold(
-                                              fontSize:
-                                                  context.isBrowserMobile
+                                              fontSize: context.isBrowserMobile
                                                   ? 18.sp
                                                   : 14.sp,
                                               color: AppColors.premiumYellow,
@@ -385,8 +386,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     AppFilledButton(
                       margin: EdgeInsets.only(top: 25.w),
-                      text: selected == 0 ? "Continue as guest" : "Create Account",
+                      text: selected == 0 ? "Continue as guest" : "Subscribe",
                       onTap: () {
+                        isGuest = true;
+
                         if (selected == 0) {
                           LocaleStorageService.setIsFirstTime(false);
                           isGuest = true;
@@ -397,8 +400,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           );
                           return;
                         }
-                        context.read<AuthProvider>().clearSignUpControllers();
-                        LocaleStorageService.setIsFirstTime(false);
+
+                        // context.read<AuthProvider>().clearSignUpControllers();
+                        // LocaleStorageService.setIsFirstTime(false);
+                        isGuest = false;
+                        
                         context.pushNamed(
                           kIsWeb
                               ? WebRoutes.signUpScreen.name

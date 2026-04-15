@@ -3,7 +3,30 @@ import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/home/search_engine/bookie_story_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// Full-screen story: swipe sideways between partners, tap the ad image for the
+/// One entry in the fullscreen PageView (one image; swipe = next slide or next partner).
+class _StorySlide {
+  const _StorySlide({
+    required this.channel,
+    required this.imageAsset,
+    this.videoAsset,
+    required this.slideIndexInChannel,
+    required this.slideCountInChannel,
+  });
+
+  final BookieStoryItem channel;
+  final String imageAsset;
+
+  /// Only the first slide of a channel can play video; others are images only.
+  final String? videoAsset;
+
+  /// 0-based index within this channel only (for the top progress bar).
+  final int slideIndexInChannel;
+
+  /// How many slides this channel has (same on every slide of that channel).
+  final int slideCountInChannel;
+}
+
+// Full-screen story: swipe sideways between slides (multiple per channel), tap for link.
 class BookieStoryViewer extends StatefulWidget {
   const BookieStoryViewer({
     super.key,
@@ -20,13 +43,37 @@ class BookieStoryViewer extends StatefulWidget {
 
 class _BookieStoryViewerState extends State<BookieStoryViewer> {
   late final PageController _pageController;
+  late final List<_StorySlide> _slides;
   late int _currentPage;
 
   @override
   void initState() {
     super.initState();
-    final last = widget.stories.length - 1;
-    final start = last < 0 ? 0 : widget.initialIndex.clamp(0, last);
+    _slides = [];
+    for (final channel in widget.stories) {
+      final paths = channel.storyImageAssets;
+      if (paths.isEmpty) continue;
+      final slideCount = paths.length;
+      for (var i = 0; i < slideCount; i++) {
+        _slides.add(
+          _StorySlide(
+            channel: channel,
+            imageAsset: paths[i],
+            videoAsset: i == 0 ? channel.storyVideoAsset : null,
+            slideIndexInChannel: i,
+            slideCountInChannel: slideCount,
+          ),
+        );
+      }
+    }
+
+    final lastSlide = _slides.isEmpty ? 0 : _slides.length - 1;
+    final channelStart = widget.stories.isEmpty
+        ? 0
+        : widget.initialIndex.clamp(0, widget.stories.length - 1);
+    final startFlat = flatSlideIndexForChannel(widget.stories, channelStart);
+    final start = startFlat.clamp(0, lastSlide);
+
     _currentPage = start;
     _pageController = PageController(initialPage: start);
   }
@@ -68,8 +115,9 @@ class _BookieStoryViewerState extends State<BookieStoryViewer> {
 
   @override
   Widget build(BuildContext context) {
-    final stories = widget.stories;
-    if (stories.isEmpty) return const SizedBox.shrink();
+    if (widget.stories.isEmpty || _slides.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Material(
       color: Colors.black,
@@ -78,8 +126,8 @@ class _BookieStoryViewerState extends State<BookieStoryViewer> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _SegmentProgressRow(
-              pageCount: stories.length,
-              currentPage: _currentPage,
+              pageCount: _slides[_currentPage].slideCountInChannel,
+              currentPage: _slides[_currentPage].slideIndexInChannel,
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(12.w, 0, 0.w, 4.w),
@@ -87,7 +135,7 @@ class _BookieStoryViewerState extends State<BookieStoryViewer> {
                 children: [
                   Expanded(
                     child: Text(
-                      stories[_currentPage].displayName,
+                      _slides[_currentPage].channel.displayName,
                       style: bold(fontSize: 15, color: AppColors.white),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -103,24 +151,25 @@ class _BookieStoryViewerState extends State<BookieStoryViewer> {
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
-                itemCount: stories.length,
+                itemCount: _slides.length,
                 onPageChanged: (i) => setState(() => _currentPage = i),
                 itemBuilder: (context, i) {
-                  final story = stories[i];
+                  final slide = _slides[i];
+                  final channel = slide.channel;
                   final isActive = i == _currentPage;
-                  final videoPath = story.storyVideoAsset;
+                  final videoPath = slide.videoAsset;
                   if (videoPath != null && videoPath.isNotEmpty) {
                     return _StoryVideoPage(
-                      story: story,
+                      story: channel,
                       videoAssetPath: videoPath,
                       isActive: isActive,
-                      onTapImage: () => _onStoryImageTap(story),
+                      onTapImage: () => _onStoryImageTap(channel),
                       onSwipeDown: _closeAndReturnLastPage,
                     );
                   }
                   return _StoryAdPage(
-                    imageAsset: story.storyImageAsset,
-                    onTapImage: () => _onStoryImageTap(story),
+                    imageAsset: slide.imageAsset,
+                    onTapImage: () => _onStoryImageTap(channel),
                     onSwipeDown: _closeAndReturnLastPage,
                   );
                 },
@@ -197,7 +246,7 @@ class _StoryAdPage extends StatelessWidget {
   }
 }
 
-/// Plays a bundled story video when possible; otherwise shows [BookieStoryItem.storyImageAsset].
+/// Plays a bundled story video when possible; otherwise shows the first story image.
 class _StoryVideoPage extends StatefulWidget {
   const _StoryVideoPage({
     required this.story,
@@ -347,7 +396,7 @@ class _StoryVideoPageState extends State<_StoryVideoPage> {
   Widget build(BuildContext context) {
     if (_useImageFallback) {
       return _StoryAdPage(
-        imageAsset: widget.story.storyImageAsset,
+        imageAsset: widget.story.storyImageAssets.first,
         onTapImage: widget.onTapImage,
         onSwipeDown: widget.onSwipeDown,
       );
