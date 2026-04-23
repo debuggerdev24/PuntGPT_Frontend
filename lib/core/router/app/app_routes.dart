@@ -27,7 +27,7 @@ manageSubscriptionScreen,
 offlineViewScreen,
 selectedPlanScreen,
 currentPlanScreen,
-  runnersScreen, groupMembersScreen, lifeTimeMembersScreen, uploadStoryContent, editStorySection, editStoryOption, uploadStoryData,
+  runnersScreen, groupMembersScreen, lifeTimeMembersScreen, uploadStoryContent, editStorySection, editStoryOption, uploadStoryData, deleteStoryContent, createNewStorySection,
 }
 
 

@@ -21,12 +21,9 @@ class SectionSelectionScreen extends StatelessWidget {
               children: [
                 Text(
                   "Choose section",
-                  style: semiBold(
-                    fontSize: 14.fSize,
-                    color: AppColors.primary,
-                  ),
+                  style: semiBold(fontSize: 14.fSize, color: AppColors.primary),
                 ),
-                8.w.verticalSpace,
+                // 8.w.verticalSpace,
                 Text(
                   "Only one section can be active at a time.",
                   style: regular(
@@ -38,32 +35,20 @@ class SectionSelectionScreen extends StatelessWidget {
                 Consumer<StoryProvider>(
                   builder: (context, storyProvider, _) {
                     final selected = storyProvider.selectedStorySection;
-                    return Column(
-                      children: [
-                        _SectionSwitchTile(
-                          title: 'PuntGPT',
-                          value: selected == 'puntgpt',
-                          onChanged: (_) => context
-                              .read<StoryProvider>()
-                              .selectStorySection('puntgpt'),
-                        ),
-                        10.w.verticalSpace,
-                        _SectionSwitchTile(
-                          title: 'Unibet',
-                          value: selected == 'unibet',
-                          onChanged: (_) => context
-                              .read<StoryProvider>()
-                              .selectStorySection('unibet'),
-                        ),
-                        10.w.verticalSpace,
-                        _SectionSwitchTile(
-                          title: 'Dabble',
-                          value: selected == 'dabble',
-                          onChanged: (_) => context
-                              .read<StoryProvider>()
-                              .selectStorySection('dabble'),
-                        ),
-                      ],
+                    return ListView.separated(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: storyProvider.stories!.length,
+                      itemBuilder: (context, index) => _SectionSwitchTile(
+                        title: storyProvider.stories![index].title,
+                        value:
+                            selected == storyProvider.stories![index].section,
+                        onChanged: (_) =>
+                            context.read<StoryProvider>().selectStorySection(
+                              storyProvider.stories![index].section,
+                            ),
+                      ),
+                      separatorBuilder: (context, index) => 10.w.verticalSpace,
                     );
                   },
                 ),
@@ -71,20 +56,17 @@ class SectionSelectionScreen extends StatelessWidget {
             ),
           ),
         ),
-        Material(
-          elevation: 10,
-          color: AppColors.white,
-          shadowColor: AppColors.primary.withValues(alpha: 0.1),
-          child: SafeArea(
-            top: false,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 12.w, 16.w, 12.w),
-              child: AppFilledButton(
-                text: 'Continue',
-                onTap: () => context.pushNamed(AppRoutes.editStoryOption.name),
-              ),
-            ),
-          ),
+        AppOutlinedButton(
+          margin: EdgeInsets.fromLTRB(16.w, 12.w, 16.w, 10.w),
+          text: "Continue",
+          onTap: () => context.pushNamed(AppRoutes.editStoryOption.name),
+        ),
+        AppFilledButton(
+          margin: EdgeInsets.fromLTRB(16.w, 12.w, 16.w, 10.w),
+          text: "Create new section",
+          onTap: () {
+            context.pushNamed(AppRoutes.createNewStorySection.name);
+          },
         ),
       ],
     );
@@ -108,7 +90,7 @@ class _SectionSwitchTile extends StatelessWidget {
       onTap: () => onChanged(!value),
       borderRadius: BorderRadius.circular(14.w),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.w),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 0.w),
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(8.w),
@@ -130,10 +112,7 @@ class _SectionSwitchTile extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: semiBold(
-                  fontSize: 14.fSize,
-                  color: AppColors.primary,
-                ),
+                style: semiBold(fontSize: 14.fSize, color: AppColors.primary),
               ),
             ),
             IgnorePointer(

@@ -130,6 +130,7 @@ class UploadStoryContent extends StatelessWidget {
                                             const CircularProgressIndicator(
                                               strokeWidth: 2.5,
                                               color: AppColors.primary,
+                                              strokeCap: StrokeCap.round,
                                             ),
                                       )
                                     else
@@ -450,6 +451,7 @@ class UploadStoryContent extends StatelessWidget {
                                     child: const CircularProgressIndicator(
                                       strokeWidth: 2.5,
                                       color: AppColors.white,
+                                      strokeCap: StrokeCap.round,
                                     ),
                                   ),
                                   SizedBox(width: 10.w),

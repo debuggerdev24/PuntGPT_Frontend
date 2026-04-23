@@ -36,13 +36,16 @@ class AppScreenTopBar extends StatelessWidget {
                       style: regular(
                         fontSize: 24.fSize,
                         fontFamily: AppFontFamily.secondary,
-                        height: 1.1,
+                        height: 1.2,
                       ),
                     ),
+                    1.w.verticalSpace,
                     Text(
                       slogan,
                       style: semiBold(
                         fontSize: 14.fSize,
+                        height: 1.1,
+
                         color: AppColors.primary.withValues(alpha: 0.6),
                       ),
                     ),

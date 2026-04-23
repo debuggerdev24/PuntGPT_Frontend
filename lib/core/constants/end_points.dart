@@ -127,8 +127,9 @@ class EndPoints {
   static const String getStory = "/horse-race/stories/";
   static const String updateStoryContent = "/horse-race/stories/media/";
   static String deleteMedia({required String id}) =>
-      "/horse-race/stories/media/{$id}/";
-  static String createSection = "/horse-race/stories/section/";
+      "/horse-race/stories/media/$id/";
+  static String createStorySection = "/horse-race/stories/section/";
   static String updateStorySection({required String section}) =>
       "/horse-race/stories/section/$section/";
+
 }

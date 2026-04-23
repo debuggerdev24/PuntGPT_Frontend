@@ -56,7 +56,7 @@ class AppFilledButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style:
                     textStyle ??
-                    semiBold(fontSize: 17.fSize, color: AppColors.white),
+                    semiBold(fontSize: 18.fSize, color: AppColors.white),
               ),
         ),
       ),

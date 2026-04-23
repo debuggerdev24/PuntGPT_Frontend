@@ -95,9 +95,7 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: EdgeInsets.all(
-                  (context.isMobileWeb) ? 22.w : 16.w,
-                ),
+                padding: EdgeInsets.all((context.isMobileWeb) ? 22.w : 16.w),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.08),
                   shape: BoxShape.circle,
@@ -208,7 +206,7 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
     }
 
     return Container(
-      height: 200.h,
+      height: 200.w,
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
         borderRadius: BorderRadius.circular(8.r),
@@ -359,8 +357,9 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
       child: Column(
         children: [
           Container(
-            width: 40.w,
-            height: 40.w,
+            width: 42.w,
+            height: 42.w,
+            padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.w),
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(color: _kListBorder, width: 1),
@@ -375,23 +374,12 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4.r),
-              child: Image.network(
-                speedMap.selection.silksImage,
+              child: ImageWidget(
+                path: speedMap.selection.silksImage,
+                type: ImageType.svg,
+                // width: 40.w,
+                // height: 40.w,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: _kListOddsBg,
-                    child: Center(
-                      child: Text(
-                        '${speedMap.selection.number}',
-                        style: semiBold(
-                          fontSize: 14.sp,
-                          color: _kListTextMuted,
-                        ),
-                      ),
-                    ),
-                  );
-                },
               ),
             ),
           ),
@@ -636,51 +624,5 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
       default:
         return _kListOddsBg;
     }
-  }
-
-  Widget topBar({
-    required BuildContext context,
-    required SpeedMapsModel speedMaps,
-  }) {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(6.w, 8, 25.w, 20.w),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconButton(
-                padding: EdgeInsets.zero,
-                onPressed: () => context.pop(),
-                icon: Icon(Icons.arrow_back_ios_rounded, size: 16.h),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Speed Maps",
-                      style: regular(
-                        fontSize: 24.sp,
-                        fontFamily: AppFontFamily.secondary,
-                        height: 1.35,
-                      ),
-                    ),
-                    Text(
-                      "Race ${speedMaps.raceNumber} - ${speedMaps.meetingName}",
-                      style: semiBold(
-                        fontSize: 14.sp,
-                        color: AppColors.primary.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        horizontalDivider(),
-      ],
-    );
   }
 }

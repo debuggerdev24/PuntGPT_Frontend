@@ -16,19 +16,20 @@ class StoryProvider extends ChangeNotifier {
 
   final ImagePicker _imagePicker = ImagePicker();
 
-  XFile? _storyContentImageFile;
+  XFile? _storyContentImageFile, _storyContentVideoFile, _storyDataAvatarFile;
   Uint8List? _storyContentImageBytes;
-  XFile? _storyContentVideoFile;
   int? _storyContentVideoSizeBytes;
-  bool _busyStoryImage = false;
-  bool _busyStoryVideo = false;
-  bool _isUploadingStoryContent = false;
-  bool _isUpdatingStoryData = false;
+  bool _busyStoryImage = false,
+      _busyStoryVideo = false,
+      _isUploadingStoryContent = false,
+      _isUpdatingStoryData = false,
+      _isDeletingStoryContent = false,
+      _isCreatingStorySection = false;
+  String? _deletingStoryContentId;
   bool _isPickingStoryDataAvatar = false;
-  String _selectedStorySection = allowedStorySections.first;
-  String _storyDataDisplayName = '';
-  String _storyDataAffiliateUrl = '';
-  XFile? _storyDataAvatarFile;
+  String _selectedStorySection = allowedStorySections.first,
+      _storyDataDisplayName = '',
+      _storyDataAffiliateUrl = '';
 
   XFile? get storyContentImageFile => _storyContentImageFile;
   Uint8List? get storyContentImageBytes => _storyContentImageBytes;
@@ -38,9 +39,12 @@ class StoryProvider extends ChangeNotifier {
   bool get isPickingStoryVideo => _busyStoryVideo;
   bool get isUploadingStoryContent => _isUploadingStoryContent;
   bool get isUpdatingStoryData => _isUpdatingStoryData;
+  bool get isDeletingStoryContent => _isDeletingStoryContent;
+  String? get deletingStoryContentId => _deletingStoryContentId;
   bool get isPickingStoryDataAvatar => _isPickingStoryDataAvatar;
   String get selectedStorySection => _selectedStorySection;
   String get storyDataDisplayName => _storyDataDisplayName;
+
   String get storyDataAffiliateUrl => _storyDataAffiliateUrl;
   XFile? get storyDataAvatarFile => _storyDataAvatarFile;
 
@@ -48,10 +52,6 @@ class StoryProvider extends ChangeNotifier {
       _storyContentImageBytes != null && _storyContentImageBytes!.isNotEmpty;
   bool get hasStoryContentVideo =>
       _storyContentVideoFile?.name.isNotEmpty ?? false;
-  bool get hasStoryDataDraft =>
-      _storyDataDisplayName.trim().isNotEmpty ||
-      _storyDataAffiliateUrl.trim().isNotEmpty ||
-      _storyDataAvatarFile != null;
 
   void selectStorySection(String section) {
     if (!allowedStorySections.contains(section)) return;
@@ -63,13 +63,11 @@ class StoryProvider extends ChangeNotifier {
   void setStoryDataDisplayName(String value) {
     if (_storyDataDisplayName == value) return;
     _storyDataDisplayName = value;
-    notifyListeners();
   }
 
   void setStoryDataAffiliateUrl(String value) {
     if (_storyDataAffiliateUrl == value) return;
     _storyDataAffiliateUrl = value;
-    notifyListeners();
   }
 
   Future<void> pickStoryDataAvatar() async {
@@ -93,13 +91,6 @@ class StoryProvider extends ChangeNotifier {
 
   void clearStoryDataAvatar() {
     if (_storyDataAvatarFile == null) return;
-    _storyDataAvatarFile = null;
-    notifyListeners();
-  }
-
-  void clearStoryDataDraft() {
-    _storyDataDisplayName = '';
-    _storyDataAffiliateUrl = '';
     _storyDataAvatarFile = null;
     notifyListeners();
   }
@@ -163,8 +154,6 @@ class StoryProvider extends ChangeNotifier {
   }
 
   Future<void> getStories() async {
-    _stories = null;
-    notifyListeners();
     final response = await StoryApiService.instance.getStories();
     response.fold(
       (l) {
@@ -172,9 +161,10 @@ class StoryProvider extends ChangeNotifier {
       },
       (r) {
         _stories = (r).map((e) => StoryModel.fromJson(e)).toList();
-        Logger.info("Stories: ${_stories?[0].title}");
-        Logger.info("Stories: ${_stories?[0].imageAdsList.length}");
-        Logger.info("Stories: ${_stories?[0].videoAdsList.length}");
+        if (_stories != null && _stories!.isNotEmpty) {
+          final s = _stories!.first;
+          Logger.info('Stories loaded: ${s.title}');
+        }
         notifyListeners();
       },
     );
@@ -222,20 +212,16 @@ class StoryProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> uploadStoryData({required VoidCallback onSuccess}) async {
+  Future<void> updateStoryData({required VoidCallback onSuccess}) async {
     if (_isUpdatingStoryData) return;
-    if (!hasStoryDataDraft) return;
 
     _isUpdatingStoryData = true;
     notifyListeners();
     try {
       final data = <String, dynamic>{};
-      if (_storyDataDisplayName.trim().isNotEmpty) {
-        data["display_name"] = _storyDataDisplayName.trim();
-      }
-      if (_storyDataAffiliateUrl.trim().isNotEmpty) {
-        data["affiliate_url"] = _storyDataAffiliateUrl.trim();
-      }
+      data["display_name"] = _storyDataDisplayName.trim();
+      // Send even when empty to allow clearing existing affiliate URL.
+      data["affiliate_url"] = _storyDataAffiliateUrl.trim();
       if (_storyDataAvatarFile != null) {
         data["avatar"] = await MultipartFile.fromFile(
           _storyDataAvatarFile!.path,
@@ -248,20 +234,74 @@ class StoryProvider extends ChangeNotifier {
         data: FormData.fromMap(data),
       );
 
-
       response.fold(
         (l) {
-          Logger.error(l.errorMsg); 
+          Logger.error(l.errorMsg);
         },
         (r) {
           Logger.info("Story data updated: $r");
-          clearStoryDataDraft();
+          _storyDataAvatarFile = null;
           onSuccess();
           getStories();
         },
       );
     } finally {
       _isUpdatingStoryData = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> createStorySection({required VoidCallback onSuccess}) async {
+    if (_isCreatingStorySection) return;
+    _isCreatingStorySection = true;
+    notifyListeners();
+
+    final payload = <String, dynamic>{
+      "section": _storyDataDisplayName.toLowerCase(),
+      "display_name": _storyDataDisplayName,
+      "affiliate_url": _storyDataAffiliateUrl,
+    };
+
+    if(_storyDataAvatarFile != null){
+      payload["avatar"] = await MultipartFile.fromFile(
+        _storyDataAvatarFile!.path,
+        filename: _storyDataAvatarFile!.name,
+      );
+    }
+
+    final response = await StoryApiService.instance.createStorySection(
+      data: FormData.fromMap(payload),
+    );
+    response.fold((l) => Logger.error(l.errorMsg), (r) {
+      Logger.info("Story section created: $r");
+      _storyDataAvatarFile = null;
+      onSuccess();
+      getStories();
+    });
+    _isCreatingStorySection = false;
+    notifyListeners();
+  }
+
+
+  Future<void> deleteStoryContent({
+    required String id,
+    required VoidCallback onSuccess,
+  }) async {
+    if (id.isEmpty) return;
+    _isDeletingStoryContent = true;
+    _deletingStoryContentId = id;
+    notifyListeners();
+    try {
+      final response = await StoryApiService.instance.deleteStoryContent(
+        id: id,
+      );
+      response.fold((l) => Logger.error(l.errorMsg), (_) {
+        getStories();
+        onSuccess();
+      });
+    } finally {
+      _isDeletingStoryContent = false;
+      _deletingStoryContentId = null;
       notifyListeners();
     }
   }

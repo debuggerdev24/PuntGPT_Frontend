@@ -4,7 +4,7 @@ class StoryModel {
     section: json["section"],
     title: json["display_name"],
     logo: json["avatar"],
-    affiliateUrl: json["affiliate_url"],
+    affiliateUrl: json["affiliate_url"] ?? "",
     videoAdsList: (json["storyVideoAssets"] as List)
         .map((e) => ContentModel.fromJson(e))
         .toList(),

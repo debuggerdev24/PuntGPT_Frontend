@@ -283,6 +283,7 @@ class _StoryAdPage extends StatelessWidget {
                 child: CircularProgressIndicator(
                   color: Colors.white70,
                   value: value,
+                  strokeCap: StrokeCap.round,
                 ),
               );
             },
@@ -461,7 +462,7 @@ class _StoryVideoPageState extends State<_StoryVideoPage> {
           if (v > 300) widget.onSwipeDown();
         },
         child: const Center(
-          child: CircularProgressIndicator(color: Colors.white70),
+          child: CircularProgressIndicator(color: Colors.white70, strokeCap: StrokeCap.round),
         ),
       );
     }
@@ -496,7 +497,7 @@ class _StoryVideoPageState extends State<_StoryVideoPage> {
                 ),
                 if (_isBuffering)
                   const Center(
-                    child: CircularProgressIndicator(color: Colors.white70),
+                    child: CircularProgressIndicator(color: Colors.white70, strokeCap: StrokeCap.round),
                   ),
               ],
             );

@@ -34,6 +34,16 @@ class EditStoryOptionScreen extends StatelessWidget {
                   onTap: () =>
                       context.pushNamed(AppRoutes.uploadStoryData.name),
                 ),
+                16.w.verticalSpace,
+                _EditOptionTile(
+                  destructive: true,
+                  icon: Icons.delete_outline_rounded,
+                  title: 'Delete story content',
+                  subtitle:
+                      'Remove uploaded images or videos for this story section.',
+                  onTap: () =>
+                      context.pushNamed(AppRoutes.deleteStoryContent.name),
+                ),
               ],
             ),
           ),
@@ -49,16 +59,19 @@ class _EditOptionTile extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.destructive = false,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final bool destructive;
 
   @override
   Widget build(BuildContext context) {
-    return Container  (
+    final accent = destructive ? AppColors.red : AppColors.primary;
+    return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16.w),
@@ -68,7 +81,7 @@ class _EditOptionTile extends StatelessWidget {
             blurRadius: 24,
             offset: const Offset(0, 0),
           ),
-        ]
+        ],
       ),
       child: InkWell(
         onTap: onTap,
@@ -79,19 +92,21 @@ class _EditOptionTile extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: AppColors.greyColor.withValues(alpha: 0.65),
+                  color: destructive
+                      ? AppColors.red.withValues(alpha: 0.1)
+                      : AppColors.greyColor.withValues(alpha: 0.65),
                   borderRadius: BorderRadius.circular(12.w),
                 ),
-                child: Icon(icon, size: 26.wSize, color: AppColors.primary),
+                child: Icon(icon, size: 26.wSize, color: accent),
               ),
-              SizedBox(width: 14.w),
+              14.w.horizontalSpace,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: semiBold(fontSize: 16.fSize, color: AppColors.primary),
+                      style: semiBold(fontSize: 16.fSize, color: accent),
                     ),
                     4.w.verticalSpace,
                     Text(

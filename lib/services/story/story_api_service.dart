@@ -15,7 +15,6 @@ class StoryApiService {
 
   Future<Either<ApiException, Map<String, dynamic>>> uploadStoryContent({
     required dynamic data,
-
   }) async {
     return await BaseApiHelper.instance.post(
       EndPoints.updateStoryContent,
@@ -30,6 +29,24 @@ class StoryApiService {
     return await BaseApiHelper.instance.patch(
       EndPoints.updateStorySection(section: section),
       data: data,
+    );
+  }
+
+  Future<Either<ApiException, Map<String, dynamic>>> createStorySection({
+    required dynamic data,
+  }) async {
+    return await BaseApiHelper.instance.post(
+      EndPoints.createStorySection,
+      data: data,
+    );
+  }
+
+  Future<Either<ApiException, bool>> deleteStoryContent({
+    required String id,
+  }) async {
+    return await BaseApiHelper.instance.delete<bool>(
+      EndPoints.deleteMedia(id: id),
+      parser: (_) => true,
     );
   }
 }

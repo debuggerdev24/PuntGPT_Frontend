@@ -192,9 +192,10 @@ class _ClassicFormMeetingTile extends StatelessWidget {
   final ClassicFormModel meeting;
   final VoidCallback onTap;
 
-  String get _displayName => meeting.meetingName.trim().isNotEmpty
-      ? meeting.trackName
-      : meeting.meetingName;
+  String get _displayName => meeting.trackName;
+  //  meeting.meetingName.trim().isNotEmpty
+  //     ? meeting.trackName
+  //     : meeting.meetingName;
 
   String get _trackCondition =>
       meeting.races.first.trackCondition.toLowerCase();

@@ -7,8 +7,10 @@ import 'package:puntgpt_nick/screens/home/search_engine/mobile/saved_search_scre
 import 'package:puntgpt_nick/screens/home/classic_form_guide/mobile/selected_meeting_screen.dart';
 import 'package:puntgpt_nick/screens/home/classic_form_guide/mobile/tips_and_analysis_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/upcoming_runners_screen.dart';
+import 'package:puntgpt_nick/screens/home/story/create_new_story_section.dart';
 import 'package:puntgpt_nick/screens/home/story/edit_option_screen.dart';
 import 'package:puntgpt_nick/screens/home/story/section_selection_screen.dart';
+import 'package:puntgpt_nick/screens/home/story/delete_story_content.dart';
 import 'package:puntgpt_nick/screens/home/story/upload_story_content.dart';
 import 'package:puntgpt_nick/screens/home/story/update_story_data.dart';
 
@@ -99,6 +101,20 @@ class HomeRoutes {
       path: AppRoutes.uploadStoryData.path,
       builder: (BuildContext context, GoRouterState state) {
         return UploadStoryData();
+      },
+    ),
+    GoRoute(
+      name: AppRoutes.deleteStoryContent.name,
+      path: AppRoutes.deleteStoryContent.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const DeleteStoryContent();
+      },
+    ),
+    GoRoute(
+      name: AppRoutes.createNewStorySection.name,
+      path: AppRoutes.createNewStorySection.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return CreateNewStorySection();
       },
     ),
   ];
