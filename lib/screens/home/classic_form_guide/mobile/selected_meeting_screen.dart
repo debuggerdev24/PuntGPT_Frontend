@@ -236,7 +236,9 @@ class SelectedMeetingScreen extends StatelessWidget {
                               style: semiBold(fontSize: 18.5.sp),
                             ),
                             Text(
-                              " ${race.trackCondition} ${race.trackConditionRating}",
+                              race.trackConditionRating == null
+                                  ? " ${race.trackCondition}"
+                                  : " ${race.trackCondition} ${race.trackConditionRating}",
                               style: semiBold(
                                 fontSize: (context.isMobileWeb) ? 28.sp : 14.sp,
                                 color: trackCond.contains('good')
@@ -389,7 +391,7 @@ Widget _detailLabelValue({
             fontSize: 12.sp,
             color: AppColors.primary.withValues(alpha: 0.7),
           ),
-          maxLines: maxLines,
+          // maxLines: 0,
         ),
       ),
     ],
@@ -599,14 +601,13 @@ class _FormHistoryCard extends StatelessWidget {
 }
 
 //* Sire / Dam / Prize row — same facts we used to show in the bottom sheet.
-Widget _pedigreeThreeColumns(Selection selection) {
+Widget _threeColumns(Selection selection) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
-    spacing: 10.w,
+    spacing: 6.w,
     children: [
       Expanded(
         child: Column(
-          spacing: 4.w,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _detailLabelValue(label: 'Sire', value: selection.horseSire),
@@ -616,7 +617,6 @@ Widget _pedigreeThreeColumns(Selection selection) {
       ),
       Expanded(
         child: Column(
-          spacing: 4.w,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _detailLabelValue(label: 'Dam', value: selection.horseDam),
@@ -626,7 +626,6 @@ Widget _pedigreeThreeColumns(Selection selection) {
       ),
       Expanded(
         child: Column(
-          spacing: 4.w,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _detailLabelValue(
@@ -671,7 +670,7 @@ Widget _raceCard({
   );
 
   return Container(
-    padding: EdgeInsets.fromLTRB(11.w, 10.w, 11.w, 7.w),
+    padding: EdgeInsets.fromLTRB(8.w, 10.w, 8.w, 7.w),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(6.r),
@@ -756,7 +755,6 @@ Widget _raceCard({
                   children: [
                     Expanded(
                       child: Column(
-                        spacing: 4.w,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _detailLabelValue(
@@ -774,7 +772,6 @@ Widget _raceCard({
                     ),
                     Expanded(
                       child: Column(
-                        spacing: 4.w,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _detailLabelValue(
@@ -823,7 +820,52 @@ Widget _raceCard({
                     8.w.verticalSpace,
                     horizontalDivider(opacity: 0.5),
                     8.w.verticalSpace,
-                    _pedigreeThreeColumns(selection),
+                    //* Sire / Dam / Prize row
+                    _threeColumns(selection),
+                    8.w.verticalSpace,
+                    horizontalDivider(opacity: 0.5),
+                    8.w.verticalSpace,
+
+                    Text(
+                      "Comments",
+                      style: bold(fontSize: 12.sp, color: AppColors.primary),
+                    ),
+                    3.w.verticalSpace,
+
+                    ListView.separated
+                    (
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: selection.previewComments.length,
+                      separatorBuilder: (context, index) => 7.w.verticalSpace,
+                      itemBuilder: (context, index) => Row(
+                        crossAxisAlignment: .start,
+                        children: [
+                          Text(
+                            "${index+1}. ",
+                            style: semiBold(
+                              fontSize: 12.sp,
+                              height: 1.2,
+                              color: AppColors.primary.withValues(alpha: 0.7),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                               selection.previewComments[index].comment,
+                              style: semiBold(
+                                fontSize: 12.sp,
+                                height: 1.2,
+                                color: AppColors.primary.withValues(alpha: 0.7),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    8.w.verticalSpace,
+                    horizontalDivider(opacity: 0.5),
+                    8.w.verticalSpace,
                     12.w.verticalSpace,
                     _HorseStatusContent(selection: selection),
                     12.w.verticalSpace,

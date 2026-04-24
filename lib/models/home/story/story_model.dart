@@ -59,8 +59,12 @@ class ContentModel {
   final String url;
 }
 
-/// Returns the starting flat PageView index for a given story channel.
-/// It sums slide counts of all channels before [channelIndex].
+/// First flat PageView index if the user opened [stories[channelIndex]].
+///
+/// Sums [slideCount] only for stories *before* [channelIndex]. If that channel
+/// has **no** slides (`slideCount == 0`), this number still advances past prior
+/// channels — and matches the next channel’s first slide in the merged list.
+/// Call sites must not treat this as “start page” for a channel with no slides.
 int flatSlideIndexForChannel(List<StoryModel> stories, int channelIndex) {
   var sum = 0;
   for (var i = 0; i < channelIndex && i < stories.length; i++) {

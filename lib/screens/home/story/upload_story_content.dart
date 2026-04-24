@@ -75,9 +75,7 @@ class UploadStoryContent extends StatelessWidget {
                             'Add one file (image or video)',
                             style: regular(
                               fontSize: 15.fSize,
-                              color: AppColors.primary.withValues(
-                                alpha: 0.75,
-                              ),
+                              color: AppColors.primary.withValues(alpha: 0.75),
                               height: 1.35,
                             ),
                           ),
@@ -86,9 +84,7 @@ class UploadStoryContent extends StatelessWidget {
                             'Pick a single file. If you pick again, it replaces the previous file.',
                             style: regular(
                               fontSize: 12.fSize,
-                              color: AppColors.primary.withValues(
-                                alpha: 0.45,
-                              ),
+                              color: AppColors.primary.withValues(alpha: 0.45),
                               height: 1.3,
                             ),
                           ),
@@ -101,14 +97,14 @@ class UploadStoryContent extends StatelessWidget {
                                       story.isPickingStoryVideo)
                                   ? null
                                   : story.pickStoryFile,
-                      
+
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: AppColors.greyColor.withValues(
                                     alpha: 0.45,
                                   ),
                                   borderRadius: BorderRadius.circular(8.w),
-                      
+
                                   border: Border.all(
                                     color: AppColors.primary.withValues(
                                       alpha: 0.25,
@@ -126,12 +122,11 @@ class UploadStoryContent extends StatelessWidget {
                                       SizedBox(
                                         height: 28.wSize,
                                         width: 28.wSize,
-                                        child:
-                                            const CircularProgressIndicator(
-                                              strokeWidth: 2.5,
-                                              color: AppColors.primary,
-                                              strokeCap: StrokeCap.round,
-                                            ),
+                                        child: const CircularProgressIndicator(
+                                          strokeWidth: 2.5,
+                                          color: AppColors.primary,
+                                          strokeCap: StrokeCap.round,
+                                        ),
                                       )
                                     else
                                       Icon(
@@ -344,8 +339,9 @@ class UploadStoryContent extends StatelessWidget {
                                             height: 26.w,
                                             child: Icon(
                                               Icons.close_rounded,
-                                              color: AppColors.white
-                                                  .withValues(alpha: 0.95),
+                                              color: AppColors.white.withValues(
+                                                alpha: 0.95,
+                                              ),
                                               size: 14.wSize,
                                             ),
                                           ),
@@ -437,9 +433,16 @@ class UploadStoryContent extends StatelessWidget {
                         text: 'Upload story content',
                         onTap: story.isUploadingStoryContent
                             ? () {}
-                            : () => story.uploadStoryContent(onSuccess: () {
-                              AppToast.success(context: context, message: "Content uploaded successfully");
-                            }),
+                            : () => story.uploadStoryContent(
+                                onSuccess: () {
+                                  AppToast.success(
+                                    duration: const Duration(seconds: 4),
+                                    context: context,
+                                    message:
+                                        "Content uploaded successfully. Please check the story",
+                                  );
+                                },
+                              ),
                         child: story.isUploadingStoryContent
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

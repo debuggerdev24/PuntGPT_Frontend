@@ -245,7 +245,7 @@ class _CreateNewStorySectionState extends State<CreateNewStorySection> {
                 onSuccess: () {
                   AppToast.success(
                     context: context,
-                    message: "New section created successfully",
+                    message: "New section created successfully. Please check the story",
                   );
                 },
               );

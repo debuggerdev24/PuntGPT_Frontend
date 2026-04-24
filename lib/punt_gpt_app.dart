@@ -19,8 +19,8 @@ import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';
 
 import 'package:puntgpt_nick/services/network/network_service.dart';
 
-class PuntGPTApp extends StatelessWidget {
-  const PuntGPTApp({super.key});
+class PuntGPT extends StatelessWidget {
+  const PuntGPT({super.key});
 
   @override
   Widget build(BuildContext context) {

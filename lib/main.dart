@@ -15,7 +15,7 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
   ]);
   await Future.wait([LocaleStorageService.init()]);
-  runApp(ToastificationWrapper(child: const PuntGPTApp()));
+  runApp(ToastificationWrapper(child: const PuntGPT()));
 }
 /*
 http://192.168.1.100:5000

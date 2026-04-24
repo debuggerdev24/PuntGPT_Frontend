@@ -49,4 +49,13 @@ class StoryApiService {
       parser: (_) => true,
     );
   }
+
+  Future<Either<ApiException, bool>> deleteBookie({
+    required String section,
+  }) async {
+    return await BaseApiHelper.instance.delete<bool>(
+      EndPoints.deleteBookie(section: section),
+      parser: (_) => true,
+    );
+  }
 }

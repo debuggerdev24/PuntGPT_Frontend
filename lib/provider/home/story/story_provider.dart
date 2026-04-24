@@ -5,12 +5,6 @@ import 'package:puntgpt_nick/models/home/story/story_model.dart';
 import 'package:puntgpt_nick/services/story/story_api_service.dart';
 
 class StoryProvider extends ChangeNotifier {
-  static const List<String> allowedStorySections = <String>[
-    'puntgpt',
-    'unibet',
-    'dabble',
-  ];
-
   List<StoryModel>? _stories;
   List<StoryModel>? get stories => _stories;
 
@@ -27,9 +21,9 @@ class StoryProvider extends ChangeNotifier {
       _isCreatingStorySection = false;
   String? _deletingStoryContentId;
   bool _isPickingStoryDataAvatar = false;
-  String _selectedStorySection = allowedStorySections.first,
-      _storyDataDisplayName = '',
-      _storyDataAffiliateUrl = '';
+  String _selectedBookie = "",
+      _storyDataDisplayName = "",
+      _storyDataAffiliateUrl = "";
 
   XFile? get storyContentImageFile => _storyContentImageFile;
   Uint8List? get storyContentImageBytes => _storyContentImageBytes;
@@ -42,7 +36,7 @@ class StoryProvider extends ChangeNotifier {
   bool get isDeletingStoryContent => _isDeletingStoryContent;
   String? get deletingStoryContentId => _deletingStoryContentId;
   bool get isPickingStoryDataAvatar => _isPickingStoryDataAvatar;
-  String get selectedStorySection => _selectedStorySection;
+  String get selectedStorySection => _selectedBookie;
   String get storyDataDisplayName => _storyDataDisplayName;
 
   String get storyDataAffiliateUrl => _storyDataAffiliateUrl;
@@ -54,9 +48,9 @@ class StoryProvider extends ChangeNotifier {
       _storyContentVideoFile?.name.isNotEmpty ?? false;
 
   void selectStorySection(String section) {
-    if (!allowedStorySections.contains(section)) return;
-    if (_selectedStorySection == section) return;
-    _selectedStorySection = section;
+    if (!_stories!.any((s) => s.section == section)) return;
+    if (_selectedBookie == section) return;
+    _selectedBookie = section;
     notifyListeners();
   }
 
@@ -178,7 +172,7 @@ class StoryProvider extends ChangeNotifier {
     _isUploadingStoryContent = true;
     notifyListeners();
     try {
-      final section = _selectedStorySection;
+      final section = _selectedBookie;
       final isImage = _storyContentImageFile != null;
       final selectedFile = isImage
           ? _storyContentImageFile
@@ -230,7 +224,7 @@ class StoryProvider extends ChangeNotifier {
       }
 
       final response = await StoryApiService.instance.updateStorySection(
-        section: _selectedStorySection,
+        section: _selectedBookie,
         data: FormData.fromMap(data),
       );
 
@@ -262,7 +256,7 @@ class StoryProvider extends ChangeNotifier {
       "affiliate_url": _storyDataAffiliateUrl,
     };
 
-    if(_storyDataAvatarFile != null){
+    if (_storyDataAvatarFile != null) {
       payload["avatar"] = await MultipartFile.fromFile(
         _storyDataAvatarFile!.path,
         filename: _storyDataAvatarFile!.name,
@@ -281,7 +275,6 @@ class StoryProvider extends ChangeNotifier {
     _isCreatingStorySection = false;
     notifyListeners();
   }
-
 
   Future<void> deleteStoryContent({
     required String id,
@@ -305,8 +298,23 @@ class StoryProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-}
-/*
+
+  Future<void> deleteBookie({required VoidCallback onSuccess,required String section}) async {
+    final response = await StoryApiService.instance.deleteBookie(
+      section: section,
+    );
+    response.fold(
+      (l) {
+        Logger.error(l.errorMsg);
+      },
+      (r) {
+        Logger.info("Bookie deleted successfully: $r");
+        getStories();
+        onSuccess();
+      },
+    );
+  }
+} /*
     
 
 */

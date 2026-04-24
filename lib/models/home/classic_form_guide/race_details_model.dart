@@ -45,12 +45,11 @@ class RaceDetails {
           ) ??
           [],
     ),
-      trackConditionRating: json["track_condition_rating"]
+      trackConditionRating: json["track_condition_rating"] as int?
   );
-  int raceId, distance, number,trackConditionRating;
-
+  int raceId, distance, number;
+  int? trackConditionRating;
   DateTime startTimeUtc;
-
   String name,
       trackCondition,
       weatherEmoji,
@@ -89,7 +88,7 @@ class Selection {
     required this.horseStats,
     required this.formHistory,
     required this.history,
-
+    required this.previewComments,
   });
 
   factory Selection.fromJson(Map<String, dynamic> json) => Selection(
@@ -118,6 +117,7 @@ class Selection {
     ),
     formHistory: json["form_history"]?.toString() ?? '',
     history: (json["history"] as List).map((e) => History.fromJson(e)).toList(),
+    previewComments: (json["preview_comments"] as List).map((e) => PreviewComments.fromJson(e)).toList(),
   );
   int selectionId, number, barrier;
   String trackName,
@@ -139,6 +139,8 @@ class Selection {
   int? tipPosition;
   HorseStats horseStats;
   List<History> history;
+  List<PreviewComments> previewComments;
+
 }
 
 class HorseStats {
@@ -279,4 +281,26 @@ class History {
   int? raceNumber, distance, resultPosition, totalStarters, barrier;
 
   bool isTrial;
+}
+
+
+class PreviewComments{
+
+  factory PreviewComments.fromJson(Map<String, dynamic> json) => PreviewComments(
+    comment: json["comment"] as String? ?? '',
+    sourceBrand: json["source_brand"] as String? ?? '',
+    sourceName: json["source_name"] as String? ?? '',
+    sourceImage: json["source_image"] as String? ?? '',
+    sourceId: json["source_id"] as String? ?? '',
+    sourceType: json["source_type"] as String? ?? '',
+  );
+  PreviewComments({
+    required this.comment,
+    required this.sourceBrand,
+    required this.sourceName,
+    required this.sourceImage,
+    required this.sourceId,
+    required this.sourceType,
+  });
+  String comment, sourceBrand, sourceName, sourceImage, sourceId, sourceType;
 }

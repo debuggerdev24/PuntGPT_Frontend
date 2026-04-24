@@ -21,22 +21,58 @@ class _BookieStoriesSectionState extends State<BookieStoriesSection> {
   /// Story ids the user has already opened (so we show the grey ring).
   final Set<String> _seenStoryIds = {};
 
-  /// Opens the viewer at [startIndex]. When it closes, we mark every story
+  /// Opens the viewer at [selectedIndex]. When it closes, we mark every story
   /// between that index and the last page they were on as “seen”.
-  Future<void> _onAvatarTapped(int startIndex) async {
+  Future<void> _onAvatarTapped(int selectedIndex) async {
     final list = widget.stories;
+    if (list == null || list.isEmpty) return;
+
+    final tapped = list[selectedIndex];
+    if (tapped.slideCount == 0) {
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            backgroundColor: AppColors.backGroundColor,
+            title: Text(
+              'No story added',
+              style: semiBold(fontSize: 17.sp, color: AppColors.primary),
+            ),
+            content: Text(
+              '${tapped.title} has no story images or videos yet. ',
+              style: regular(
+                fontSize: 14.sp,
+                color: AppColors.primary.withValues(alpha: 0.65),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: Text(
+                  'OK',
+                  style: semiBold(fontSize: 14.fSize, color: AppColors.primary),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     final lastPageIndex = await Navigator.of(context).push<int>(
       MaterialPageRoute<int>(
         fullscreenDialog: true,
         builder: (_) =>
-            BookieStoryViewer(stories: list!, initialIndex: startIndex),
+            BookieStoryViewer(stories: list, initialIndex: selectedIndex),
       ),
     );
 
     if (!mounted) return;
 
     // Flat page indices: one swipe can move across several slides and partners.
-    final startFlat = flatSlideIndexForChannel(list!, startIndex);
+    final startFlat = flatSlideIndexForChannel(list, selectedIndex);
     final endFlat = lastPageIndex ?? startFlat;
 
     setState(() {
@@ -48,7 +84,7 @@ class _BookieStoriesSectionState extends State<BookieStoriesSection> {
   Widget build(BuildContext context) {
     final list = widget.stories;
 
-    if (list!.isEmpty) return SizedBox();
+    if (list == null || list.isEmpty) return const SizedBox.shrink();
 
     final avatarSize = 64.w;
 
@@ -70,18 +106,19 @@ class _BookieStoriesSectionState extends State<BookieStoriesSection> {
             ),
           ),
           12.w.verticalSpace,
-          SizedBox(
-            height: avatarSize, //+22
-            child: Row(
-              children: [
-                Expanded(
-                  child: ListView.separated(
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SizedBox(
+              height: avatarSize, //+22
+              child: Row(
+                children: [
+                  ListView.separated(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: 4.w),
                     itemCount: list.length,
                     separatorBuilder: (_, __) => SizedBox(width: 10.w),
-
+                  
                     itemBuilder: (context, index) {
                       final story = list[index];
                       final isUnseen = !_seenStoryIds.contains(story.section);
@@ -89,51 +126,53 @@ class _BookieStoriesSectionState extends State<BookieStoriesSection> {
                         story: story,
                         size: avatarSize,
                         nameFontSize: 11.sp,
-                        isUnseen: isUnseen,
+                        isUnseen: isUnseen ,
+
                         onTap: () => _onAvatarTapped(index),
                       );
                     },
                   ),
-                ),
-                //* Edit story button
-                InkWell(
-                  onTap: () {
-                    context.pushNamed(AppRoutes.editStorySection.name);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 6.w,
-                    ),
-                    decoration: BoxDecoration(
-
-                      border: Border.all(
-                        color: AppColors.primary,
+                  //* Edit story button
+                  InkWell(
+                    onTap: () {
+                      context.pushNamed(AppRoutes.bookieSelection.name);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 6.w,
                       ),
-                      borderRadius: BorderRadius.circular(4.r),
-                    ),
-                    child: Row(
-                      spacing: 4.w,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.edit_note_rounded,
+                      margin: EdgeInsets.only(left: 10.w),
+                      decoration: BoxDecoration(
+            
+                        border: Border.all(
                           color: AppColors.primary,
-                          size: context.isMobileWeb ? 28.sp : 18.sp,
                         ),
-
-                        Text(
-                          "Edit Story",
-                          style: semiBold(
-                            fontSize: context.isMobileWeb ? 20.sp : 12.sp,
+                        borderRadius: BorderRadius.circular(4.r),
+                      ),
+                      child: Row(
+                        spacing: 4.w,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.edit_note_rounded,
                             color: AppColors.primary,
+                            size: context.isMobileWeb ? 28.sp : 18.sp,
                           ),
-                        ),
-                      ],
+            
+                          Text(
+                            "Edit Story",
+                            style: semiBold(
+                              fontSize: context.isMobileWeb ? 20.sp : 12.sp,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -171,7 +210,9 @@ class _StoryAvatar extends StatelessWidget {
             padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
+              border: 
+              (story.slideCount == 0) ? null :
+              Border.all(
                 color: isUnseen
                     ? AppColors.black
                     : AppColors.primary.withValues(alpha: 0.25),

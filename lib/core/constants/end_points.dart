@@ -129,6 +129,8 @@ class EndPoints {
   static String deleteMedia({required String id}) =>
       "/horse-race/stories/media/$id/";
   static String createStorySection = "/horse-race/stories/section/";
+  static String deleteBookie({required String section}) =>
+      "/horse-race/stories/section/$section/del/";
   static String updateStorySection({required String section}) =>
       "/horse-race/stories/section/$section/";
 

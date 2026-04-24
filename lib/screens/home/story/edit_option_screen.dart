@@ -21,8 +21,8 @@ class EditStoryOptionScreen extends StatelessWidget {
               children: [
                 _EditOptionTile(
                   icon: Icons.perm_media_outlined,
-                  title: 'Upload story content',
-                  subtitle: 'Upload or replace the image and video shown in the story.',
+                  title: 'Upload new story content',
+                  subtitle: 'Upload the image and video shown in the story.',
                   onTap: () =>
                       context.pushNamed(AppRoutes.uploadStoryContent.name),
                 ),

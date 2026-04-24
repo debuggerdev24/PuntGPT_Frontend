@@ -101,10 +101,9 @@ class _UploadStoryDataState extends State<UploadStoryData> {
 
     await provider.updateStoryData(
       onSuccess: () {
-        // _syncFormFromSection(provider);
         AppToast.success(
           context: context,
-          message: "Story data updated successfully",
+          message: "Story data updated successfully. Please check the story",
         );
       },
     );

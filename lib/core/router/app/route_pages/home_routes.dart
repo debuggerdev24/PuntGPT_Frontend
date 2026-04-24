@@ -9,7 +9,7 @@ import 'package:puntgpt_nick/screens/home/classic_form_guide/mobile/tips_and_ana
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/upcoming_runners_screen.dart';
 import 'package:puntgpt_nick/screens/home/story/create_new_story_section.dart';
 import 'package:puntgpt_nick/screens/home/story/edit_option_screen.dart';
-import 'package:puntgpt_nick/screens/home/story/section_selection_screen.dart';
+import 'package:puntgpt_nick/screens/home/story/bookie_selection_screen.dart';
 import 'package:puntgpt_nick/screens/home/story/delete_story_content.dart';
 import 'package:puntgpt_nick/screens/home/story/upload_story_content.dart';
 import 'package:puntgpt_nick/screens/home/story/update_story_data.dart';
@@ -76,10 +76,10 @@ class HomeRoutes {
       },
     ),
     GoRoute(
-      name: AppRoutes.editStorySection.name,
-      path: AppRoutes.editStorySection.path,
+      name: AppRoutes.bookieSelection.name,
+      path: AppRoutes.bookieSelection.path,
       builder: (BuildContext context, GoRouterState state) {
-        return SectionSelectionScreen();
+        return BookieSelectionScreen();
       },
     ),
     GoRoute(
