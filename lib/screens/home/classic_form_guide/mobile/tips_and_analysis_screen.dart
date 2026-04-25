@@ -175,13 +175,7 @@ class TipAndAnalysisScreen extends StatelessWidget {
                     fontSize: 13.sp,
                     color: AppColors.primary.withValues(alpha: 0.7),
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
-                // Text(tip.tipPosition.toString()),
-                // Text(tip.isBestBet.toString()),
-                // Text(tip.isBestValue.toString()),
-                // Text(tip.isScratched.toString()),
-                // Text(tip.unibetFixedOddsWin.toString()),
               ],
             ),
           ),
@@ -197,19 +191,7 @@ class TipAndAnalysisScreen extends StatelessWidget {
             ),
           ),
           10.w.horizontalSpace,
-          //* Odds
-          if (tip.unibetFixedOddsWin != null)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.w),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(4.r),
-              ),
-              child: Text(
-                '\$${tip.unibetFixedOddsWin}',
-                style: semiBold(fontSize: 15.sp, color: AppColors.primary),
-              ),
-            ),
+          Text("\$${tip.unibetFixedOddsWin}", style: bold(fontSize: 17.sp)),
         ],
       ),
     );

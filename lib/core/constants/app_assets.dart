@@ -42,5 +42,5 @@ class AppAssets {
   static const dabbleBanner = "$_imagePath/dabble_banner.png";
   static const dabbleAdvertisement = "$_imagePath/dabble_ads1.png";
   static const dabbleGIF = "$_gifsPath/dabble.gif";
-
+  static const speedMapBackground = "$_imagePath/speedMapsBg.png";
 }

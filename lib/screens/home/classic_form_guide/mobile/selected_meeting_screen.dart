@@ -744,7 +744,7 @@ Widget _raceCard({
                     ),
                   ),
                   8.w.horizontalSpace,
-                  Text("\$ ${selection.oddsWin}", style: bold(fontSize: 17.sp)),
+                  Text("\$${selection.oddsWin}", style: bold(fontSize: 17.sp)),
                 ],
               ),
               //* weight, jockey, trainer and form

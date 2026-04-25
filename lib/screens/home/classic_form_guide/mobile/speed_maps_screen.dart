@@ -57,12 +57,12 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
                       //* Visual Speed Map
                       _buildVisualSpeedMap(speedMaps.speedMapsList),
 
-                      24.h.verticalSpace,
+                      18.w.verticalSpace,
 
                       //* Legend
                       _buildLegend(),
 
-                      24.h.verticalSpace,
+                      18.w.verticalSpace,
 
                       //* List of horses
                       _buildHorsesList(speedMaps.speedMapsList),
@@ -209,6 +209,10 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
       height: 200.w,
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+        image: DecorationImage(
+          image: AssetImage(AppAssets.speedMapBackground),
+          fit: BoxFit.cover,
+        ),
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Stack(
@@ -319,9 +323,21 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
                   'Leader',
                 ]
                 .map(
-                  (label) => Text(
-                    label,
-                    style: semiBold(fontSize: 8.sp, color: _kListTextMuted),
+                  (label) => Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 1.5.w,
+                      vertical: 1.2.w,
+                    ),
+                    color: AppColors.white,
+                    child: Text(
+                      label,
+
+                      style: semiBold(
+                        height: 1,
+                        fontSize: 8.sp,
+                        color: AppColors.black,
+                      ),
+                    ),
                   ),
                 )
                 .toList(),
@@ -348,32 +364,36 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
     final leftPosition = (position * 0.85 + 0.075) * 1.sw;
 
     // Calculate vertical position with slight variation for visibility
-    final verticalSpacing = 35.h;
-    final topPosition = 30.h + (index % 5) * verticalSpacing;
+    final verticalSpacing = 35.w;
+    final topPosition = 30.w + (index % 5) * verticalSpacing;
 
     return Positioned(
       left: leftPosition - 20.w,
       top: topPosition,
-      child: Column(
-        children: [
-          Container(
-            width: 42.w,
-            height: 42.w,
-            padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.w),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: _kListBorder, width: 1),
-              borderRadius: BorderRadius.circular(6.r),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4.r),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: _kListBorder, width: 1),
+          borderRadius: BorderRadius.circular(5.r),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 44.w,
+              height: 44.w,
+              // padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: _kListBorder, width: 1),
+                borderRadius: BorderRadius.circular(4.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
               child: ImageWidget(
                 path: speedMap.selection.silksImage,
                 type: ImageType.svg,
@@ -382,25 +402,26 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-          ),
-          4.w.verticalSpace,
-          Container(
-            constraints: BoxConstraints(maxWidth: 60.w),
-            child: Text(
-              speedMap.selection.horse.name,
-              style: semiBold(fontSize: 9.sp, color: _kListTextPrimary),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            4.w.verticalSpace,
+            Container(
+              width: 44.w,
+              // constraints: BoxConstraints(maxWidth: 60.w),
+              child: Text(
+                speedMap.selection.horse.name,
+                style: semiBold(fontSize: 9.sp, color: _kListTextPrimary),
+                textAlign: TextAlign.center,
+                // maxLines: 1,
+                // overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildLegend() {
-    // Darker greys (fast = darkest) so legend reads clearly on white — not washed out.
+    //* Darker greys (fast = darkest) so legend reads clearly on white — not washed out.
     final items = _selectedTab == 0
         ? [
             ('Very Fast', const Color(0xFF616161)),
@@ -420,7 +441,7 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
     return Wrap(
       spacing: 12.w,
       runSpacing: 8.h,
-      children: items
+      children: items.reversed
           .map(
             (item) => Row(
               mainAxisSize: MainAxisSize.min,
@@ -492,7 +513,7 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
 
     return Container(
       margin: EdgeInsets.only(bottom: 12.w),
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.w),
+      padding: EdgeInsets.fromLTRB(5.w, 5.w, 8.w, 8.w),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: _kListBorder),
@@ -539,7 +560,7 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
                 ),
                 4.w.verticalSpace,
                 Text(
-                  "J:${speedMap.selection.jockey.name}",
+                  "J: ${speedMap.selection.jockey.name}",
                   style: regular(fontSize: 13.sp, color: _kListTextMuted),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -561,29 +582,21 @@ class _SpeedMapsScreenState extends State<SpeedMapsScreen> {
           ),
 
           //* Odds
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => launchUnibetUrl(),
-            child: ImageWidget(
-              path: AppAssets.unibatLogo,
-              type: ImageType.asset,
-              height: 28.w,
-            ),
-          ),
-          8.w.horizontalSpace,
           if (speedMap.selection.unibetFixedOddsWin.isNotEmpty)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 6.w),
-              decoration: BoxDecoration(
-                color: _kListOddsBg,
-                borderRadius: BorderRadius.circular(6.r),
-                border: Border.all(color: _kListBorder),
-              ),
-              child: Text(
-                '\$${speedMap.selection.unibetFixedOddsWin}',
-                style: semiBold(fontSize: 15.sp, color: _kListTextPrimary),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => launchUnibetUrl(),
+              child: ImageWidget(
+                path: AppAssets.unibatLogo,
+                type: ImageType.asset,
+                height: 28.w,
               ),
             ),
+          8.w.horizontalSpace,
+          Text(
+            "\$${speedMap.selection.unibetFixedOddsWin}",
+            style: bold(fontSize: 17.sp),
+          ),
         ],
       ),
     );
