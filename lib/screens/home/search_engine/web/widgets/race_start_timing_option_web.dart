@@ -1,4 +1,5 @@
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter/gestures.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 
@@ -19,23 +20,32 @@ class RaceStartTimingOptionsWeb extends StatelessWidget {
               // totalWidth += estimatedTextWidth + 36 + 15;
             // }
             return Center(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: (context.isMobileWeb) ? 35.w : 25.w,
+              child: ScrollConfiguration(
+                behavior: const MaterialScrollBehavior().copyWith(
+                  dragDevices: {
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.trackpad,
+                    PointerDeviceKind.stylus,
+                    PointerDeviceKind.unknown,
+                  },
                 ),
-
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 15,
-                  // alignment: WrapAlignment.center,
-                  children: List.generate(
-                    timings.length,
-                    (index) => _item(
-                      text: timings[index],
-                      onTap: () => provider.setSelectedRaceTimingEnum = provider.raceTimingEnums[index],
-                      isSelected: provider.selectedRaceTimingEnum == provider.raceTimingEnums[index],
-                      context: context,
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: (context.isMobileWeb) ? 35 : 25,
+                  ),
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 15,
+                    children: List.generate(
+                      timings.length,
+                      (index) => _item(
+                        text: timings[index],
+                        onTap: () => provider.setSelectedRaceTimingEnum = provider.raceTimingEnums[index],
+                        isSelected: provider.selectedRaceTimingEnum == provider.raceTimingEnums[index],
+                        context: context,
+                      ),
                     ),
                   ),
                 ),
@@ -98,17 +108,18 @@ class RaceStartTimingOptionsWeb extends StatelessWidget {
                 : AppColors.primary.setOpacity(0.15),
           ),
         ),
-        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 18.w),
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
         child: Text(
           text,
           style: semiBold(
-            fontSize: context.isDesktop
-                ? 14.sp
-                : context.isTablet
-                ? 22.sp
-                : (context.isMobileWeb)
-                ? 34.sp
-                : 14.sp,
+            fontSize: 13.5,
+            // context.isDesktop
+            //     ? 14.sp
+            //     : context.isTablet
+            //     ? 22.sp
+            //     : (context.isMobileWeb)
+            //     ? 34.sp
+            //     : 14.sp,
             color: isSelected ? AppColors.white : AppColors.primary,
           ),
         ),

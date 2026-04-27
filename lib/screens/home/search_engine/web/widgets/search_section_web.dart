@@ -36,71 +36,85 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
   Widget build(BuildContext context) {
     return Consumer<SearchEngineProvider>(
       builder: (context, provider, child) => SizedBox(
-        width: Responsive.isMobileWeb(context)
-            ? double.maxFinite
-            : context.isTablet
-            ? 1200.w
-            : 1100.w,
+        // width: 
+        // Responsive.isMobileWeb(context)
+        //     ? double.maxFinite
+        //     : context.isTablet
+        //     ? 1200.w
+        //     : 1100.w,
 
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Search for a horse that meets your criteria:",
-                  style: bold(
-                    fontSize: context.isDesktop
-                        ? 16.sp
-                        : context.isTablet
-                        ? 24.sp
-                        : (context.isMobileWeb)
-                        ? 40.sp
-                        : 16.sp,
-                    height: 1.2,
-                  ),
-                ),
-                OnMouseTap(
-                  onTap: onSaveSearchTap,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ImageWidget(
-                        type: ImageType.svg,
-                        path: AppAssets.bookmark,
-                        height: context.isDesktop
-                            ? 16.sp
-                            : context.isTablet
-                            ? 24.sp
-                            : (kIsWeb)
-                            ? 30.sp
-                            : 16.sp,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: context.isDesktop ? 121 : 60),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if(!context.isDesktop)...[
+                    Icon(Icons.filter_alt_outlined, size: 20),
+                    SizedBox(width: 8),
+                  ],
+
+                  Expanded(
+                    child: Text(
+                      "Filter through form your way",
+                      style: bold(
+                        fontSize: 14,
+                        // context.isDesktop
+                        //     ? 16.sp
+                        //     : context.isTablet
+                        //     ? 24.sp
+                        //     : (context.isMobileWeb)
+                        //     ? 40.sp
+                        //     : 16.sp,
+                        height: 1,
                       ),
-                      5.w.horizontalSpace,
-                      Text(
-                        "Saved Searches",
-                        style: bold(
-                          fontSize: context.isDesktop
-                              ? 16.sp
-                              : context.isTablet
-                              ? 24.sp
-                              : (kIsWeb)
-                              ? 30.sp
-                              : 16.sp,
-                          decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  OnMouseTap(
+                    onTap: onSaveSearchTap,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ImageWidget(
+                          type: ImageType.svg,
+                          path: AppAssets.bookmark,
+                          height: 14,
+                          // context.isDesktop
+                          //     ? 16.sp
+                          //     : context.isTablet
+                          //     ? 24.sp
+                          //     : (kIsWeb)
+                          //     ? 30.sp
+                          //     : 16.sp,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 5),
+                        Text(
+                          "Saved Searches",
+                          style: bold(
+                            fontSize: 14,
+                            // context.isDesktop
+                            //     ? 16.sp
+                            //     : context.isTablet
+                            //     ? 24.sp
+                            //     : (kIsWeb)
+                            //     ? 30.sp
+                            //     : 16.sp,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            20.h.verticalSpace,
-            //todo filter view
-            _buildSearchView(),
-          ],
+                ],
+              ),
+              SizedBox(height: 16),
+              //todo filter view
+              _buildSearchView(),
+            ],
+          ),
         ),
       ),
     );
@@ -117,9 +131,10 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //todo left panel
+            if(context.isDesktop) 
+            //* left panel
             SizedBox(
-              width: 340.w,
+              width: 250,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -129,26 +144,27 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                     ).copyWith(dividerColor: AppColors.transparent),
                     child: ExpansionTile(
                       childrenPadding: EdgeInsets.only(
-                        left: 25.w,
-                        right: 25.w,
-                        bottom: 8.h,
+                        left: 25,
+                        right: 25,
+                        bottom: 8,
                       ),
                       tilePadding: EdgeInsets.symmetric(horizontal: 25.w),
                       iconColor: AppColors.primary,
                       title: Text(
                         "Track",
                         style: semiBold(
-                          fontSize: context.isDesktop
-                              ? 14.sp
-                              : context.isTablet
-                              ? 22.sp
-                              : (kIsWeb)
-                              ? 26.sp
-                              : 14.sp,
+                          fontSize: 13,
+                          // context.isDesktop
+                          //     ? 14.sp
+                          //     : context.isTablet
+                          //     ? 22.sp
+                          //     : (kIsWeb)
+                          //     ? 26.sp
+                          //     : 14.sp,
                         ),
                       ),
                       children: [
-                        // Placed last start
+                        //* Placed last start
                         InkWell(
                           onTap: () {
                             provider.togglePlacedLastStart(!provider.placedLastStart);
@@ -163,7 +179,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.h),
+                                padding: EdgeInsets.symmetric(vertical: 8),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -171,13 +187,14 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                     Text(
                                       "Placed last start",
                                       style: semiBold(
-                                        fontSize: context.isDesktop
-                                            ? 14.sp
-                                            : context.isTablet
-                                            ? 22.sp
-                                            : (kIsWeb)
-                                            ? 26.sp
-                                            : 14.sp,
+                                        fontSize: 12, //13
+                                        // context.isDesktop
+                                        //     ? 14.sp
+                                        //     : context.isTablet
+                                        //     ? 22.sp
+                                        //     : (kIsWeb)
+                                        //     ? 26.sp
+                                        //     : 14.sp,
                                       ),
                                     ),
                                     AnimatedContainer(
@@ -185,8 +202,8 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                         milliseconds: 250,
                                       ),
                                       curve: Curves.easeInOut,
-                                      width: 22.sp,
-                                      height: 22.sp,
+                                      width: 18,
+                                      height: 18,
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           color: provider.placedLastStart
@@ -204,7 +221,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                           ? Icon(
                                               Icons.check,
                                               color: Colors.white,
-                                              size: 16.sp,
+                                              size: 16,
                                             )
                                           : null,
                                     ),
@@ -214,7 +231,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                             ],
                           ),
                         ),
-                        // Won last start
+                        //* Won last start
                         InkWell(
                           onTap: () {
                             provider.toggleWonLastStart(!provider.wonLastStart);
@@ -229,7 +246,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.h),
+                                padding: EdgeInsets.symmetric(vertical: 8),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -237,13 +254,14 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                     Text(
                                       "Won last start",
                                       style: semiBold(
-                                        fontSize: context.isDesktop
-                                            ? 14.sp
-                                            : context.isTablet
-                                            ? 22.sp
-                                            : (kIsWeb)
-                                            ? 26.sp
-                                            : 14.sp,
+                                        fontSize: 12, //13
+                                        // context.isDesktop
+                                        //     ? 14.sp
+                                        //     : context.isTablet
+                                        //     ? 22.sp
+                                        //     : (kIsWeb)
+                                        //     ? 26.sp
+                                        //     : 14.sp,
                                       ),
                                     ),
                                     AnimatedContainer(
@@ -251,8 +269,8 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                         milliseconds: 250,
                                       ),
                                       curve: Curves.easeInOut,
-                                      width: 22.sp,
-                                      height: 22.sp,
+                                      width: 18,
+                                      height: 18,
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           color: provider.wonLastStart
@@ -270,7 +288,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                           ? Icon(
                                               Icons.check,
                                               color: Colors.white,
-                                              size: 16.sp,
+                                              size: 16,
                                             )
                                           : null,
                                     ),
@@ -280,7 +298,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                             ],
                           ),
                         ),
-                        // Won last 12 months
+                        //* Won last 12 months
                         InkWell(
                           onTap: () {
                             provider.toggleWonLast12Months(!provider.wonLast12Months);
@@ -295,7 +313,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.h),
+                                padding: EdgeInsets.symmetric(vertical: 8),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -303,13 +321,14 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                     Text(
                                       "Won last 12 months",
                                       style: semiBold(
-                                        fontSize: context.isDesktop
-                                            ? 14.sp
-                                            : context.isTablet
-                                            ? 22.sp
-                                            : (kIsWeb)
-                                            ? 26.sp
-                                            : 14.sp,
+                                        fontSize: 12, //13
+                                        // context.isDesktop
+                                        //     ? 14.sp
+                                        //     : context.isTablet
+                                        //     ? 22.sp
+                                        //     : (kIsWeb)
+                                        //     ? 26.sp
+                                        //     : 14.sp,
                                       ),
                                     ),
                                     AnimatedContainer(
@@ -317,8 +336,8 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                         milliseconds: 250,
                                       ),
                                       curve: Curves.easeInOut,
-                                      width: 22.sp,
-                                      height: 22.sp,
+                                        width: 18,
+                                      height: 18,
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           color: provider.wonLast12Months
@@ -336,7 +355,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                           ? Icon(
                                               Icons.check,
                                               color: Colors.white,
-                                              size: 16.sp,
+                                              size: 14,   //15
                                             )
                                           : null,
                                     ),
@@ -350,42 +369,44 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                     ),
                   ),
                   horizontalDivider(endIndent: 22),
-                  90.h.verticalSpace,
+                  SizedBox(height: 70),
                   if (provider.isSearched)
                     Text(
                       "Total Runners: (20)",
                       style: semiBold(
-                        fontSize: context.isDesktop
-                            ? 14.sp
-                            : context.isTablet
-                            ? 22.sp
-                            : (kIsWeb)
-                            ? 26.sp
-                            : 14.sp,
+                        fontSize: 13,
+                        // context.isDesktop
+                        //     ? 14.sp
+                        //     : context.isTablet
+                        //     ? 22.sp
+                        //     : (kIsWeb)
+                        //     ? 26.sp
+                        //     : 14.sp,
                         color: AppColors.primary.withValues(alpha: 0.6),
                       ),
                     ),
                   AppFilledButton(
                     margin: EdgeInsets.only(
-                      right: 12.w,
-                      top: provider.isSearched ? 12.h : 0,
+                      right: 12,
+                      top: provider.isSearched ? 12 : 0,
                     ),
                     text: "Search",
                     padding: (!context.isMobileWeb)
                         ? EdgeInsets.symmetric(
-                            vertical: (context.isDesktop) ? 12.w : 11.w,
+                            vertical: 12,
                           )
                         : null,
 
                     textStyle: semiBold(
                       color: AppColors.white,
-                      fontSize: context.isDesktop
-                          ? 14.sp
-                          : context.isTablet
-                          ? 22.sp
-                          : (kIsWeb)
-                          ? 26.sp
-                          : 14.sp,
+                      fontSize: 13,
+                      // context.isDesktop
+                      //     ? 14.sp
+                      //     : context.isTablet
+                      //     ? 22.sp
+                      //     : (kIsWeb)
+                      //     ? 26.sp
+                      //     : 14.sp,
                     ),
                     onTap: () {
                       // formKey.currentState!.validate();
@@ -395,22 +416,23 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
 
                   AppOutlinedButton(
                     margin: EdgeInsets.only(
-                      top: 8.h,
-                      bottom: 70.h,
-                      right: 12.w,
+                      top: 6,
+                      bottom: 50,
+                      right: 10,
                     ),
                     text: "Save this Search",
                     padding: (!context.isMobileWeb)
-                        ? EdgeInsets.symmetric(vertical: 12.w)
+                        ? EdgeInsets.symmetric(vertical: 12)
                         : null, // (context.isDesktop) ? 12.w : 11.w,
                     textStyle: semiBold(
-                      fontSize: context.isDesktop
-                          ? 14.sp
-                          : context.isTablet
-                          ? 22.sp
-                          : (kIsWeb)
-                          ? 26.sp
-                          : 14.sp,
+                      fontSize: 13,
+                      // context.isDesktop
+                      //     ? 14.sp
+                      //     : context.isTablet
+                      //     ? 22.sp
+                      //     : (kIsWeb)
+                      //     ? 26.sp
+                      //     : 14.sp,
                     ),
 
                     onTap: () {
@@ -421,7 +443,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                 ],
               ),
             ),
-            //todo right panel (Grid view)
+            //* right panel (Grid view)
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -430,17 +452,18 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                   Text(
                     "Total Runners: (20)",
                     style: semiBold(
-                      fontSize: context.isDesktop
-                          ? 14.sp
-                          : context.isTablet
-                          ? 22.sp
-                          : (kIsWeb)
-                          ? 26.sp
-                          : 14.sp,
+                      fontSize: 14,
+                      // context.isDesktop
+                      //     ? 14.sp
+                      //     : context.isTablet
+                      //     ? 22.sp
+                      //     : (kIsWeb)
+                      //     ? 26.sp
+                      //     : 14.sp,
                       color: AppColors.primary.withValues(alpha: 0.6),
                     ),
                   ),
-                  20.h.verticalSpace,
+                  SizedBox(height: 20),
                   GridView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),

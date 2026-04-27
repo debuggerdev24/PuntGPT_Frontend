@@ -1,4 +1,5 @@
 import 'package:modal_side_sheet/modal_side_sheet.dart';
+import 'package:flutter/gestures.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/home_screen.dart';
@@ -6,6 +7,7 @@ import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_scre
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/race_table.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/search_section.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/chat_section_web.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/home_screen_tab_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/race_start_timing_option_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/race_table_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/runners_list_web.dart';
@@ -54,35 +56,29 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
           context.read<SearchEngineProvider>().setIsSearched(value: false);
         }
       },
-      child: Scaffold(
-        body: Consumer<SearchEngineProvider>(
-          builder:
-              (
-                BuildContext context,
-                SearchEngineProvider provider,
-                Widget? child,
-              ) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (context.isMobileView) ...[
-                      20.h.verticalSpace,
-                      HomeScreenTab(selectedIndex: provider.selectedTab),
-                      // BookieStoriesSection(horizontalPadding: 16.w),
-                    ] else ...[
-                      70.h.verticalSpace,
-                      // HomeScreenTabWeb(selectedIndex: provider.selectedTab),
-                    ],
-                    16.h.verticalSpace,
-                    Expanded(
-                      child: (context.isMobileView)
-                          ? mobileView(provider: provider, formKey: formKey)
-                          : webView(provider: provider, formKey: formKey),
-                    ),
-                  ],
-                );
-              },
-        ),
+      child: Consumer<SearchEngineProvider>(
+        builder:
+            (
+              BuildContext context,
+              SearchEngineProvider provider,
+              Widget? child,
+            ) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (!context.isMobileView)
+                    SizedBox(height: 60)
+                  else
+                    SizedBox(height: 16),
+                  Expanded(
+                    child: webView(provider: provider, formKey: formKey),
+                    //  (context.isMobileView)
+                    //     ? mobileView(provider: provider, formKey: formKey)
+                    //     : webView(provider: provider, formKey: formKey),
+                  ),
+                ],
+              );
+            },
       ),
     );
   }
@@ -165,17 +161,17 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
               ],
             )
           : Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25.w),
+              padding: EdgeInsets.symmetric(horizontal: 25),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Next to go",
-                      style: bold(
-                        fontSize: (context.isMobileWeb) ? 32.sp : 16.sp,
-                      ),
-                    ),
+                    // Text(
+                    //   "Next to go",
+                    //   style: bold(
+                    //     fontSize: 20,
+                    //   ),
+                    // ),
                     10.h.verticalSpace,
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -207,15 +203,15 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
     final bodyWidth = context.isMobileWeb
         ? 1.6.sw
         : context.isTablet
-        ? 1200.w
+        ? 1300.w
         : 1100.w;
-    final sixteenResponsive = context.isDesktop
-        ? 16.sp
-        : context.isTablet
-        ? 24.sp
-        : (context.isMobileWeb)
-        ? 32.sp
-        : 16.sp;
+    // final sixteenResponsive = context.isDesktop
+    //     ? 16.sp
+    //     : context.isTablet
+    //     ? 24.sp
+    //     : (context.isMobileWeb)
+    //     ? 32.sp
+    //     : 16.sp;
     return Stack(
       children: [
         SingleChildScrollView(
@@ -223,53 +219,67 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
             curve: Curves.easeInOut,
             from: 4,
             key: ValueKey(provider.selectedTab),
-            child: (provider.selectedTab == 0)
-                ? Column(
-                    spacing: 16,
-                    children: [
-                      //todo timing buttons
-                      RaceStartTimingOptionsWeb(),
-                      //todo search section mobile
-                      SearchSectionWeb(formKey: formKey),
-                    ],
-                  )
-                : Center(
-                    child: SizedBox(
-                      width: bodyWidth,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Next to go",
-                              style: bold(fontSize: sixteenResponsive),
-                            ),
-                            10.w.verticalSpace,
+            child: Column(
+              children: [
+                HomeScreenTabWeb(selectedIndex: provider.selectedTab),
+                SizedBox(height: 16),
+                (provider.selectedTab == 0)
+                    ? Column(
+                        spacing: 16,
+                        children: [
+                          //* timing buttons
+                          RaceStartTimingOptionsWeb(),
+                          //* search section mobile
+                          SearchSectionWeb(formKey: formKey),
+                        ],
+                      )
+                    : Center(
+                        child: SizedBox(
+                          width: bodyWidth,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Next to go", style: bold(fontSize: 16)),
+                                SizedBox(height: 10,),
 
-                            //todo race list
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                spacing: 8.w,
-                                children: [
-                                  raceItemWeb(context: context),
-                                  raceItemWeb(context: context),
-                                  raceItemWeb(context: context),
-                                  raceItemWeb(context: context),
-                                  raceItemWeb(context: context),
-                                  raceItemWeb(context: context),
-                                  raceItemWeb(context: context),
-                                  raceItemWeb(context: context),
-                                ],
-                              ),
+                                //* race list
+                                ScrollConfiguration(
+                                  behavior: const MaterialScrollBehavior().copyWith(
+                                    dragDevices: {
+                                      PointerDeviceKind.touch,
+                                      PointerDeviceKind.mouse,
+                                      PointerDeviceKind.trackpad,
+                                      PointerDeviceKind.stylus,
+                                      PointerDeviceKind.unknown,
+                                    },
+                                  ),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      spacing: 8,
+                                      children: [
+                                        raceItemWeb(context: context),
+                                        raceItemWeb(context: context),
+                                        raceItemWeb(context: context),
+                                        raceItemWeb(context: context),
+                                        raceItemWeb(context: context),
+                                        raceItemWeb(context: context),
+                                        raceItemWeb(context: context),
+                                        raceItemWeb(context: context),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                //* race table
+                                RaceTableWeb(tableWidth: bodyWidth),
+                              ],
                             ),
-                            //todo race table
-                            RaceTableWeb(tableWidth: bodyWidth),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+              ],
+            ),
           ),
         ),
         //todo ask punt gpt button web
@@ -292,9 +302,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
         children: [
           Text(
             "Morphettville",
-            style: semiBold(
-              fontSize: (context.isMobileWeb) ? 32.sp : 16.sp,
-            ),
+            style: semiBold(fontSize: (context.isMobileWeb) ? 32.sp : 16.sp),
           ),
           6.h.verticalSpace,
           Row(
@@ -323,45 +331,45 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
   }
 
   Widget raceItemWeb({required BuildContext context}) {
-    final sixteenFontSize = context.isDesktop
-        ? 16.sp
-        : context.isTablet
-        ? 24.sp
-        : (context.isMobileWeb)
-        ? 32.sp
-        : 16.sp;
-    final fourteenFontSize = context.isDesktop
-        ? 14.sp
-        : context.isTablet
-        ? 22.sp
-        : (context.isMobileWeb)
-        ? 30.sp
-        : 14.sp;
+    // final sixteenFontSize = context.isDesktop
+    //     ? 16.sp
+    //     : context.isTablet
+    //     ? 24.sp
+    //     : (context.isMobileWeb)
+    //     ? 32.sp
+    //     : 16.sp;
+    // final fourteenFontSize = context.isDesktop
+    //     ? 14.sp
+    //     : context.isTablet
+    //     ? 22.sp
+    //     : (context.isMobileWeb)
+    //     ? 30.sp
+    //     : 14.sp;
     return Container(
-      padding: EdgeInsets.fromLTRB(16.w, 12.h, 14.w, 14.h),
+      padding: EdgeInsets.fromLTRB(12, 10, 10, 10),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.6)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Morphettville", style: semiBold(fontSize: sixteenFontSize)),
-          6.h.verticalSpace,
+          Text("Morphettville", style: semiBold(fontSize: 14)),
+          SizedBox(height: 5),
           Row(
-            spacing: 85.w,
+            spacing: 55,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 "Race 1",
                 style: semiBold(
-                  fontSize: fourteenFontSize,
+                  fontSize: 14    ,
                   color: AppColors.primary.withValues(alpha: 0.6),
                 ),
               ),
               Text(
                 "13:15",
                 style: semiBold(
-                  fontSize: fourteenFontSize,
+                  fontSize: 14,
                   color: AppColors.primary.withValues(alpha: 0.6),
                 ),
               ),
@@ -401,7 +409,7 @@ Widget askPuntGPTButtonWeb({required BuildContext context}) {
         right: context.isMobileView ? 25.w : 100.w,
       ),
       padding: EdgeInsets.symmetric(
-        vertical:10,
+        vertical: 10,
         //  context.isDesktop
         //     ? 10.w
         //     : context.isTablet

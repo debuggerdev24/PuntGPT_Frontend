@@ -15,6 +15,8 @@ import 'package:puntgpt_nick/screens/auth/web/web_login_screen.dart';
 import 'package:puntgpt_nick/screens/auth/web/web_sign_up_screen.dart';
 import 'package:puntgpt_nick/screens/auth/web/web_verify_otp_screen.dart';
 import 'package:puntgpt_nick/screens/dashboard/web/web_dashboard.dart';
+import 'package:puntgpt_nick/screens/home/classic_form_guide/mobile/selected_meeting_screen.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/mobile/home_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/home_screen_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/tip_slip_screen_web.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/club_chat_screen.dart';
@@ -24,7 +26,7 @@ import '../../../screens/account/web/web_account_screen.dart';
 import '../../../screens/bookies/web/bookies_screen_web.dart';
 import '../../../screens/home/search_engine/mobile/ask_puntgpt_screen.dart';
 import '../../../screens/home/search_engine/mobile/saved_search_screen.dart';
-import '../../../screens/home/search_engine/web/selected_race_screen_web.dart';
+import '../../../screens/home/search_engine/web/selected_meeting_screen_web.dart';
 import '../../../screens/onboarding/web/web_onboarding_screen.dart';
 import '../../../screens/punter_club/mobile/punters_club_screen.dart';
 
@@ -123,12 +125,20 @@ class WebRouter {
               GoRoute(
                 path: WebRoutes.homeScreen.path,
                 name: WebRoutes.homeScreen.name,
-                builder: (context, state) => HomeScreenWeb(),
+                builder: (context, state) => 
+                context.isMobileView
+                    ? HomeScreen()
+                    : HomeScreenWeb(),
+
               ),
               GoRoute(
                 path: WebRoutes.selectedRace.path,
                 name: WebRoutes.selectedRace.name,
-                builder: (context, state) => SelectedRaceTableScreenWeb(),
+                builder: (context, state) => 
+                
+                context.isMobileView
+                    ? SelectedMeetingScreen()
+                    : SelectedMeetingScreenWeb(),
               ),
               GoRoute(
                 name: WebRoutes.askPuntGptScreen.name,

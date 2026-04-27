@@ -20,7 +20,7 @@ class _WebDashboardState extends State<WebDashboard> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await AppStartupCoordinator.bootstrapDashboard(context: context);
+      await AppStartupCoordinator.startup(context: context);
     });
 
     super.initState();

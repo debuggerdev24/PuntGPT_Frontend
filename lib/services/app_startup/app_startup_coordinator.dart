@@ -11,7 +11,7 @@ class AppStartupCoordinator {
 
   /// Subscription init + plans, then subscription restore flow, then parallel content loads.
   /// Call from mobile and web dashboard after first frame; **do not reorder** these awaits.
-  static Future<void> bootstrapDashboard({required BuildContext context}) async {
+  static Future<void> startup({required BuildContext context}) async {
     final subsProvider = context.read<SubscriptionProvider>();
 
     //* IAP listener must run before restore; plans must load before productId → planId mapping.

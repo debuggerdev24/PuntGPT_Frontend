@@ -10,7 +10,7 @@ class RaceTableWeb extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Container(
         width: tableWidth,
-        margin: EdgeInsets.only(top: 24.h, bottom: 55.h),
+        margin: EdgeInsets.only(top: 19, bottom: 10),
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
         ),
@@ -19,10 +19,10 @@ class RaceTableWeb extends StatelessWidget {
             inside: BorderSide(color: AppColors.primary.withValues(alpha: 0.2)),
           ),
           columnWidths: {
-            0: FlexColumnWidth(3.5.w),
-            1: FlexColumnWidth(6.w),
-            2: FlexColumnWidth(3.w),
-            3: FlexColumnWidth(3.w),
+            0: FlexColumnWidth(2),
+            1: FlexColumnWidth(3.8),
+            2: FlexColumnWidth(2),
+            3: FlexColumnWidth(1.4),
           },
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
@@ -120,44 +120,43 @@ class RaceTableWeb extends StatelessWidget {
     required VoidCallback onTap,
     required BuildContext context,
   }) {
-    final sixteenFontSize = context.isDesktop
-        ? 16.sp
-        : context.isTablet
-        ? 24.sp
-        : (context.isMobileWeb)
-        ? 32.sp
-        : 16.sp;
+    // final sixteenFontSize = context.isDesktop
+    //     ? 16.sp
+    //     : context.isTablet
+    //     ? 24.sp
+    //     : (context.isMobileWeb)
+    //     ? 32.sp
+    //     : 16.sp;
     return TableRow(
       children: [
         OnMouseTap(
           onTap: onTap,
           child: Padding(
-            padding: EdgeInsets.only(left: 16.w, top: 8.h, bottom: 8.h),
-            child: Text(col1, style: semiBold(fontSize: sixteenFontSize)),
+            padding: EdgeInsets.only(left: 12, top: 7, bottom: 7),
+            child: Text(col1, style: semiBold(fontSize: 14)),
           ),
         ),
         OnMouseTap(
           onTap: onTap,
           child: Padding(
-            padding: EdgeInsets.only(left: 16.w, top: 8.h, bottom: 8.h),
-            child: Text(col2, style: semiBold(fontSize: sixteenFontSize)),
-          ),
-        ),
-        OnMouseTap(
-          onTap: onTap,
+            padding: EdgeInsets.only(left: 12, top: 7, bottom: 7),
 
-          child: Padding(
-            padding: EdgeInsets.only(left: 16.w, top: 8.h, bottom: 8.h),
-
-            child: Text(col3, style: semiBold(fontSize: sixteenFontSize)),
+            child: Text(col2, style: semiBold(fontSize: 14)),
           ),
         ),
         OnMouseTap(
           onTap: onTap,
           child: Padding(
-            padding: EdgeInsets.only(left: 16.w, top: 8.h, bottom: 8.h),
+            padding: EdgeInsets.only(left: 12, top: 7, bottom: 7,right: 8),
+            child: Text(col3, style: semiBold(fontSize: 14)),
+          ),
+        ),
+        OnMouseTap(
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.only(left: 12, top: 7, bottom: 7),
 
-            child: Text(col4, style: semiBold(fontSize: sixteenFontSize)),
+            child: Text(col4, style: semiBold(fontSize: 14)),
           ),
         ),
       ],
