@@ -59,10 +59,8 @@ class SearchDetailScreen extends StatelessWidget {
                   margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 6.h),
                 ),
                 AppOutlinedButton(
-                  textStyle: semiBold(
-                    fontSize: 16.sixteenSp(context),
-                    color: AppColors.black,
-                  ),
+                  textStyle: semiBold(fontSize: 16.fSize, color: AppColors.red),
+                  borderColor: AppColors.red,
                   text: "Delete",
                   onTap: () {
                     showDeleteSearchConfirmationDialog(
@@ -133,8 +131,7 @@ class SearchDetailScreen extends StatelessWidget {
         provider.clearSavedSearchFields();
         context.pop();
       },
-    );  
-   
+    );
   }
 
   Widget searchDetailsView({
@@ -161,7 +158,8 @@ class SearchDetailScreen extends StatelessWidget {
             title: "Placed last start",
             isChecked: provider.placedLastStart,
             onTap: isEditMode
-                ? () => provider.togglePlacedLastStart(!provider.placedLastStart)
+                ? () =>
+                      provider.togglePlacedLastStart(!provider.placedLastStart)
                 : null,
           ),
           horizontalDivider(),
@@ -182,7 +180,9 @@ class SearchDetailScreen extends StatelessWidget {
             title: "Placed at distance",
             isChecked: provider.placedAtDistance,
             onTap: isEditMode
-                ? () => provider.togglePlacedAtDistance(!provider.placedAtDistance)
+                ? () => provider.togglePlacedAtDistance(
+                    !provider.placedAtDistance,
+                  )
                 : null,
           ),
           horizontalDivider(),
@@ -193,8 +193,9 @@ class SearchDetailScreen extends StatelessWidget {
             onTap: isEditMode
                 ? () {
                     final current = provider.placeAtTrack;
-                    provider.setSelectedPlaceAtTrack =
-                        current == null ? true : !current;
+                    provider.setSelectedPlaceAtTrack = current == null
+                        ? true
+                        : !current;
                   }
                 : null,
           ),
@@ -212,8 +213,9 @@ class SearchDetailScreen extends StatelessWidget {
             onTap: isEditMode
                 ? () {
                     final current = provider.selectedWinsAtTrack;
-                    provider.setSelectedWinsAtTrack =
-                        current == null ? true : !current;
+                    provider.setSelectedWinsAtTrack = current == null
+                        ? true
+                        : !current;
                   }
                 : null,
           ),
@@ -254,7 +256,8 @@ class SearchDetailScreen extends StatelessWidget {
             title: "Won last 12 months",
             isChecked: provider.wonLast12Months,
             onTap: isEditMode
-                ? () => provider.toggleWonLast12Months(!provider.wonLast12Months)
+                ? () =>
+                      provider.toggleWonLast12Months(!provider.wonLast12Months)
                 : null,
           ),
           horizontalDivider(),

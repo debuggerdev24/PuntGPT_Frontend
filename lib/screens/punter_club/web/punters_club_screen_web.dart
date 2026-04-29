@@ -1,5 +1,4 @@
 import 'package:modal_side_sheet/modal_side_sheet.dart';
-import 'package:puntgpt_nick/core/widgets/subscription_gate_view.dart';
 import 'package:puntgpt_nick/core/widgets/subscription_gate_view_web.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
 import 'package:puntgpt_nick/provider/subscription/subscription_provider.dart';

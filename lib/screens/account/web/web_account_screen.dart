@@ -92,7 +92,7 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
                                   ),
                                   child: Text(
                                     "My Account",
-                                    
+
                                     style: regular(
                                       fontSize: 20,
                                       height: 1,
@@ -132,7 +132,9 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
 
                                   onTap: () {
                                     provider.setAccountTabIndex = 1;
-                                    context.read<SubscriptionProvider>().getSubscriptionPlans();
+                                    context
+                                        .read<SubscriptionProvider>()
+                                        .getSubscriptionPlans();
                                   },
                                   context: context,
                                 ),
@@ -239,7 +241,7 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
             Icon(
               Icons.arrow_forward_ios,
               size: 16,
-                              
+
               color: (title == "Log Out" || destructive)
                   ? AppColors.red
                   : color == AppColors.primary
@@ -257,53 +259,59 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
       context: context,
       builder: (dialogContext) {
         return ZoomIn(
-          child: AlertDialog(
-            backgroundColor: AppColors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
-            contentPadding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
-            actionsPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-            title: Text(
-              AppStrings.deleteAccountConfirmTitle,
-              style: semiBold(color: AppColors.black, fontSize: 20),
-            ),
-            content: Text(
-              AppStrings.deleteAccountConfirmBody,
-              style: regular(
-                color: AppColors.primary.withValues(alpha: 0.85),
-                fontSize: 15,
-                height: 1.35,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: AlertDialog(
+              backgroundColor: AppColors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
               ),
+              titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+              contentPadding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+              actionsPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              title: Text(
+                AppStrings.deleteAccountConfirmTitle,
+                style: semiBold(color: AppColors.black, fontSize: 20),
+              ),
+              content: Text(
+                "This will permanently delete your PuntGPT account\nand associated data."
+                "You will not be able to\nrecover it. Are you sure?",
+                style: regular(
+                  color: AppColors.primary.withValues(alpha: 0.85),
+                  fontSize: 15,
+                  height: 1.35,
+                ),
+              ),
+              actions: [
+                myActionButtonTheme(
+                  onPressed: () => context.pop(),
+                  title: "Cancel",
+                ),
+                myActionButtonTheme(
+                  onPressed: () async {
+                    context.pop(dialogContext);
+                    await context.read<AuthProvider>().deleteAccount(
+                      onSuccess: () {
+                        AppToast.success(
+                          context: context,
+                          message: "Your account has been deleted",
+                        );
+                        context
+                            .read<SubscriptionProvider>()
+                            .activeSubscriptions
+                            .clear();
+                        context.goNamed(WebRoutes.onBoardingScreen.name);
+                      },
+                      onFailed: (error) {
+                        AppToast.error(context: context, message: error);
+                      },
+                    );
+                  },
+                  title: "Delete account",
+                  destructive: true,
+                ),
+              ],
             ),
-            actions: [
-              myActionButtonTheme(
-                onPressed: () => context.pop(),
-                title: "Cancel",
-              ),
-              myActionButtonTheme(
-                onPressed: () async {
-                  context.pop(dialogContext);
-                  await context.read<AuthProvider>().deleteAccount(
-                    onSuccess: () {
-                      AppToast.success(
-                        context: context,
-                        message: "Your account has been deleted",
-                      );
-                      context.read<SubscriptionProvider>().activeSubscriptions
-                          .clear();
-                      context.go(WebRoutes.onBoardingScreen.name);
-                    },
-                    onFailed: (error) {
-                      AppToast.error(context: context, message: error);
-                    },
-                  );
-                },
-                title: "Delete account",
-                destructive: true,
-              ),
-            ],
           ),
         );
       },
@@ -318,7 +326,7 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
           child: AlertDialog(
             backgroundColor: AppColors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.zero,
             ),
             titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
             contentPadding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
@@ -328,7 +336,7 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
               style: semiBold(color: AppColors.black, fontSize: 20),
             ),
             content: Text(
-              AppStrings.logOutConfirmBody,
+              "You will be signed out on this device.\nYou can sign in again at any time.",
               style: regular(
                 color: AppColors.primary.withValues(alpha: 0.85),
                 fontSize: 15,
@@ -349,9 +357,11 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
                         context: context,
                         message: "Signed out successfully",
                       );
-                      context.read<SubscriptionProvider>().activeSubscriptions
+                      context
+                          .read<SubscriptionProvider>()
+                          .activeSubscriptions
                           .clear();
-                      context.go(WebRoutes.onBoardingScreen.name);
+                      context.goNamed(WebRoutes.onBoardingScreen.name);
                     },
                     onFailed: (error) {
                       AppToast.error(context: context, message: error);
@@ -381,7 +391,7 @@ class _AccountScreenWebState extends State<AccountScreenWeb> {
           color: (destructive || title == "Yes")
               ? AppColors.red
               : AppColors.black,
-          fontSize: 18,
+          fontSize: 16,
         ),
       ),
     );

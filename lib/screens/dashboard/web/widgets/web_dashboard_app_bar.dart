@@ -34,13 +34,13 @@ class _WebDashboardAppBarState extends State<WebDashboardAppBar> {
                     children: [
                       Container(
                         height: 45,
-                        width: 170.w,
+                        width: 130,
                         color: AppColors.white,
                         alignment: Alignment.center,
                         child: Text("Ads"),
                       ),
                       60.w.horizontalSpace,
-                      //todo -------------------------> Bookies tab
+                      //* -------------------------> Bookies tab
                       _navItem(
                         onTap: () {
                           indexOfWebTab.value = 0;
@@ -52,12 +52,12 @@ class _WebDashboardAppBarState extends State<WebDashboardAppBar> {
                         color: AppColors.green,
                       ),
                       30.w.horizontalSpace,
-                      //todo -------------------------> Punter Club tab
+                      //* -------------------------> Punter Club tab
                       _navItem(
                         onTap: () {
                           indexOfWebTab.value = 1;
                           WebRouter.indexedStackNavigationShell!.goBranch(1);
-                          context.read<PuntClubProvider>().getChatGroups  ();
+                          context.read<PuntClubProvider>().getChatGroups();
                         },
                         isSelected: 1 == value,
                         text: "PuntGPT\nPunter Club",
@@ -76,7 +76,7 @@ class _WebDashboardAppBarState extends State<WebDashboardAppBar> {
                     spacing: 30.w,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      //todo -------------------------> Subscribe to pro punter
+                      //* -------------------------> Subscribe to pro punter
                       _navItem(
                         onTap: () {
                           indexOfWebTab.value = 5;
@@ -89,7 +89,7 @@ class _WebDashboardAppBarState extends State<WebDashboardAppBar> {
                         icon: AppAssets.trophy,
                         color: AppColors.premiumYellow,
                       ),
-                      //todo -------------------------> Tip slip screen
+                      //* -------------------------> Tip slip screen
                       _navItem(
                         onTap: () {
                           indexOfWebTab.value = 3;
@@ -98,7 +98,7 @@ class _WebDashboardAppBarState extends State<WebDashboardAppBar> {
                         isSelected: 3 == value,
                         child: _tipSlip(context),
                       ),
-                      //todo -------------------------> Account
+                      //* -------------------------> Account
                       _navItem(
                         onTap: () {
                           indexOfWebTab.value = 4;
@@ -120,7 +120,7 @@ class _WebDashboardAppBarState extends State<WebDashboardAppBar> {
         ),
       );
     }
-    //todo menu bar for mobile
+    //* menu bar for mobile
     return Consumer<SearchEngineProvider>(
       builder: (context, provider, child) {
         return Column(
@@ -300,7 +300,7 @@ class _WebDashboardAppBarState extends State<WebDashboardAppBar> {
                         text!,
                         textAlign: TextAlign.left,
                         style: medium(
-                          fontSize: 16.sp,
+                          fontSize: 13,
                           height: 1.5,
                           color: color ?? AppColors.white,
                         ),

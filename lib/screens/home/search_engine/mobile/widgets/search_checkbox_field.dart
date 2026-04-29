@@ -18,8 +18,7 @@ class SearchCheckboxField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 18.w),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: OnMouseTap(
         onTap: onTap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

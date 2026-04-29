@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/home_screen.dart';
-import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_screen_tab.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/race_table.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/search_section.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/chat_section_web.dart';

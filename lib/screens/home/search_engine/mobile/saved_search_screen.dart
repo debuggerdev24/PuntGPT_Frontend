@@ -101,7 +101,7 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
       return _buildEmptyState(context);
     }
     return ListView.builder(
-      // padding: EdgeInsets.symmetric(vertical: 8.h),
+      padding: EdgeInsets.zero,
       itemCount: provider.saveSearches!.length,
       itemBuilder: (context, index) => SearchedItem(
         search: provider.saveSearches![index],
@@ -406,8 +406,7 @@ class SearchedItem extends StatelessWidget {
                       color: AppColors.primary,
                     ),
                   ),
-                  6.5.w
-                  .verticalSpace,
+                  6.5.w.verticalSpace,
                   Text(
                     search.comment,
                     style: regular(

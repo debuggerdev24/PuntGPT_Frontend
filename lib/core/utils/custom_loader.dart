@@ -56,8 +56,8 @@ Widget progressIndicator({Color? color, double? size}) {
   );
 }
 
-class ApiLoadingIndicator extends StatelessWidget {
-  const ApiLoadingIndicator({super.key});
+class LoadingIndicator extends StatelessWidget {
+  const LoadingIndicator({super.key});
 
   @override
   Widget build(BuildContext context) {

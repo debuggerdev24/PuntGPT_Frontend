@@ -1,6 +1,5 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/widgets/web_top_section.dart';
-import 'package:puntgpt_nick/screens/onboarding/mobile/widgets/video_widget.dart';
 
 import '../../../provider/auth/auth_provider.dart';
 import '../../../services/storage/locale_storage_service.dart';
