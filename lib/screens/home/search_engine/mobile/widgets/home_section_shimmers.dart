@@ -1847,4 +1847,5 @@ class HomeSectionShimmers {
       ],
     );
   }
+
 }

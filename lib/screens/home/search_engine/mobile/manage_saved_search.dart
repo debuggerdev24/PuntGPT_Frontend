@@ -76,7 +76,7 @@ class SearchDetailScreen extends StatelessWidget {
                     fontSize: 16.sixteenSp(context),
                     color: AppColors.white,
                   ),
-                  margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 6.h),
+                  margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 6.w),
                   text: "Save",
                   onTap: () {
                     // Check if there are any changes
@@ -88,7 +88,6 @@ class SearchDetailScreen extends StatelessWidget {
                       return;
                     }
 
-                    // Proceed with saving if changes are detected
                     provider.editSaveSearch(
                       onSuccess: () {
                         provider.getAllSaveSearch();

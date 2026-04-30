@@ -1,12 +1,12 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:modal_side_sheet/modal_side_sheet.dart';
 import 'package:puntgpt_nick/models/home/search_engine/search_model.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/barrier_range_slider_field.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/jockey_horse_wins_slider_field.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/odds_range_slider_field.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/search_checkbox_field.dart';
-
-bool isSearchDialogOpen = false;
+import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/runners_list_web.dart';
 
 class SearchSectionWeb extends StatefulWidget {
   const SearchSectionWeb({super.key, required this.formKey});
@@ -29,90 +29,81 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
 
   Future<void> onSaveSearchTap({required SearchEngineProvider provider}) async {
     await provider.getAllSaveSearch();
-    isSearchDialogOpen = true;
-    showDialog(
-      context: context,
-      builder: (dailogueCtx) {
-        return searchDialog(dailogueCtx: dailogueCtx);
-      },
-    );
+    if (!mounted) return;
+    context.pushNamed(WebRoutes.savedSearchedScreen.name);
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<SearchEngineProvider>(
-      builder: (context, provider, child) => SizedBox(
-        // width:
-        // Responsive.isMobileWeb(context)
-        //     ? double.maxFinite
-        //     : context.isTablet
-        //     ? 1200.w
-        //     : 1100.w,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: context.isDesktop ? 121 : 60,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (!context.isDesktop) ...[
+      builder: (context, provider, child) {
+        return SizedBox(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: context.isDesktop ? 121 : 60,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (!context.isDesktop) ...[
+                      OnMouseTap(
+                        onTap: () => _openFilterSideSheet(provider),
+                        child: Icon(Icons.tune_outlined, size: 20),
+                      ),
+                      SizedBox(width: 6),
+                    ],
+                    Expanded(
+                      child: Text(
+                        "Filter through form your way",
+                        style: bold(fontSize: 14, height: 1),
+                      ),
+                    ),
                     OnMouseTap(
-                      onTap: () => _openFilterSideSheet(provider),
-                      child: Icon(Icons.tune_outlined, size: 20),
-                    ),
-                    SizedBox(width: 6),
-                  ],
-                  Expanded(
-                    child: Text(
-                      "Filter through form your way",
-                      style: bold(fontSize: 14, height: 1),
-                    ),
-                  ),
-                  OnMouseTap(
-                    onTap: () => onSaveSearchTap(provider: provider),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ImageWidget(
-                          type: ImageType.svg,
-                          path: AppAssets.bookmark,
-                          height: 14,
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          "Saved Searches",
-                          style: bold(
-                            fontSize: 14,
-                            decoration: TextDecoration.underline,
+                      onTap: () => onSaveSearchTap(provider: provider),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ImageWidget(
+                            type: ImageType.svg,
+                            path: AppAssets.bookmark,
+                            height: 14,
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 5),
+                          Text(
+                            "Saved Searches",
+                            style: bold(
+                              fontSize: 14,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 12),
-              //* filter view
-              _buildSearchView(),
-            ],
+                  ],
+                ),
+                SizedBox(height: 12),
+                //* filter view
+                horizontalDivider(),
+                if (!provider.isEditSavedSearch)
+                  _buildSearchView(provider: provider),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   /// For Mobile
 
-  Widget _buildSearchView() {
-    final provider = context.watch<SearchEngineProvider>();
+  Widget _buildSearchView({required SearchEngineProvider provider}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        horizontalDivider(),
         Row(
           spacing: 6,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,7 +125,6 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                     ),
                     SizedBox(height: 12),
                     horizontalDivider(),
-
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12.w),
                       child: SearchCheckboxField(
@@ -264,6 +254,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
 
                       textStyle: semiBold(color: AppColors.white, fontSize: 12),
                       onTap: () {
+                        Logger.info("Search button tapped");
                         provider.getUpcomingRunner(onSuccess: () {});
                       },
                     ),
@@ -292,7 +283,15 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                 children: [
                   SizedBox(height: 14),
                   if (provider.isGettingRunners)
-                    SizedBox.shrink()
+                    Padding(
+                      padding: EdgeInsets.only(top: 80),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    )
                   else if (provider.runnersList?.isEmpty ?? true)
                     Padding(
                       padding: EdgeInsets.only(top: 80),
@@ -308,27 +307,76 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                     )
                   else
                     Text(
-                      "Total Runners: (20)",
+                      "Total Runners: (${provider.totalRunners ?? provider.runnersList?.length ?? 0})",
                       style: semiBold(
                         fontSize: 14,
                         color: AppColors.primary.withValues(alpha: 0.6),
                       ),
                     ),
                   SizedBox(height: 20),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.5,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
+                  if (provider.runnersList != null &&
+                      provider.runnersList!.isNotEmpty)
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount:
+                          provider.runnersList!.length +
+                          (provider.isLoadingMoreRunners ? 2 : 0),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.08,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                      ),
+                      itemBuilder: (context, index) {
+                        if (index >= provider.runnersList!.length) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: AppColors.primary.withValues(
+                                  alpha: 0.15,
+                                ),
+                              ),
+                            ),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          );
+                        }
+                        if (index == provider.runnersList!.length - 1) {
+                          provider.loadNextRunners();
+                        }
+                        return RunnerBoxWeb(
+                          displayIndex: index + 1,
+                          runner: provider.runnersList![index],
+                          onAddToTipSlip: () {
+                            provider.createTipSlip(
+                              context: context,
+                              selectionId: provider
+                                  .runnersList![index]
+                                  .selectionId
+                                  .toString(),
+                            );
+                          },
+                          onCompareToField: () {
+                            provider.compareHorses(
+                              selectionId: provider
+                                  .runnersList![index]
+                                  .selectionId
+                                  .toString(),
+                            );
+                          },
+                          onSaveSearch: () {
+                            // provider.createSaveSearch(
+                            //   name: provider.runnersList![index].name,
+                            // );
+                          },
+                        );
+                      },
                     ),
-                    itemBuilder: (context, index) {
-                      return SizedBox.shrink(); //Runner(runner: provider.runnersList[0]);
-                    },
-                    itemCount: 10,
-                  ),
                 ],
               ),
             ),
@@ -567,19 +615,13 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return OnMouseTap(
-                            onTap: () {
+                            onTap: () async {
                               dailogueCtx.pop();
-                              provider.getSaveSearchDetails(
+                              await provider.getSaveSearchDetails(
                                 id: provider.saveSearches![index].id.toString(),
                               );
-                              showDialog(
-                                context: this.context,
-                                builder: (dialogCtx) {
-                                  return manageSavedSearchDialog(
-                                    dailogueCtx: dialogCtx,
-                                  );
-                                },
-                              );
+                              if (!mounted) return;
+                              _openManageSavedSearchSideSheet();
                             },
                             child: searchItem(
                               search: provider.saveSearches![index],
@@ -627,6 +669,220 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
     );
   }
 
+  //* -------------------> Manage Saved Search Side Sheet
+  void _openManageSavedSearchSideSheet() {
+    context.read<SearchEngineProvider>().setIsEditSavedSearch = false;
+    showModalSideSheet(
+      context: context,
+      useRootNavigator: false,
+      withCloseControll: true,
+      barrierColor: const Color(0x80000000),
+      width: 300,
+      body: Container(
+        height: MediaQuery.sizeOf(context).height,
+        color: AppColors.white,
+        padding: const EdgeInsets.all(10),
+        child: Consumer<SearchEngineProvider>(
+          builder: (context, provider, child) {
+            final selectedSaveSearch = provider.selectedSaveSearch;
+            if (selectedSaveSearch == null) {
+              return const SizedBox(
+                height: 140,
+                child: Center(child: LoadingIndicator()),
+              );
+            }
+            final isEditMode = provider.isEditSavedSearch;
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 4, 0, 6),
+                  child: Text(
+                    selectedSaveSearch.name,
+                    style: semiBold(fontSize: 16),
+                  ),
+                ),
+                horizontalDivider(),
+                SizedBox(height: 8),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        AppMultiSelectTrackDropdown(
+                          enabled: isEditMode,
+                          margin: EdgeInsets.fromLTRB(10, 6, 10, 10),
+                          items: provider.trackList ?? const [],
+                          hintText: "Select Track",
+                        ),
+                        horizontalDivider(),
+                        SearchCheckboxField(
+                          title: "Placed last start",
+                          isChecked: provider.placedLastStart,
+                          onTap: isEditMode
+                              ? () => provider.togglePlacedLastStart(
+                                  !provider.placedLastStart,
+                                )
+                              : null,
+                          verticalPadding: 10,
+                        ),
+                        horizontalDivider(),
+                        SearchCheckboxField(
+                          title: "Placed at distance",
+                          isChecked: provider.placedAtDistance,
+                          onTap: isEditMode
+                              ? () => provider.togglePlacedAtDistance(
+                                  !provider.placedAtDistance,
+                                )
+                              : null,
+                          verticalPadding: 10,
+                        ),
+                        horizontalDivider(),
+                        SearchCheckboxField(
+                          title: "Placed at track",
+                          isChecked: provider.placeAtTrack == true,
+                          onTap: isEditMode
+                              ? () {
+                                  final current = provider.placeAtTrack;
+                                  provider.setSelectedPlaceAtTrack =
+                                      current == null ? true : !current;
+                                }
+                              : null,
+                          verticalPadding: 10,
+                        ),
+                        horizontalDivider(),
+                        SearchCheckboxField(
+                          title: "Won at track",
+                          isChecked: provider.selectedWinsAtTrack == true,
+                          onTap: isEditMode
+                              ? () {
+                                  final current = provider.selectedWinsAtTrack;
+                                  provider.setSelectedWinsAtTrack =
+                                      current == null ? true : !current;
+                                }
+                              : null,
+                          verticalPadding: 10,
+                        ),
+                        horizontalDivider(),
+                        SearchCheckboxField(
+                          title: "Won at distance",
+                          isChecked: provider.wonAtDistance,
+                          onTap: isEditMode
+                              ? () => provider.toggleWonAtDistance(
+                                  !provider.wonAtDistance,
+                                )
+                              : null,
+                          verticalPadding: 10,
+                        ),
+                        horizontalDivider(),
+                        SearchCheckboxField(
+                          title: "Won last start",
+                          isChecked: provider.wonLastStart,
+                          onTap: isEditMode
+                              ? () => provider.toggleWonLastStart(
+                                  !provider.wonLastStart,
+                                )
+                              : null,
+                          verticalPadding: 10,
+                        ),
+                        horizontalDivider(),
+                        SearchCheckboxField(
+                          title: "Won last 12 months",
+                          isChecked: provider.wonLast12Months,
+                          onTap: isEditMode
+                              ? () => provider.toggleWonLast12Months(
+                                  !provider.wonLast12Months,
+                                )
+                              : null,
+                          verticalPadding: 10,
+                        ),
+                        horizontalDivider(),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: OddsRangeSliderField(
+                            values: provider.oddsRangeValues,
+                            onChanged: isEditMode
+                                ? provider.updateOddsRange
+                                : null,
+                          ),
+                        ),
+                        horizontalDivider(),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: JockeyHorseWinsSliderField(
+                            values: provider.jockeyHorseWinsRangeValues,
+                            onChanged: isEditMode
+                                ? provider.updateJockeyHorseWinsRange
+                                : null,
+                          ),
+                        ),
+                        horizontalDivider(),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: BarrierRangeSliderField(
+                            values: provider.barrierRangeIndexValues,
+                            onChanged: isEditMode
+                                ? provider.updateBarrierRange
+                                : null,
+                          ),
+                        ),
+                        horizontalDivider(),
+                      ],
+                    ),
+                  ),
+                ),
+                horizontalDivider(),
+                SizedBox(height: 10),
+                if (!isEditMode)
+                  AppFilledButton(
+                    text: "Edit",
+                    textStyle: semiBold(fontSize: 14, color: AppColors.white),
+                    onTap: () {
+                      provider.setIsEditSavedSearch = true;
+                    },
+                  )
+                else ...[
+                  AppFilledButton(
+                    text: "Save",
+                    textStyle: semiBold(fontSize: 14, color: AppColors.white),
+                    onTap: () {
+                      if (!provider.hasChangesInSavedSearch()) {
+                        AppToast.info(
+                          context: context,
+                          message: "No changes found",
+                        );
+                        return;
+                      }
+                      provider.editSaveSearch(
+                        onSuccess: () {
+                          provider.getAllSaveSearch();
+                          context.pop();
+                          provider.clearSavedSearchFields();
+                          AppToast.success(
+                            context: context,
+                            message: "Search updated successfully",
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  AppOutlinedButton(
+                    margin: EdgeInsets.only(top: 8),
+                    text: "Cancel",
+                    textStyle: semiBold(fontSize: 14),
+                    onTap: () {
+                      provider.setIsEditSavedSearch = false;
+                    },
+                  ),
+                ],
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   Widget manageSavedSearchDialog({required BuildContext dailogueCtx}) {
     return ZoomIn(
       child: AlertDialog(
@@ -644,7 +900,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                   child: Center(child: LoadingIndicator()),
                 );
               }
-              
+
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -717,9 +973,11 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                 horizontalDivider(),
                                 SearchCheckboxField(
                                   title: "Won at track",
-                                  isChecked: provider.selectedWinsAtTrack == true,
+                                  isChecked:
+                                      provider.selectedWinsAtTrack == true,
                                   onTap: () {
-                                    final current = provider.selectedWinsAtTrack;
+                                    final current =
+                                        provider.selectedWinsAtTrack;
                                     provider.setSelectedWinsAtTrack =
                                         current == null ? true : !current;
                                   },
@@ -727,14 +985,14 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                 ),
                                 horizontalDivider(),
                                 SearchCheckboxField(
-                                    title: "Won at distance",
-                                    isChecked: provider.wonAtDistance,
-                                    onTap: () => provider.toggleWonAtDistance(
-                                      !provider.wonAtDistance,
-                                    ),
-                                    verticalPadding: 10,
+                                  title: "Won at distance",
+                                  isChecked: provider.wonAtDistance,
+                                  onTap: () => provider.toggleWonAtDistance(
+                                    !provider.wonAtDistance,
                                   ),
-                                
+                                  verticalPadding: 10,
+                                ),
+
                                 horizontalDivider(),
                                 SearchCheckboxField(
                                   title: "Won last start",
@@ -745,14 +1003,14 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                                   verticalPadding: 10,
                                 ),
                                 horizontalDivider(),
-                                  SearchCheckboxField(
-                                    title: "Won last 12 months",
-                                    isChecked: provider.wonLast12Months,
-                                    onTap: () => provider.toggleWonLast12Months(
-                                      !provider.wonLast12Months,
-                                    ),
-                                    verticalPadding: 10,
-                                  ),  
+                                SearchCheckboxField(
+                                  title: "Won last 12 months",
+                                  isChecked: provider.wonLast12Months,
+                                  onTap: () => provider.toggleWonLast12Months(
+                                    !provider.wonLast12Months,
+                                  ),
+                                  verticalPadding: 10,
+                                ),
                                 horizontalDivider(),
                               ],
                             ),
@@ -761,32 +1019,32 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                         // SizedBox(width: 8),
                         Expanded(
                           child: SingleChildScrollView(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
 
                             child: Column(
                               children: [
-                                
                                 OddsRangeSliderField(
-                                    values: provider.oddsRangeValues,
-                                    onChanged: provider.updateOddsRange,
-                                  ),
+                                  values: provider.oddsRangeValues,
+                                  onChanged: provider.updateOddsRange,
+                                ),
                                 horizontalDivider(),
                                 JockeyHorseWinsSliderField(
-                                    values: provider.jockeyHorseWinsRangeValues,
-                                    onChanged: provider.updateJockeyHorseWinsRange,
-                                  ),
+                                  values: provider.jockeyHorseWinsRangeValues,
+                                  onChanged:
+                                      provider.updateJockeyHorseWinsRange,
+                                ),
                                 horizontalDivider(),
                                 BarrierRangeSliderField(
-                                    values: provider.barrierRangeIndexValues,
-                                    onChanged: provider.updateBarrierRange,
-                                  ),
-                            horizontalDivider(),
-                          ],
+                                  values: provider.barrierRangeIndexValues,
+                                  onChanged: provider.updateBarrierRange,
+                                ),
+                                horizontalDivider(),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
                   ),
                 ],
               );

@@ -17,7 +17,9 @@ import 'package:puntgpt_nick/screens/auth/web/web_verify_otp_screen.dart';
 import 'package:puntgpt_nick/screens/dashboard/web/web_dashboard.dart';
 import 'package:puntgpt_nick/screens/home/classic_form_guide/mobile/selected_meeting_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/home_screen.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/mobile/saved_search_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/home_screen_web.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/web/saved_searches_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/tip_slip_screen_web.dart';
 import 'package:puntgpt_nick/screens/punter_club/mobile/club_chat_screen.dart';
 import 'package:puntgpt_nick/screens/punter_club/web/punters_club_screen_web.dart';
@@ -25,7 +27,6 @@ import 'package:puntgpt_nick/screens/splash/web_splash_screen.dart';
 import '../../../screens/account/web/web_account_screen.dart';
 import '../../../screens/bookies/web/bookies_screen_web.dart';
 import '../../../screens/home/search_engine/mobile/ask_puntgpt_screen.dart';
-import '../../../screens/home/search_engine/mobile/saved_search_screen.dart';
 import '../../../screens/home/search_engine/web/selected_meeting_screen_web.dart';
 import '../../../screens/onboarding/web/web_onboarding_screen.dart';
 import '../../../screens/punter_club/mobile/punters_club_screen.dart';
@@ -148,7 +149,9 @@ class WebRouter {
                 name: WebRoutes.savedSearchedScreen.name,
                 path: WebRoutes.savedSearchedScreen.path,
                 builder: (BuildContext context, GoRouterState state) {
-                  return SavedSearchScreen();
+                  return (context.isMobileView)
+                      ? SavedSearchScreen()
+                      : const SavedSearchesWeb();
                 },
               ),
             ],

@@ -4,8 +4,8 @@ import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/home_screen.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/race_table.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/web/ask_puntgpt_screen_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/search_section.dart';
-import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/chat_section_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/home_screen_tab_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/race_start_timing_option_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/race_table_web.dart';
@@ -38,11 +38,6 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-    if (isSearchDialogOpen && context.isMobileWeb) {
-      context.pop();
-      isSearchDialogOpen = false;
-    }
     if (context.isMobileWeb && isSheetOpen) {
       context.pop();
       isSheetOpen = false;
@@ -281,7 +276,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
             ),
           ),
         ),
-        //todo ask punt gpt button web
+        //* ask punt gpt button web
         Align(
           alignment: Alignment.bottomRight,
           child: askPuntGPTButtonWeb(context: context),
@@ -399,7 +394,7 @@ Widget askPuntGPTButtonWeb({required BuildContext context}) {
         useRootNavigator: false,
         width: context.isDesktop ? 450.w : 600.w,
         withCloseControll: true,
-        body: askPuntGPTSheetView(context),
+        body: const AskPuntGptScreenWeb(),
       );
     },
     child: Container(
@@ -409,21 +404,7 @@ Widget askPuntGPTButtonWeb({required BuildContext context}) {
       ),
       padding: EdgeInsets.symmetric(
         vertical: 10,
-        //  context.isDesktop
-        //     ? 10.w
-        //     : context.isTablet
-        //     ? 11.w
-        //     : (context.isBrowserMobile)
-        //     ? 16.w
-        //     : 14.w,
         horizontal: 18,
-        // context.isDesktop
-        //     ? 18.w
-        //     : context.isTablet
-        //     ? 20.w
-        //     : (context.isBrowserMobile)
-        //     ? 22.w
-        //     : 16.w,
       ),
       decoration: BoxDecoration(
         boxShadow: [
@@ -443,7 +424,6 @@ Widget askPuntGPTButtonWeb({required BuildContext context}) {
         children: [
           ImageWidget(
             path: AppAssets.horse,
-
             height: context.isDesktop
                 ? 34.w
                 : context.isTablet
@@ -483,55 +463,3 @@ Widget askPuntGPTButtonWeb({required BuildContext context}) {
   );
 }
 
-Widget askPuntGPTSheetView(BuildContext context) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding: EdgeInsets.only(left: 24.w, top: 12.w, bottom: 12.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Ask @PuntGPT",
-              style: regular(
-                fontSize: context.isDesktop ? 20.sp : 30.sp,
-                fontFamily: AppFontFamily.secondary,
-                height: 1.35,
-              ),
-            ),
-            Text(
-              "Chat with AI",
-              style: medium(
-                fontSize: context.isDesktop ? 12.sp : 22.sp,
-                color: AppColors.primary.withValues(alpha: 0.6),
-              ),
-            ),
-          ],
-        ),
-      ),
-      horizontalDivider(),
-      Expanded(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [ChatBubbleWeb(), ChatBubbleWeb()],
-        ),
-      ),
-      horizontalDivider(),
-      TextField(
-        expands: false,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          prefix: SizedBox(width: 25.w),
-
-          hintText: "Type your message...",
-          hintStyle: medium(
-            fontStyle: FontStyle.italic,
-            fontSize: context.isDesktop ? 16.sp : 22.sp,
-            color: AppColors.primary.withValues(alpha: 0.6),
-          ),
-        ),
-      ),
-    ],
-  );
-}

@@ -13,7 +13,7 @@ class SearchFields extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bodyHorizontalPadding = (context.isMobileWeb) ? 50.w : 20.w;
-    // final provider = context.read<SearchEngineProvider>();
+
     return SizedBox(
       width: double.maxFinite,
       child: Consumer<SearchEngineProvider>(
@@ -47,15 +47,6 @@ class SearchFields extends StatelessWidget {
 
                   horizontalDivider(),
                   //* Placed at distance Section
-                  // AppTextFieldDropdown(
-                  //   margin: EdgeInsets.symmetric(vertical: 20.w),
-                  //   items: provider.distanceDetails ?? [],
-                  //   selectedValue: provider.selectedPlaceAtDistance,
-                  //   onChange: (selectedValue) {
-                  //     provider.setSelectedPlaceAtDistance = selectedValue;
-                  //   },
-                  //   hintText: "Placed at distance",
-                  // ),
                   SearchCheckboxField(
                     title: "Placed at distance",
                     isChecked: provider.placedAtDistance,
@@ -93,7 +84,6 @@ class SearchFields extends StatelessWidget {
                               },
                             ),
                             horizontalDivider(),
-
                             SearchCheckboxField(
                               title: "Won at distance",
                               isChecked: provider.wonAtDistance,

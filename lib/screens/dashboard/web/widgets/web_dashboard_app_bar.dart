@@ -1,4 +1,5 @@
 import 'package:puntgpt_nick/core/app_imports.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:puntgpt_nick/provider/account/account_provider.dart';
 import 'package:puntgpt_nick/provider/home/search_engine/search_engine_provider.dart';
 import 'package:puntgpt_nick/provider/punt_club/punter_club_provider.dart';
@@ -94,6 +95,7 @@ class _WebDashboardAppBarState extends State<WebDashboardAppBar> {
                         onTap: () {
                           indexOfWebTab.value = 3;
                           WebRouter.indexedStackNavigationShell!.goBranch(3);
+
                         },
                         isSelected: 3 == value,
                         child: _tipSlip(context),
@@ -201,48 +203,40 @@ class _WebDashboardAppBarState extends State<WebDashboardAppBar> {
   }
 
   Widget _tipSlip(BuildContext context) {
-    return OnMouseTap(
-      onTap: () {
-        indexOfWebTab.value = 3;
-        WebRouter.indexedStackNavigationShell!.goBranch(3);
-      },
-      child: SizedBox(
-        height: (20.sp.flexClamp(18, 22) * 1.2) + 25,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
+    return Consumer<SearchEngineProvider>(
+      builder: (context, provider, child) {
+        return OnMouseTap(
+          onTap: () {
+            // provider.getAllTipSlips();
+            indexOfWebTab.value = 3;
+            WebRouter.indexedStackNavigationShell!.goBranch(3);
+          },
+          child: badges.Badge(
+            showBadge: provider.tipSlips?.isNotEmpty ?? false,
+            position: badges.BadgePosition.topEnd(top: -10, end: -10),
+            badgeStyle: badges.BadgeStyle(
+              badgeColor: AppColors.white,
+              borderRadius: BorderRadius.circular(2),
+              elevation: 0,
+            ),
+            badgeContent: Text(
+              provider.tipSlips?.length.toString() ?? "0",
+              style: semiBold(fontSize: 11, color: AppColors.black),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 6),
               child: Text(
                 "Tip Slip",
-                style: bold(
-                  height: 1.2,
-                  fontSize: 18.sp.flexClamp(16, 20),
+                style: semiBold(
+                  // height: 1.2,
+                  fontSize: 14,
                   color: AppColors.white,
                 ),
               ),
             ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  "10",
-                  style: semiBold(
-                    fontSize: 12.sp.clamp(10, 12),
-                    color: AppColors.black,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

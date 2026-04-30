@@ -16,17 +16,6 @@ class TipSlipModel {
 }
 
 class Selection {
-  String horseName,
-      jockeyName,
-      trainerName,
-      trackName,
-      raceName,
-      raceNumber,
-      silksImage,
-      unibetFixedOddsWin,
-      distance;
-  DateTime startTimeUtc;
-  int selectionId, number, barrier;
 
   Selection({
     required this.horseName,
@@ -55,8 +44,19 @@ class Selection {
     selectionId: json["selectionId"] ?? 0,
     number: json["number"] ?? 0,
     silksImage: json["silks_image"] ?? "",
-    unibetFixedOddsWin: json["unibet_fixed_odds_win"] ?? "  -",
+    unibetFixedOddsWin: (json["unibet_fixed_odds_win"] == null) ? " - " : "\$${json["unibet_fixed_odds_win"]}",
     barrier: json["barrier"] ?? 0,
     distance: json["race_distance"] ?? 0,
   );
+  String horseName,
+      jockeyName,
+      trainerName,
+      trackName,
+      raceName,
+      raceNumber,
+      silksImage,
+      unibetFixedOddsWin,
+      distance;
+  DateTime startTimeUtc;
+  int selectionId, number, barrier;
 }
