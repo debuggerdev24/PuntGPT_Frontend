@@ -472,8 +472,8 @@ class _NextToGoRaceNameBlockState extends State<_NextToGoRaceNameBlock> {
       builder: (context, constraints) {
         final maxW = constraints.maxWidth;
         final overflows = _overflowsTwoLines(maxW, context);
-        final linkStyle =
-            semiBold(fontSize: 12, color: AppColors.primary);
+
+            
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -493,7 +493,7 @@ class _NextToGoRaceNameBlockState extends State<_NextToGoRaceNameBlock> {
                   padding: const EdgeInsets.only(top: 2),
                   child: Text(
                     _expanded ? 'Show less' : 'Show more',
-                    style: linkStyle,
+                    style: semiBold(fontSize: 12, color: AppColors.primary,decoration: TextDecoration.underline,decorationColor: AppColors.primary),
                   ),
                 ),
               ),
