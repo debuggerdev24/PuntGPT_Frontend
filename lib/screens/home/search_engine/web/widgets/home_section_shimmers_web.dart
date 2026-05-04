@@ -201,7 +201,7 @@ class WebHomeSectionShimmers {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: gap,
-          children: List.generate(4, (_) => oneCard()),
+          children: List.generate(20, (_) => oneCard()),
         ),
       ),
     );
