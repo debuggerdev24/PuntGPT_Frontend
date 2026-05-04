@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/models/home/classic_form_guide/next_race_model.dart';
 import 'package:puntgpt_nick/provider/home/classic_form/classic_form_provider.dart';
+import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/classic_form_meetings_block_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/home_section_shimmers_web.dart';
 import 'package:puntgpt_nick/screens/home/search_engine/web/widgets/race_table_web.dart';
 
@@ -49,8 +50,9 @@ class ClassicFormGuideViewWeb extends StatelessWidget {
                         ),
                       ),
                     ),
-                  _dayTabsAndRegionalHeader(provider: provider),
-                  RaceTableWeb(tableWidth: bodyWidth),
+                  _classicFormDayTabs(provider: provider),
+                  ClassicFormMeetingsBlockWeb(provider: provider),
+                  // RaceTableWeb(tableWidth: bodyWidth),
                 ],
               );
             },
@@ -60,62 +62,54 @@ class ClassicFormGuideViewWeb extends StatelessWidget {
     );
   }
 
-  Widget _dayTabsAndRegionalHeader({required ClassicFormProvider provider}) {
+  /// Yesterday / Today / Tomorrow — same behaviour as mobile (loads meetings).
+  Widget _classicFormDayTabs({required ClassicFormProvider provider}) {
     return Padding(
       padding: const EdgeInsets.only(top: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ScrollConfiguration(
-            behavior: const MaterialScrollBehavior().copyWith(
-              dragDevices: {
-                PointerDeviceKind.touch,
-                PointerDeviceKind.mouse,
-                PointerDeviceKind.trackpad,
-              },
-            ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(provider.days.length, (index) {
-                  final selected = provider.selectedDay == index;
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      right: index < provider.days.length - 1 ? 8 : 0,
+      child: ScrollConfiguration(
+        behavior: const MaterialScrollBehavior().copyWith(
+          dragDevices: {
+            PointerDeviceKind.touch,
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.trackpad,
+          },
+        ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: List.generate(provider.days.length, (index) {
+              final selected = provider.selectedDay == index;
+              return Padding(
+                padding: EdgeInsets.only(
+                  right: index < provider.days.length - 1 ? 8 : 0,
+                ),
+                child: OnMouseTap(
+                  onTap: () => provider.changeSelectedDay = index,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 400),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 18,
                     ),
-                    child: OnMouseTap(
-                      onTap: () => provider.changeSelectedDay = index,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 18,
-                        ),
-                        decoration: BoxDecoration(
-                          color: selected ? AppColors.primary : null,
-                          border: Border.all(
-                            color: AppColors.primary.withValues(alpha: 0.15),
-                          ),
-                        ),
-                        child: Text(
-                          provider.days[index].value,
-                          style: semiBold(
-                            fontSize: 16,
-                            color: selected
-                                ? AppColors.white
-                                : AppColors.primary,
-                          ),
-                        ),
+                    decoration: BoxDecoration(
+                      color: selected ? AppColors.primary : null,
+                      border: Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.15),
                       ),
                     ),
-                  );
-                }),
-              ),
-            ),
+                    child: Text(
+                      provider.days[index].value,
+                      style: semiBold(
+                        fontSize: 16,
+                        color: selected ? AppColors.white : AppColors.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
           ),
-          const SizedBox(height: 8),
-          Text('Regional', style: bold(fontSize: 16)),
-        ],
+        ),
       ),
     );
   }
