@@ -37,6 +37,8 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
 
   @override
   Widget build(BuildContext context) {
+    final isHidingFuilterPanel =
+        context.screenWidth < context.fullScreenWidth - 70;
     return Consumer<SearchEngineProvider>(
       builder: (context, provider, child) {
         if (provider.runnersList == null) {
@@ -54,7 +56,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (context.screenWidth < context.fullScreenWidth - 60) ...[
+                    if (isHidingFuilterPanel) ...[
                       OnMouseTap(
                         onTap: _openFilterSideSheet,
                         child: Icon(Icons.tune_outlined, size: 20),
@@ -174,12 +176,15 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
   Widget _runnersWebRows({
     required BuildContext context,
     required SearchEngineProvider provider,
+    required bool isShowingFilterPanel,
   }) {
     final cross = context.screenWidth > 980
-        ? context.screenWidth > 1135
-              ? 3
-              : 2
-        : 1;
+        ? context.screenWidth > 1274
+              ? isShowingFilterPanel
+                    ? 3
+                    : 4
+              : 3
+        : 2;
     const horizontalGap = 8.0;
     const verticalGap = 6.0;
     final extra = provider.isLoadingMoreRunners ? 2 : 0;
@@ -224,6 +229,8 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
   /// For Mobile
 
   Widget _buildSearchView({required SearchEngineProvider provider}) {
+    final isShowingFilterPanel =
+        context.screenWidth > context.fullScreenWidth - 70;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,7 +238,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
           spacing: 6,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (context.screenWidth > context.fullScreenWidth - 60)
+            if (isShowingFilterPanel)
               //* --------------------> left panel
               SizedBox(
                 width: (context.fullScreenWidth * 23) / 100,
@@ -440,7 +447,11 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                   SizedBox(height: 10),
                   if (provider.runnersList != null &&
                       provider.runnersList!.isNotEmpty)
-                    _runnersWebRows(context: context, provider: provider),
+                    _runnersWebRows(
+                      context: context,
+                      provider: provider,
+                      isShowingFilterPanel: isShowingFilterPanel,
+                    ),
                 ],
               ),
             ),
