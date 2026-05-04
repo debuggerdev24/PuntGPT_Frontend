@@ -11,9 +11,7 @@ class ClassicFormMeetingsBlockWeb extends StatelessWidget {
     provider.getMeetingRaceList(meetingId: meeting.meetingId.toString());
     if (meeting.races.isEmpty) return;
     final raceIndex = provider.selectedRace.clamp(0, meeting.races.length - 1);
-    provider.getRaceFieldDetail(
-      id: meeting.races[raceIndex].raceId.toString(),
-    );
+    provider.getRaceFieldDetail(id: meeting.races[raceIndex].raceId.toString());
     context.pushNamed(WebRoutes.selectedRace.name);
   }
 
@@ -169,14 +167,12 @@ class _ClassicFormMeetingTileWeb extends StatelessWidget {
     return OnMouseTap(
       onTap: onTap,
       child: Container(
-        width: context.fullScreenWidth * 0.33,
+        width: context.fullScreenWidth * 0.22,
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(5),
-          border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.5),
-          ),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.5)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,9 +289,7 @@ Widget _raceTableEmptyWeb({required ClassicFormProvider provider}) {
           decoration: BoxDecoration(
             color: AppColors.green.withValues(alpha: 0.1),
             shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.green.withValues(alpha: 0.22),
-            ),
+            border: Border.all(color: AppColors.green.withValues(alpha: 0.22)),
           ),
           child: Icon(
             Icons.calendar_today_outlined,
