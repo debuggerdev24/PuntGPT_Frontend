@@ -178,7 +178,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
     required SearchEngineProvider provider,
     required bool isShowingFilterPanel,
   }) {
-    final cross = context.screenWidth > 1010
+    final cross = context.screenWidth > 1000
         ? context.screenWidth > 1274
               ? isShowingFilterPanel
                     ? 3
