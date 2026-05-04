@@ -1,4 +1,3 @@
-import 'package:web/web.dart' as web;
 import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
 import 'package:puntgpt_nick/models/home/search_engine/search_model.dart';
@@ -55,7 +54,7 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (context.screenWidth < web.window.screen.width - 60) ...[
+                    if (context.screenWidth < context.fullScreenWidth - 60) ...[
                       OnMouseTap(
                         onTap: _openFilterSideSheet,
                         child: Icon(Icons.tune_outlined, size: 20),
@@ -232,10 +231,10 @@ class _SearchSectionWebState extends State<SearchSectionWeb> {
           spacing: 6,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (context.screenWidth > web.window.screen.width - 60)
+            if (context.screenWidth > context.fullScreenWidth - 60)
               //* --------------------> left panel
               SizedBox(
-                width: 260,
+                width: (context.fullScreenWidth * 23) / 100,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
