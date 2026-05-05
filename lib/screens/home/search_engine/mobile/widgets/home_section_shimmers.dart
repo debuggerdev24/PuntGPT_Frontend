@@ -230,6 +230,55 @@ class HomeSectionShimmers {
                               ),
                             ),
                             horizontalDivider(),
+                            // Jockey / Trainer multi-select placeholders
+                            ...List.generate(2, (index) {
+                              return Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.symmetric(vertical: 18.w),
+                                    height: isWide ? 56.h : 46.h,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(4.r),
+                                      border: Border.all(
+                                        color: AppColors.shimmerBaseColor,
+                                      ),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 12.w,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          width: 140.w,
+                                          height: 16.h,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 20.w,
+                                          height: 20.w,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                              2,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  horizontalDivider(),
+                                ],
+                              );
+                            }),
                             ...List.generate(6, (index) {
                               return Column(
                                 children: [
@@ -270,6 +319,7 @@ class HomeSectionShimmers {
                         ),
                       ),
 
+                      // In-content Search button placeholder
                       Center(
                         child: Container(
                           margin: EdgeInsets.only(
@@ -278,7 +328,7 @@ class HomeSectionShimmers {
                             top: 20.w,
                           ),
                           height: 48.h,
-                          width: 120.w,
+                          width: 140.w,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(4.r),
@@ -289,17 +339,34 @@ class HomeSectionShimmers {
                   ),
                 ),
                 Positioned(
+                  left: 18.w,
                   right: 18.w,
-                  bottom: 18.w,
-                  child: Container(
-                    width: 140.w,
-                    height: 44.h,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4.r),
-                      border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.22),
-                      ),
+                  bottom: 14.w,
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                          ),
+                        ),
+                        10.w.horizontalSpace,
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(4.r),
+                              border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.22),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
