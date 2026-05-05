@@ -29,22 +29,45 @@ class SearchFields extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 18.w),
                     child: horizontalDivider(),
                   ),
-                  //* Track Section — multi-select; API: track: "Ararat, Sapphire Coast"
+                  //* Search by Tracks Section — multi-select; API: track: "Ararat, Sapphire Coast"
                   AppMultiSelectTrackDropdown(
                     margin: EdgeInsets.only(bottom: 18.w),
                     items: provider.trackList ?? [],
-                    hintText: "All Tracks",
+                    hintText: "Search by Tracks",
                   ),
                   horizontalDivider(),
+                  //* Search by Jockey Section — multi-select; API: jockey: "A, B"
+                  AppMultiSelectNamesDropdown(
+                    margin: EdgeInsets.symmetric(vertical: 18.w),
+                    items: provider.jockeyList ?? [],
+                    hintText: "Search by Jockey",
+                    summaryFromProvider: (p) => p.jockeyFilterForApi,
+                    selectedFromProvider: (p) => p.selectedJockeys,
+                    onToggle: (p, name) => p.toggleSelectedJockey(name),
+                    onClearAll: (p) => p.clearSelectedJockeys(),
+                  ),
+                  horizontalDivider(),
+                  //* Search by Trainer Section — multi-select; API: trainer: "A, B"
+                  AppMultiSelectNamesDropdown(
+                    margin: EdgeInsets.symmetric(vertical: 18.w),
+                    items: provider.trainerList ?? [],
+                    hintText: "Search by Trainer",
+                    summaryFromProvider: (p) => p.trainerFilterForApi,
+                    selectedFromProvider: (p) => p.selectedTrainers,
+                    onToggle: (p, name) => p.toggleSelectedTrainer(name),
+                    onClearAll: (p) => p.clearSelectedTrainers(),
+                  ),
+                  horizontalDivider(),
+
                   //* Placed at last start Section
                   SearchCheckboxField(
                     title: "Placed last start",
+                    margin: EdgeInsets.symmetric(vertical: 18.w),
                     isChecked: provider.placedLastStart,
                     onTap: () => provider.togglePlacedLastStart(
                       !provider.placedLastStart,
                     ),
                   ),
-
                   horizontalDivider(),
                   //* Placed at distance Section
                   SearchCheckboxField(

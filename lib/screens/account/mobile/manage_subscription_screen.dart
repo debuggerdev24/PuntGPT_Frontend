@@ -10,7 +10,7 @@ class ManageSubscriptionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SubscriptionProvider>(
-      builder: (context, provider, child) {
+      builder: (context, provider, child){
         return PopScope(
           canPop: provider.showCurrentPlan ? false : true,
           onPopInvokedWithResult: (didPop, result) {

@@ -35,6 +35,8 @@ class AppStartupCoordinator {
     await Future.wait(<Future<dynamic>>[
       if (!isGuest) accountProvider.getProfile(),
       searchEngineProvider.getTrackList(),
+      searchEngineProvider.getJockeyList(),
+      searchEngineProvider.getTrainerList(),
       searchEngineProvider.getDistanceDetails(),
       searchEngineProvider.getBarrierDetails(),
       puntClubProvider.getNotifications(),

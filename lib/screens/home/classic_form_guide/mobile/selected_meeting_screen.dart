@@ -826,46 +826,27 @@ Widget _raceCard({
                     horizontalDivider(opacity: 0.5),
                     8.w.verticalSpace,
 
-                    Text(
-                      "Comments",
-                      style: bold(fontSize: 12.sp, color: AppColors.primary),
-                    ),
-                    3.w.verticalSpace,
-
-                    ListView.separated
-                    (
+                    // Text(
+                    //   "Comments",
+                    //   style: bold(fontSize: 12.sp, color: AppColors.primary),
+                    // ),
+                    // 3.w.verticalSpace,
+                    ListView.separated(
                       padding: EdgeInsets.zero,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: selection.previewComments.length,
                       separatorBuilder: (context, index) => 7.w.verticalSpace,
-                      itemBuilder: (context, index) => Row(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Text(
-                            "${index+1}. ",
-                            style: semiBold(
-                              fontSize: 12.sp,
-                              height: 1.2,
-                              color: AppColors.primary.withValues(alpha: 0.7),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                               selection.previewComments[index].comment,
-                              style: semiBold(
-                                fontSize: 12.sp,
-                                height: 1.2,
-                                color: AppColors.primary.withValues(alpha: 0.7),
-                              ),
-                            ),
-                          ),
-                        ],
+                      itemBuilder: (context, index) => Text(
+                        " ${selection.previewComments[index].comment}",
+                        style: bold(
+                          fontSize: 12.sp,
+                          height: 1.2,
+                          color: AppColors.primary.withValues(alpha: 0.7),
+                        ),
                       ),
                     ),
-                    8.w.verticalSpace,
-                    horizontalDivider(opacity: 0.5),
-                    8.w.verticalSpace,
+
                     12.w.verticalSpace,
                     _HorseStatusContent(selection: selection),
                     12.w.verticalSpace,

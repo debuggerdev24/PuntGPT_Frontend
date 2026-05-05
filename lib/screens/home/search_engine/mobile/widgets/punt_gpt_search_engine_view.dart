@@ -110,21 +110,20 @@ class PuntGptSearchEngineView extends StatelessWidget {
                 //* Search Fields
                 SearchFields(providerh: provider),
 
-                //* Search Button
-                IntrinsicWidth(
-                  child: AppFilledButton(
-                    margin: EdgeInsets.only(left: 24.w, right: 24.w, top: 20.w),
-                    text: "Search",
-                    textStyle: semiBold(
-                      fontSize: 16.sixteenSp(context),
-                      color: AppColors.white,
-                    ),
-                    onTap: () {
-                      context.pushNamed(AppRoutes.runnersScreen.name);
-                      provider.getUpcomingRunner(onSuccess: () {});
-                    },
-                  ),
-                ),
+                // IntrinsicWidth(
+                //   child: AppFilledButton(
+                //     margin: EdgeInsets.only(left: 24.w, right: 24.w, top: 20.w),
+                //     text: "Search",
+                //     textStyle: semiBold(
+                //       fontSize: 16.sixteenSp(context),
+                //       color: AppColors.white,
+                //     ),
+                //     onTap: () {
+                //       context.pushNamed(AppRoutes.runnersScreen.name);
+                //       provider.getUpcomingRunner(onSuccess: () {});
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),

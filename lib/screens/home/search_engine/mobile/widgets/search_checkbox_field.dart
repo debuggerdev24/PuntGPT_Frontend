@@ -7,17 +7,19 @@ class SearchCheckboxField extends StatelessWidget {
     required this.isChecked,
     required this.onTap,
     this.verticalPadding,
+    this.margin,
   });
 
   final String title;
   final bool isChecked;
   final VoidCallback? onTap;
+  final EdgeInsets? margin;
   final double? verticalPadding;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 18.w),
+      padding: margin ?? EdgeInsets.symmetric(vertical: verticalPadding ?? 18.w),
       child: OnMouseTap(
         onTap: onTap,
         child: Row(

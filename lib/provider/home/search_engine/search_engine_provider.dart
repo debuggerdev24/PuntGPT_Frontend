@@ -35,19 +35,23 @@ class SearchEngineProvider extends ChangeNotifier {
   RangeValues barrierRangeIndexValues = const RangeValues(0, 0);
 
   List<SaveSearchModel>? saveSearches;
-  List<String>? trackList, distanceDetails, searchFilterDetails, barrierList;
+  List<String>? trackList,
+      trainerList,
+      jockeyList,
+      distanceDetails,
+      searchFilterDetails,
+      barrierList,
+      metroTrackList,
+      regionalTrackList;
 
   //* When the API returns `{ metro: [], regional: [] }`, these mirror those lists (order: Metro → Regional in the UI).
   //* If the API returns a flat list instead, both stay `null` and only [trackList] is used.
-  List<String>? metroTrackList;
-  List<String>? regionalTrackList;
   SaveSearchModel? selectedSaveSearch;
   List<RunnerModel>? runnersList;
   CompareHorseModel? compareHorse;
 
   //* Pagination from upcoming-runners API (data.total_runners, data.total_pages, data.page).
-  int? totalRunners;
-  int? totalPages;
+  int? totalRunners, totalPages;
   int _runnersCurrentPage = 1;
   bool isLoadingMoreRunners = false;
 
@@ -74,7 +78,7 @@ class SearchEngineProvider extends ChangeNotifier {
   }
 
   /// Selected track names (multi-select). API receives them comma-separated, e.g. `Ararat, Sapphire Coast`.
-  List<String> selectedTracks = [];
+  List<String> selectedTracks = [], selectedJockeys = [], selectedTrainers = [];
 
   // String?
   bool? placeAtTrack,
@@ -85,6 +89,14 @@ class SearchEngineProvider extends ChangeNotifier {
   /// Comma-separated string for `track` in search/save-search payloads.
   String get trackFilterForApi =>
       selectedTracks.isEmpty ? '' : selectedTracks.join(', ');
+
+  /// Comma-separated jockey names for API `jockey` filter.
+  String get jockeyFilterForApi =>
+      selectedJockeys.isEmpty ? '' : selectedJockeys.join(', ');
+
+  /// Comma-separated trainer names for API `trainer` filter.
+  String get trainerFilterForApi =>
+      selectedTrainers.isEmpty ? '' : selectedTrainers.join(', ');
 
   void toggleSelectedTrack(String track) {
     if (selectedTracks.contains(track)) {
@@ -133,6 +145,34 @@ class SearchEngineProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleSelectedJockey(String name) {
+    if (selectedJockeys.contains(name)) {
+      selectedJockeys.remove(name);
+    } else {
+      selectedJockeys.add(name);
+    }
+    notifyListeners();
+  }
+
+  void toggleSelectedTrainer(String name) {
+    if (selectedTrainers.contains(name)) {
+      selectedTrainers.remove(name);
+    } else {
+      selectedTrainers.add(name);
+    }
+    notifyListeners();
+  }
+
+  void clearSelectedJockeys() {
+    selectedJockeys.clear();
+    notifyListeners();
+  }
+
+  void clearSelectedTrainers() {
+    selectedTrainers.clear();
+    notifyListeners();
+  }
+
   set setSelectedWinsAtDistance(bool value) {
     selectedWinsAtDistance = value;
     notifyListeners();
@@ -147,6 +187,8 @@ class SearchEngineProvider extends ChangeNotifier {
     _selectedRaceTimingEnum = value;
 
     getTrackList();
+    getJockeyList();
+    getTrainerList();
     notifyListeners();
   }
 
@@ -263,12 +305,13 @@ class SearchEngineProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //todo APIs functions
+  //* APIs functions
 
   String _trackDateKeyFromJumpType(JumpType type) {
     return type == JumpType.jumps_tomorrow ? "tomorrow" : "today";
   }
 
+  //* Get track list
   Future<void> getTrackList({bool force = false}) async {
     final dateKey = _trackDateKeyFromJumpType(selectedRaceTimingEnum);
 
@@ -283,7 +326,7 @@ class SearchEngineProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    final result = await SearchEngineAPISearvice.instance.getTracList(
+    final result = await SearchEngineAPISearvice.instance.getTrackList(
       queryParameters: {"date": dateKey},
     );
 
@@ -302,6 +345,53 @@ class SearchEngineProvider extends ChangeNotifier {
     });
 
     // isLoadingTrackList = false;
+    notifyListeners();
+  }
+
+  //* Get jockey list
+  Future<void> getJockeyList() async {
+    final dateKey = _trackDateKeyFromJumpType(selectedRaceTimingEnum);
+
+    final result = await SearchEngineAPISearvice.instance.getJockeyList(
+      queryParameters: {"date": dateKey},
+    );
+    result.fold(
+      (l) {
+        Logger.error(l.errorMsg);
+      },
+      (r) {
+        final data = r["data"]["jockeys"];
+
+        if (data is List) {
+          jockeyList = List<String>.from(data.map((e) => e.toString()));
+        } else {
+          jockeyList = null;
+        }
+      },
+    );
+    notifyListeners();
+  }
+
+  //* Get trainer list
+  Future<void> getTrainerList() async {
+    final dateKey = _trackDateKeyFromJumpType(selectedRaceTimingEnum);
+
+    final result = await SearchEngineAPISearvice.instance.getTrainerList(
+      queryParameters: {"date": dateKey},
+    );
+    result.fold(
+      (l) {
+        Logger.error(l.errorMsg);
+      },
+      (r) {
+        final data = r["data"]["trainers"];
+        if (data is List) {
+          trainerList = List<String>.from(data.map((e) => e.toString()));
+        } else {
+          trainerList = null;
+        }
+      },
+    );
     notifyListeners();
   }
 
@@ -423,6 +513,15 @@ class SearchEngineProvider extends ChangeNotifier {
       "track": trackFilterForApi,
     };
 
+    final jockeyPayload = jockeyFilterForApi;
+    if (jockeyPayload.isNotEmpty) {
+      filters["jockey"] = jockeyPayload;
+    }
+    final trainerPayload = trainerFilterForApi;
+    if (trainerPayload.isNotEmpty) {
+      filters["trainer"] = trainerPayload;
+    }
+
     if (placedLastStart) {
       filters["placed_last_start"] = placedLastStart;
     }
@@ -513,6 +612,8 @@ class SearchEngineProvider extends ChangeNotifier {
     _resetJockeyWinsSelection();
     _resetBarrierSelection();
     selectedTracks.clear();
+    selectedJockeys.clear();
+    selectedTrainers.clear();
     selectedPlaceAtDistance = null;
     placeAtTrack = null;
     selectedWinsAtTrack = null;
@@ -532,6 +633,8 @@ class SearchEngineProvider extends ChangeNotifier {
     _resetBarrierSelection();
 
     selectedTracks.clear();
+    selectedJockeys.clear();
+    selectedTrainers.clear();
     selectedPlaceAtDistance = null;
     placeAtTrack = null;
     selectedWinsAtTrack = null;
@@ -586,6 +689,8 @@ class SearchEngineProvider extends ChangeNotifier {
           // Populate all fields from saved search data
           // Handle null/empty values gracefully - use empty string instead of null to avoid errors
           selectedTracks = parseTrackFilterString(filters.track);
+          selectedJockeys = parseTrackFilterString(filters.jockey);
+          selectedTrainers = parseTrackFilterString(filters.trainer);
           placeAtTrack = _parseFlexibleNullableBool(filters.placedAtTrack);
           selectedWinsAtTrack = _parseFlexibleNullableBool(filters.winsAtTrack);
           final hasBarrierMin =
@@ -639,6 +744,12 @@ class SearchEngineProvider extends ChangeNotifier {
 
     // Compare all fields
     if (!trackSelectionsMatchFilter(selectedTracks, filters.track)) return true;
+    if (!trackSelectionsMatchFilter(selectedJockeys, filters.jockey)) {
+      return true;
+    }
+    if (!trackSelectionsMatchFilter(selectedTrainers, filters.trainer)) {
+      return true;
+    }
     if (placedAtDistance != _parseFlexibleBool(filters.placedAtDistance)) {
       return true;
     }
@@ -1017,7 +1128,9 @@ class SearchEngineProvider extends ChangeNotifier {
         if (data == null) {
           AppToast.info(
             durationSecond: 3,
-            context: context, message: "Already added to tip slip");
+            context: context,
+            message: "Already added to tip slip",
+          );
           return;
         }
         if (data["tip_slip"] != null) {
@@ -1048,7 +1161,6 @@ class SearchEngineProvider extends ChangeNotifier {
         Logger.error(l.errorMsg);
       },
       (r) {
-
         final data = r["data"];
         tipSlips = (data != null)
             ? (data["tip_slips"] as List)
@@ -1130,11 +1242,7 @@ _CachedTrackLists? _parseTrackResponseData(dynamic data) {
 }
 
 class _CachedTrackLists {
-  const _CachedTrackLists({
-    required this.all,
-    this.metro,
-    this.regional,
-  });
+  const _CachedTrackLists({required this.all, this.metro, this.regional});
 
   final List<String> all;
   final List<String>? metro;

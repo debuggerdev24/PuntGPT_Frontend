@@ -61,7 +61,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             return Column(
               children: [
                 //* ---------------> bookie stories section
-                BookieStoriesSection(horizontalPadding: 18.w, stories: storyProvider.stories,),
+                BookieStoriesSection(
+                  horizontalPadding: 18.w,
+                  stories: storyProvider.stories,
+                ),
                 //* ---------------> home screen tab
                 Padding(
                   padding: EdgeInsets.fromLTRB(20.w, 14.w, 20.w, 0),
@@ -79,13 +82,56 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 provider: provider,
                                 formKey: formKey,
                               ),
+                              //* Search Button and ask punt gpt button
                               Align(
-                                alignment: Alignment.bottomRight,
-                                child: askPuntGPTButton(
-                                  context: context,
-                                  margin: EdgeInsets.only(
-                                    right: 18.w,
-                                    bottom: 18.w,
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                    8.w,
+                                    0,
+                                    8.w,
+                                    10.w,
+                                  ),
+                                  child: IntrinsicHeight(
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        Expanded(
+                                          child: AppFilledButton(
+                                            isExpand: false,
+                                            margin: EdgeInsets.zero,
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 16.w,
+                                              horizontal: 15.w,
+                                            ),
+                                            textStyle: semiBold(
+                                              fontSize: 16.sp,
+                                              color: AppColors.white,
+                                            ),
+                                            text:
+                                                (provider.runnersList?.isEmpty ?? true) ? "Search" : "Search (${provider.runnersList?.length} runners)",
+                                            onTap: () {
+                                              context.pushNamed(
+                                                AppRoutes.runnersScreen.name,
+                                              );
+                                              provider.getUpcomingRunner(
+                                                onSuccess: () {},
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        10.w.horizontalSpace,
+                                        Expanded(
+                                          child: SizedBox.expand(
+                                            child: askPuntGPTButton(
+                                              context: context,
+                                              margin: EdgeInsets.zero,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -93,7 +139,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           )
                         : Consumer<ClassicFormProvider>(
                             builder: (context, provider, child) =>
-                                provider.classicFormGuide == null || provider.nextRaceList == null
+                                provider.classicFormGuide == null ||
+                                    provider.nextRaceList == null
                                 ? HomeSectionShimmers.classicFormGuideShimmer(
                                     context: context,
                                   )
@@ -136,10 +183,7 @@ Widget askPuntGPTButton({required BuildContext context, EdgeInsets? margin}) {
     },
     child: Container(
       margin: margin,
-      padding: EdgeInsets.symmetric(
-        vertical: 12.r.flexClamp(12, 15),
-        horizontal: 15.r.flexClamp(15, 18),
-      ),
+      padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 6.w),
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -151,23 +195,27 @@ Widget askPuntGPTButton({required BuildContext context, EdgeInsets? margin}) {
         color: AppColors.white,
         border: Border.all(color: AppColors.primary),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ImageWidget(
-            path: AppAssets.horse,
-            height: (context.isMobileWeb) ? 42.w : 30.w,
-          ),
-          10.w.horizontalSpace,
-          Text(
-            "Ask @ PuntGPT",
-            textAlign: TextAlign.center,
-            style: semiBold(
-              fontSize: (context.isMobileWeb) ? 38.sp : 20.sp,
-              fontFamily: AppFontFamily.secondary,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 10.w,
+          children: [
+            ImageWidget(
+              path: AppAssets.horse,
+              height: (context.isMobileWeb) ? 42.w : 30.w,
             ),
-          ),
-        ],
+
+            Text(
+              "Ask @ PuntGPT",
+              textAlign: TextAlign.center,
+              style: semiBold(
+                fontSize: (context.isMobileWeb) ? 38.sp : 19.sp,
+                fontFamily: AppFontFamily.secondary,
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );

@@ -30,6 +30,8 @@ class Filters {
 
   Filters({
     this.track,
+    this.jockey,
+    this.trainer,
     this.placedAtTrack,
     this.placedLastStart,
     this.placedAtDistance,
@@ -49,6 +51,8 @@ class Filters {
 
   factory Filters.fromJson(Map<String, dynamic> json) => Filters(
     track: json["track"],
+    jockey: _commaFieldFromJson(json["jockey"]),
+    trainer: _commaFieldFromJson(json["trainer"]),
     placedAtTrack: _parseNullableBool(json["placed_at_track"]),
     placedLastStart: json["placed_last_start"] as bool? ?? false,
     placedAtDistance: json["placed_at_distance"] as bool? ?? false,
@@ -71,6 +75,8 @@ class Filters {
       placedAtTrack,
       winsAtTrack;
   String? track,
+      jockey,
+      trainer,
       barrierMin,
       barrierMax,
       oddsMin,
@@ -87,6 +93,12 @@ class Filters {
     final Map<String, dynamic> map = {};
     if (track != null && track!.isNotEmpty) {
       map["track"] = track;
+    }
+    if (jockey != null && jockey!.isNotEmpty) {
+      map["jockey"] = jockey;
+    }
+    if (trainer != null && trainer!.isNotEmpty) {
+      map["trainer"] = trainer;
     }
     if (placedAtTrack != null) {
       map["placed_at_track"] = placedAtTrack;
@@ -132,6 +144,20 @@ class Filters {
       map["jockey_strike_rate_last_12_months"] = jockeyStrikeRateLast12Months;
     }
     return map;
+  }
+
+  static String? _commaFieldFromJson(dynamic raw) {
+    if (raw == null) return null;
+    if (raw is List) {
+      final parts = raw
+          .map((e) => e.toString().trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+      if (parts.isEmpty) return null;
+      return parts.join(', ');
+    }
+    final s = raw.toString().trim();
+    return s.isEmpty ? null : s;
   }
 
   static bool? _parseNullableBool(dynamic value) {

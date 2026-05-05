@@ -8,7 +8,9 @@ class SubscriptionPlanMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final price = SubscriptionService.instance.products.firstWhere((element) => element.id == plan.productIdIos).price.toString();
+    final price = SubscriptionService.instance.products
+        .firstWhere((element) => element.id == plan.productIdIos)
+        .price;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 25.w, vertical: 12.h),
       padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 22.h),
@@ -38,7 +40,6 @@ class SubscriptionPlanMobile extends StatelessWidget {
                   text: plan.id == 1 ? "  ‘Mug Punter’ " : "  ‘Pro Punter’ ",
                   style: regular(
                     fontSize: (context.isMobileWeb) ? 37.sp : 24.sp,
-
                     color: plan.id == 1
                         ? AppColors.primary
                         : AppColors.premiumYellow,
@@ -49,21 +50,23 @@ class SubscriptionPlanMobile extends StatelessWidget {
                   text: " Account",
                   style: regular(
                     fontSize: (context.isMobileWeb) ? 36.sp : 24.sp,
-
                     fontFamily: AppFontFamily.secondary,
                   ),
                 ),
               ],
             ),
           ),
-          8.h.verticalSpace,
+          8.w.verticalSpace,
           RichText(
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: (plan.id == 1)
-                      ? "\$ ${int.parse(plan.price).toStringAsFixed(2)} "
-                      : "\$ ${plan.price} ",
+                  text:
+                      // (plan.id == 1)
+                      //     ? "\$ ${int.parse(plan.price).toStringAsFixed(2)} "
+                      //     : "\$
+                      // "\$ ${plan.price} ",
+                      "$price ",
                   style: bold(
                     fontSize: (context.isMobileWeb) ? 33.sp : 20.sp,
                     fontFamily: AppFontFamily.primary,
