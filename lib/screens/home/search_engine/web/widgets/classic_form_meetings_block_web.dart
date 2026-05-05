@@ -40,7 +40,7 @@ class ClassicFormMeetingsBlockWeb extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8, bottom: 32),
       child: provider.classicFormGuideIsGrouped
           ? _buildGrouped(context)
-          : _buildLegacyList(context),
+          : _buildSingleList(context),
     );
   }
 
@@ -93,7 +93,7 @@ class ClassicFormMeetingsBlockWeb extends StatelessWidget {
     );
   }
 
-  Widget _buildLegacyList(BuildContext context) {
+  Widget _buildSingleList(BuildContext context) {
     final items = provider.classicFormGuide!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -203,10 +203,10 @@ class _ClassicFormMeetingTileWeb extends StatelessWidget {
                         height: 1.2,
                       ),
                     ),
-                  if (meeting.railPosition.isNotEmpty) ...[
+                   ...[
                     const SizedBox(height: 2),
                     Text(
-                      'Rail Pos. : ${meeting.railPosition}',
+                      'Rail Pos. : ${(meeting.railPosition.isNotEmpty) ? meeting.railPosition : '-'}',
                       style: regular(
                         fontSize: 12,
                         color: AppColors.primary.withValues(alpha: 0.85),
@@ -215,6 +215,7 @@ class _ClassicFormMeetingTileWeb extends StatelessWidget {
                       maxLines: 2,
                     ),
                   ],
+
                 ],
               ),
             ),
