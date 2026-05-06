@@ -4,6 +4,180 @@ import 'package:puntgpt_nick/screens/home/search_engine/mobile/widgets/home_sect
 class WebHomeSectionShimmers {
   WebHomeSectionShimmers._();
 
+  static Widget classicFormGuideWebShimmer() {
+    const gap = 6.0;
+
+    Widget box({
+      required double w,
+      required double h,
+      double r = 4,
+      Border? border,
+    }) {
+      return Container(
+        width: w,
+        height: h,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(r),
+          border: border,
+        ),
+      );
+    }
+
+    Widget nextToGoCard() {
+      const cardW = 200.0;
+      const pad = 7.0;
+      const innerW = cardW - pad * 2;
+      return SizedBox(
+        width: cardW,
+        child: Container(
+          padding: const EdgeInsets.all(pad),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: AppColors.shimmerBaseColor.withValues(alpha: 0.45),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              box(w: innerW * 0.88, h: 14),
+              const SizedBox(height: gap),
+              box(w: innerW * 0.95, h: 12),
+              const SizedBox(height: 5),
+              box(w: innerW * 0.62, h: 12),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  box(w: 78, h: 12),
+                  box(w: 52, h: 12),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget dayTab() {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            color: AppColors.shimmerBaseColor.withValues(alpha: 0.5),
+          ),
+        ),
+        child: box(w: 68, h: 14),
+      );
+    }
+
+    Widget meetingTile() {
+      return Container(
+        width: 260,
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(
+            color: AppColors.shimmerBaseColor.withValues(alpha: 0.5),
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  box(w: 140, h: 14),
+                  const SizedBox(height: 6),
+                  box(w: 110, h: 12),
+                  const SizedBox(height: 6),
+                  box(w: 160, h: 12),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                box(w: 64, h: 12),
+                const SizedBox(height: 10),
+                box(w: 44, h: 12),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget sectionBlock() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          box(w: 90, h: 14),
+          const SizedBox(height: 10),
+          meetingTile(),
+          const SizedBox(height: 8),
+          meetingTile(),
+        ],
+      );
+    }
+
+    return Shimmer.fromColors(
+      baseColor: AppColors.shimmerBaseColor,
+      highlightColor: AppColors.shimmerHighlightColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Next to go", style: bold(fontSize: 16)),
+          const SizedBox(height: 10),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: List.generate(
+                6,
+                (i) => Padding(
+                  padding: EdgeInsets.only(right: i == 5 ? 0 : gap),
+                  child: nextToGoCard(),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 14),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                dayTab(),
+                const SizedBox(width: 8),
+                dayTab(),
+                const SizedBox(width: 8),
+                dayTab(),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 18,
+            runSpacing: 18,
+            children: [
+              sectionBlock(),
+              sectionBlock(),
+              sectionBlock(),
+            ],
+          ),
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
   static Widget tipSlipScreenShimmer({required BuildContext context}) {
     return HomeSectionShimmers.tipSlipScreenShimmer(context: context);
   }

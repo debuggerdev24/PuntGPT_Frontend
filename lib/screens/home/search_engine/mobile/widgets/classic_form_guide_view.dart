@@ -81,7 +81,7 @@ class ClassicFormGuideView extends StatelessWidget {
                 //* classic form meetings block
                 Padding(
                   padding: EdgeInsets.only(bottom: 55.w),
-                  child: _ClassicFormMeetingsBlock(provider: provider),
+                  child: _ClassicFormMeetings(provider: provider),
                 ),
           25.w.verticalSpace,
         ],
@@ -91,8 +91,8 @@ class ClassicFormGuideView extends StatelessWidget {
 }
 
 //* Metro → Regional → Trials meeting list (grouped API) or one list (legacy API).
-class _ClassicFormMeetingsBlock extends StatelessWidget {
-  const _ClassicFormMeetingsBlock({required this.provider});
+class _ClassicFormMeetings extends StatelessWidget {
+  const _ClassicFormMeetings({required this.provider});
 
   final ClassicFormProvider provider;
 

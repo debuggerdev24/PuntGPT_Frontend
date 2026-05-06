@@ -21,6 +21,12 @@ class ClassicFormGuideViewWeb extends StatelessWidget {
               final list = provider.nextRaceList;
               final guide = provider.classicFormGuide;
 
+              if (list == null || guide == null) {
+                return WebHomeSectionShimmers.classicFormGuideWebShimmer();
+              }
+
+
+              
               void openMeeting(ClassicFormModel meeting) {
                 provider.getMeetingRaceList(
                   meetingId: meeting.meetingId.toString(),
@@ -37,13 +43,14 @@ class ClassicFormGuideViewWeb extends StatelessWidget {
               }
 
               Widget meetingTile(ClassicFormModel meeting) {
+                final screenWidth = context.fullScreenWidth;
                 final trackCondition = meeting.races.isEmpty
                     ? ''
                     : meeting.races.first.trackCondition.toLowerCase();
                 return OnMouseTap(
                   onTap: () => openMeeting(meeting),
                   child: Container(
-                    width: context.fullScreenWidth * 0.22,
+                    width: screenWidth * 0.23,//context.fullScreenWidth * ((screenWidth > 1450) ? 0.22 : (screenWidth > 900) ? 0.26 : 0.3),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 9,
                       vertical: 8,
@@ -162,7 +169,7 @@ class ClassicFormGuideViewWeb extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 10, top: 4),
+                      padding: const EdgeInsets.only(bottom: 5, top: 4),
                       child: Text(
                         label,
                         style: semiBold(
@@ -185,9 +192,7 @@ class ClassicFormGuideViewWeb extends StatelessWidget {
                 children: [
                   Text("Next to go", style: bold(fontSize: 16)),
                   const SizedBox(height: 10),
-                  if (list == null)
-                    WebHomeSectionShimmers.nextToGoWebShimmer()
-                  else if (list.isEmpty)
+                  if (list.isEmpty)
                     _nextToGoEmptyWeb()
                   else
                     ScrollConfiguration(
@@ -210,112 +215,52 @@ class ClassicFormGuideViewWeb extends StatelessWidget {
                         ),
                       ),
                     ),
+                    //* classic form day tabs
                   _classicFormDayTabs(provider: provider),
-                  if (guide == null)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 16, bottom: 24),
-                      child: Center(
-                        child: SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    )
-                  else if (guide.isEmpty)
-                    Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.only(bottom: 24),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 28,
-                        horizontal: 20,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.03),
-                        border: Border.all(
-                          color: AppColors.primary.withValues(alpha: 0.15),
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: AppColors.green.withValues(alpha: 0.1),
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: AppColors.green.withValues(alpha: 0.22),
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.calendar_today_outlined,
-                              size: 30,
-                              color: AppColors.primary.withValues(alpha: 0.55),
-                            ),
-                          ),
-                          const SizedBox(height: 14),
-                          Text(
-                            'No races for ${provider.days[provider.selectedDay].value.toLowerCase()}',
-                            style: semiBold(
-                              fontSize: 16,
-                              fontFamily: AppFontFamily.secondary,
-                              color: AppColors.primary,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    )
-                  else
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 32),
-                      child: provider.classicFormGuideIsGrouped
-                          ? Wrap(
-                              spacing: 4,
-                              runSpacing: 6,
-                              children: [
-                                if (provider.classicFormMetroMeetings.isNotEmpty)
-                                  ...[
-                                    const SizedBox(height: 6),
-                                    section(
-                                      'Metro',
-                                      provider.classicFormMetroMeetings,
-                                    ),
-                                  ],
-                                if (provider
-                                    .classicFormRegionalMeetings.isNotEmpty) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, bottom: 32),
+                    child: provider.classicFormGuideIsGrouped
+                        ? Wrap(
+                            spacing: 4,
+                            runSpacing: 6,
+                            children: [
+                              if (provider.classicFormMetroMeetings.isNotEmpty)
+                                ...[
                                   const SizedBox(height: 6),
                                   section(
-                                    'Regional',
-                                    provider.classicFormRegionalMeetings,
+                                    'Metro',
+                                    provider.classicFormMetroMeetings,
                                   ),
                                 ],
-                                if (provider.classicFormTrialMeetings.isNotEmpty)
-                                  ...[
-                                    const SizedBox(height: 6),
-                                    section(
-                                      'Trials',
-                                      provider.classicFormTrialMeetings,
-                                    ),
-                                  ],
+                              if (provider
+                                  .classicFormRegionalMeetings.isNotEmpty) ...[
+                                const SizedBox(height: 6),
+                                section(
+                                  'Regional',
+                                  provider.classicFormRegionalMeetings,
+                                ),
                               ],
-                            )
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                for (var i = 0; i < guide.length; i++) ...[
-                                  if (i > 0) const SizedBox(height: 10),
-                                  meetingTile(guide[i]),
+                              if (provider.classicFormTrialMeetings.isNotEmpty)
+                                ...[
+                                  const SizedBox(height: 6),
+                                  section(
+                                    'Trials',
+                                    provider.classicFormTrialMeetings,
+                                  ),
                                 ],
+                            ],
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              for (var i = 0; i < guide.length; i++) ...[
+                                if (i > 0) const SizedBox(height: 10),
+                                meetingTile(guide[i]),
                               ],
-                            ),
-                    ),
+                            ],
+                          ),
+                  ),
                   // RaceTableWeb(tableWidth: bodyWidth),
                 ],
               );
