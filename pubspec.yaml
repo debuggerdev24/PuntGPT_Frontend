@@ -38,7 +38,7 @@ dependencies:
   flutter_slidable: ^4.0.3
   better_player_plus: ^1.1.5
   image_picker: ^1.1.2
-  # web: ^0.5.1
+  web: ^1.1.1
 
 
 dev_dependencies:
