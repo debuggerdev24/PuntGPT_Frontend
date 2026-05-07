@@ -25,13 +25,14 @@ class AppTextField extends StatelessWidget {
     this.margin,
     this.onChanged,
     this.textInputAction,
+    this.suffixSize,
   });
 
   final TextEditingController controller;
   final String hintText;
   final TextStyle? hintStyle, textStyle, errorStyle;
   final Widget? suffix;
-  final double? borderRadius, trailingIconWidth;
+  final double? borderRadius, trailingIconWidth, suffixSize;
   final bool obscureText;
   final dynamic trailingIcon;
   final VoidCallback? onTrailingIconTap, onTap, onSubmit;
@@ -49,9 +50,9 @@ class AppTextField extends StatelessWidget {
     return Padding(
       padding: margin ?? EdgeInsets.zero,
       child: TextFormField(
-        
         onChanged: onChanged,
         onTap: onTap,
+        textAlignVertical: TextAlignVertical.center,
         readOnly: readOnly ?? false,
         controller: controller,
         cursorColor: AppColors.primary,
@@ -79,9 +80,7 @@ class AppTextField extends StatelessWidget {
         },
         style: textStyle ?? medium(fontSize: 16.fSize),
         decoration: InputDecoration(
-          
-          suffixIcon: 
-          trailingIcon == null
+          suffixIcon: trailingIcon == null
               ? const SizedBox()
               : GestureDetector(
                   onTap: onTrailingIconTap,
@@ -89,7 +88,7 @@ class AppTextField extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(0, 11.wSize, 0, 11.wSize),
                     child: ImageWidget(
                       type: ImageType.svg,
-                     //widget.trailingIconWidth,
+                      height: suffixSize,
                       path: trailingIcon!,
                     ),
                   ),
@@ -103,7 +102,8 @@ class AppTextField extends StatelessWidget {
                 color: AppColors.primary.withValues(alpha: 0.65),
               ),
           errorStyle:
-              errorStyle ?? medium(fontSize: (kIsWeb) ? 12.5 : 14.5.sp, color: AppColors.red),
+              errorStyle ??
+              medium(fontSize: (kIsWeb) ? 12.5 : 14.5.sp, color: AppColors.red),
           errorMaxLines: 5,
           // error: _currentError == null
           //     ? null
@@ -116,10 +116,11 @@ class AppTextField extends StatelessWidget {
           //               medium(fontSize: 12, color: AppColors.red),
           //         ),
           //       ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 20.adaptiveSpacing(context),
-            vertical: 17.adaptiveSpacing(context),
-          ),
+          //* ----------------> content padding
+          // contentPadding: EdgeInsets.symmetric(
+          //   horizontal: 20.adaptiveSpacing(context),
+          //   vertical: 17.adaptiveSpacing(context),
+          // ),
           isDense: true,
           filled: true,
           fillColor: AppColors.white,

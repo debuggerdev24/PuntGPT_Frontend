@@ -283,7 +283,7 @@ class PuntClubProvider extends ChangeNotifier {
   void resetInviteState() {
     selectedIds.clear();
     // isInvitingUser = false;
-    notifyListeners();
+    // notifyListeners();
   }
 
   void removeNotificationAt(int index) {
@@ -321,7 +321,7 @@ class PuntClubProvider extends ChangeNotifier {
       (r) {
         Logger.info("createChatGroup response: $r");
         onSuccess.call();
-        clubNameCtr.clear();
+
         final data = r["data"];
         final club = (data is Map && data.containsKey("club"))
             ? data["club"]

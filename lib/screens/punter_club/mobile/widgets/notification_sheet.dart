@@ -75,7 +75,7 @@ class NotificationSheetView extends StatelessWidget {
                     final notification = notifications[index];
                     Logger.info('notification id: ${notification.inviteId}');
 
-                    return notificationBox(
+                    return _notificationBox(
                       context: context,
                       notification: notification,
                       onReject: () {
@@ -190,7 +190,7 @@ class NotificationSheetView extends StatelessWidget {
     );
   }
 
-  Widget notificationBox({
+  Widget _notificationBox({
     required BuildContext context,
     required NotificationModel notification,
     required VoidCallback onReject,
@@ -211,7 +211,6 @@ class NotificationSheetView extends StatelessWidget {
               foregroundColor: Colors.white,
               icon: Icons.delete_outline_rounded,
               label: 'Delete',
-
             ),
           ],
         ),
@@ -274,7 +273,7 @@ class NotificationSheetView extends StatelessWidget {
                           AppFilledButton(
                             padding: EdgeInsets.symmetric(
                               horizontal: 28.w,
-                              vertical: 9.h,
+                              vertical: 8.w,
                             ),
                             isExpand: false,
                             text: "Join",
@@ -287,7 +286,7 @@ class NotificationSheetView extends StatelessWidget {
                           AppOutlinedButton(
                             padding: EdgeInsets.symmetric(
                               horizontal: 28.w,
-                              vertical: 8.h,
+                              vertical: 8.w,
                             ),
                             isExpand: false,
                             textStyle: semiBold(

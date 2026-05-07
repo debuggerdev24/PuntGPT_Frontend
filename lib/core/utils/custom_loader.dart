@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:puntgpt_nick/core/app_imports.dart';
 import 'package:puntgpt_nick/core/responsive/responsive_builder.dart';
 
 import '../theme/app_colors.dart' show AppColors;
@@ -44,7 +45,7 @@ Widget webProgressIndicator(BuildContext context, {Color? color}) {
 }
 
 Widget progressIndicator({Color? color, double? size}) {
-  final s = size ?? 28.w;
+  final s = size ?? 28.wSize;
   return SizedBox(
     width: s,
     height: s,
